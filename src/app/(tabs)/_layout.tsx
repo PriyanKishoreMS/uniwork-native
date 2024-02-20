@@ -5,7 +5,6 @@ import { Tabs } from "expo-router";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
 	name: React.ComponentProps<typeof FontAwesome>["name"];
 	color: string;
@@ -20,31 +19,41 @@ export default function TabLayout() {
 		<Tabs
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-				// Disable the static render of the header on web
-				// to prevent a hydration error in React Navigation v6.
 			}}
 		>
 			<Tabs.Screen
-				name='tasks'
+				name='index'
 				options={{
+					title: "Tasks",
+					headerTitle: "Uniwork",
 					headerTitleAlign: "center",
-					title: "Uniwork",
 					tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
 				}}
 			/>
 			<Tabs.Screen
 				name='people'
 				options={{
+					title: "People",
+					headerTitle: "Uniwork",
 					headerTitleAlign: "center",
-					title: "Uniwork",
+					tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
+				}}
+			/>
+			<Tabs.Screen
+				name='notification'
+				options={{
+					title: "Notifications",
+					headerTitle: "Uniwork",
+					headerTitleAlign: "center",
 					tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
 				}}
 			/>
 			<Tabs.Screen
 				name='profile'
 				options={{
+					title: "Profile",
+					headerTitle: "Uniwork",
 					headerTitleAlign: "center",
-					title: "Uniwork",
 					tabBarIcon: ({ color }) => <TabBarIcon name='code' color={color} />,
 				}}
 			/>

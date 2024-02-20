@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 
-export default function TabOneScreen() {
+const PeopleScreen = () => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Tasks Screen</Text>
+			<Text style={styles.title}>People Screen</Text>
 			<View
 				style={styles.separator}
 				lightColor='#eee'
@@ -13,7 +13,7 @@ export default function TabOneScreen() {
 			/>
 		</View>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	container: {
@@ -31,3 +31,5 @@ const styles = StyleSheet.create({
 		width: "80%",
 	},
 });
+
+export default PeopleScreen;
