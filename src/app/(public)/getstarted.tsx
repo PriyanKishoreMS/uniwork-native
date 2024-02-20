@@ -1,43 +1,169 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
-
+import {
+	StyleSheet,
+	TouchableOpacity,
+	ScrollView,
+	FlatList,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import React from "react";
+import { Image } from "react-native";
 import { router } from "expo-router";
+import { data } from "../../../services";
 
 const GetStartedScreen = () => {
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Get Started Screen</Text>
-			<TouchableOpacity
-				style={styles.button}
-				onPress={() => router.push("/signin")}
-			>
-				<Text>Get Started Bro</Text>
-			</TouchableOpacity>
-			<View lightColor='#eee' darkColor='rgba(255,255,255,0.1)' />
-		</View>
+		<ScrollView style={styles.container}>
+			<View style={styles.banner}>
+				<Image source={require("../../../assets/images/getStarted.png")} />
+				<View style={styles.bannerText}>
+					<Text style={styles.bannertitle}>
+						Find your next {"\n"} freelance job
+					</Text>
+					<Text style={styles.bannerParagraph}>
+						Work done for and done by{"\n"} your fellow students!
+					</Text>
+				</View>
+			</View>
+			<View style={styles.introContainer}>
+				<Text style={styles.introTitle}>Why UniWork?</Text>
+				<Text style={styles.introParagraph}>
+					UniWork is the best way to get freelance jobs while you're in college
+					or university
+				</Text>
+				<View style={styles.introBoxes}>
+					<ScrollView horizontal={true}>
+						<FlatList
+							data={data}
+							renderItem={({ item }) => (
+								<TouchableOpacity style={styles.introBox}>
+									<Image
+										source={item.image}
+										style={{
+											width: "100%",
+											height: "100%",
+											borderRadius: 12,
+										}}
+									/>
+									<View style={styles.introbg}></View>
+									<Text style={styles.introBoxText}>{item.key}</Text>
+								</TouchableOpacity>
+							)}
+							numColumns={2}
+							keyExtractor={item => item.key}
+							contentContainerStyle={styles.introBoxRow}
+						/>
+					</ScrollView>
+				</View>
+			</View>
+			<View style={styles.buttonContainer}>
+				<TouchableOpacity
+					style={styles.button}
+					onPress={() => router.push("/signin")}
+				>
+					<Text style={styles.buttonText}>Get Started Bro</Text>
+				</TouchableOpacity>
+			</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-		padding: 20,
 	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
+	banner: {
+		position: "relative",
+		textAlign: "center",
+		alignItems: "center",
+	},
+	bannerParagraph: {
+		fontSize: 16,
+		textAlign: "center",
+		fontFamily: "Inter",
+		color: "white",
+	},
+	bannerText: {
+		position: "absolute",
+		top: "40%",
+		backgroundColor: "rgba(0,0,0,0)",
+	},
+	bannertitle: {
+		fontSize: 40,
+		textAlign: "center",
+		color: "white",
+		fontFamily: "InterSemiBold",
 	},
 	button: {
 		alignItems: "center",
+		justifyContent: "center",
 		marginTop: 20,
-		backgroundColor: "#666666",
+		backgroundColor: "#94D6F2",
 		padding: 5,
-		paddingHorizontal: 0,
-		borderRadius: 5,
+		height: 40,
+		borderRadius: 12,
+		width: "90%",
+	},
+	buttonText: {
+		fontSize: 15,
+		fontFamily: "InterSemiBold",
+		color: "#0D171C",
+	},
+	buttonContainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "center",
+		marginBottom: 50,
+	},
+	introContainer: {
+		marginTop: 40,
+		paddingHorizontal: 16,
+	},
+	introTitle: {
+		fontSize: 30,
+		fontFamily: "InterSemiBold",
+	},
+	introParagraph: {
+		paddingTop: 16,
+		fontSize: 15,
+		fontFamily: "InterLight",
+	},
+	introBoxes: {
+		flexDirection: "column",
+		alignItems: "center",
+		marginTop: 20,
+	},
+	introBox: {
+		width: 170,
+		height: 170,
+		margin: 6,
+		aspectRatio: 1,
+		borderColor: "#666666",
+		borderWidth: 1,
+		borderRadius: 12,
+		alignItems: "flex-start",
+	},
+	introbg: {
+		position: "absolute",
 		width: "100%",
+		height: "100%",
+		backgroundColor: "rgba(0,0,0,0.2)",
+		borderRadius: 12,
+		borderTopLeftRadius: 12,
+		borderTopRightRadius: 12,
+	},
+	introBoxRow: {
+		flexDirection: "column",
+		justifyContent: "center",
+	},
+	// make text bottom left
+	introBoxText: {
+		position: "absolute",
+		bottom: 0,
+		left: 0,
+		fontSize: 15,
+		fontFamily: "Inter",
+		color: "white",
+		padding: 10,
 	},
 });
 

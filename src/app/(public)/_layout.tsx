@@ -1,11 +1,15 @@
 import React from "react";
 import { Stack } from "expo-router";
+import { useColorScheme } from "@/components/useColorScheme";
 
 const PublicLayout = () => {
+	const colorScheme = useColorScheme();
 	return (
 		<Stack
 			screenOptions={{
-				headerShown: false,
+				contentStyle: {
+					backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+				},
 			}}
 		>
 			<Stack.Screen
@@ -18,7 +22,11 @@ const PublicLayout = () => {
 			<Stack.Screen
 				name='getstarted'
 				options={{
-					headerTitle: "Get Started",
+					headerTitle: "UniWork",
+					headerTitleAlign: "center",
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
 				}}
 			/>
 		</Stack>
