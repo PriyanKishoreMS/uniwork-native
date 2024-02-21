@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
 
 const PublicLayout = () => {
 	const colorScheme = useColorScheme();
@@ -8,14 +9,27 @@ const PublicLayout = () => {
 		<Stack
 			screenOptions={{
 				contentStyle: {
-					backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
+					backgroundColor:
+						colorScheme === "dark"
+							? Colors.dark.background
+							: Colors.light.background,
 				},
 			}}
 		>
 			<Stack.Screen
 				name='signin'
 				options={{
-					headerTitle: "Signin",
+					headerTitle: "UniWork",
+					headerTitleAlign: "center",
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
 				}}
 			/>
 
@@ -26,6 +40,12 @@ const PublicLayout = () => {
 					headerTitleAlign: "center",
 					headerTitleStyle: {
 						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
 					},
 				}}
 			/>

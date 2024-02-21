@@ -3,18 +3,22 @@ import {
 	TouchableOpacity,
 	ScrollView,
 	FlatList,
+	Pressable,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import React from "react";
 import { Image } from "react-native";
 import { router } from "expo-router";
 import { data } from "../../../services";
+import { palette } from "@/constants/Colors";
+
+const getStartedBg = require("../../../assets/images/getStarted/getStarted.png");
 
 const GetStartedScreen = () => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
-				<Image source={require("../../../assets/images/getStarted.png")} />
+				<Image source={getStartedBg} />
 				<View style={styles.bannerText}>
 					<Text style={styles.bannertitle}>
 						Find your next {"\n"} freelance job
@@ -56,12 +60,13 @@ const GetStartedScreen = () => {
 				</View>
 			</View>
 			<View style={styles.buttonContainer}>
-				<TouchableOpacity
+				<Pressable
 					style={styles.button}
 					onPress={() => router.push("/signin")}
+					android_ripple={{ color: palette.primaryDark }}
 				>
 					<Text style={styles.buttonText}>Get Started Bro</Text>
-				</TouchableOpacity>
+				</Pressable>
 			</View>
 		</ScrollView>
 	);
@@ -80,12 +85,12 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		textAlign: "center",
 		fontFamily: "Inter",
-		color: "white",
+		color: palette.white,
 	},
 	bannerText: {
 		position: "absolute",
 		top: "40%",
-		backgroundColor: "rgba(0,0,0,0)",
+		backgroundColor: palette.transparent,
 	},
 	bannertitle: {
 		fontSize: 40,
@@ -97,7 +102,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		marginTop: 20,
-		backgroundColor: "#94D6F2",
+		backgroundColor: palette.primary,
 		padding: 5,
 		height: 40,
 		borderRadius: 12,
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontSize: 15,
 		fontFamily: "InterSemiBold",
-		color: "#0D171C",
+		color: palette.text,
 	},
 	buttonContainer: {
 		flex: 1,
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
 		height: 170,
 		margin: 6,
 		aspectRatio: 1,
-		borderColor: "#666666",
+		borderColor: palette.gray,
 		borderWidth: 1,
 		borderRadius: 12,
 		alignItems: "flex-start",
@@ -155,14 +160,13 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		justifyContent: "center",
 	},
-	// make text bottom left
 	introBoxText: {
 		position: "absolute",
 		bottom: 0,
 		left: 0,
 		fontSize: 15,
 		fontFamily: "Inter",
-		color: "white",
+		color: palette.white,
 		padding: 10,
 	},
 });
