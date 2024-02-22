@@ -11,6 +11,7 @@ import { Image } from "react-native";
 import { router } from "expo-router";
 import { data } from "../../../services";
 import { palette } from "@/constants/Colors";
+import { DarkenColor } from "@/components/Helper";
 
 const getStartedBg = require("../../../assets/images/getStarted/getStarted.png");
 
@@ -18,7 +19,12 @@ const GetStartedScreen = () => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
-				<Image source={getStartedBg} />
+				<Image
+					source={getStartedBg}
+					style={{
+						width: "100%",
+					}}
+				/>
 				<View style={styles.bannerText}>
 					<Text style={styles.bannertitle}>
 						Find your next {"\n"} freelance job
@@ -62,8 +68,11 @@ const GetStartedScreen = () => {
 			<View style={styles.buttonContainer}>
 				<Pressable
 					style={styles.button}
+					android_ripple={{
+						color: DarkenColor(palette.primary, 1),
+						borderless: false,
+					}}
 					onPress={() => router.push("/signin")}
-					android_ripple={{ color: palette.primaryDark }}
 				>
 					<Text style={styles.buttonText}>Get Started Bro</Text>
 				</Pressable>
@@ -101,12 +110,10 @@ const styles = StyleSheet.create({
 	button: {
 		alignItems: "center",
 		justifyContent: "center",
-		marginTop: 20,
 		backgroundColor: palette.primary,
 		padding: 5,
 		height: 40,
 		borderRadius: 12,
-		width: "90%",
 	},
 	buttonText: {
 		fontSize: 15,
@@ -114,10 +121,11 @@ const styles = StyleSheet.create({
 		color: palette.text,
 	},
 	buttonContainer: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-		marginBottom: 50,
+		width: "90%",
+		alignSelf: "center",
+		borderRadius: 12,
+		overflow: "hidden",
+		margin: 16,
 	},
 	introContainer: {
 		marginTop: 40,

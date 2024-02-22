@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "607469576360",
+    "project_id": "uniwork-34e47",
+    "storage_bucket": "uniwork-34e47.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:607469576360:android:03ed11838b04d6888a629d",
+        "android_client_info": {
+          "package_name": "com.priyankishore.uniwork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "607469576360-bl3o0gnc22d5qnva9a4lb3te89k0mhap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6svxzUnx1Mk2BHg5C_ymWZ-Xmk1L7sjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "607469576360-bl3o0gnc22d5qnva9a4lb3te89k0mhap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

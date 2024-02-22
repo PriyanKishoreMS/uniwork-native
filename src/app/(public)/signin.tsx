@@ -5,6 +5,7 @@ import {
 	ImageSourcePropType,
 	useColorScheme,
 	TouchableOpacity,
+	Pressable,
 } from "react-native";
 import React from "react";
 import { Text, View } from "@/components/Themed";
@@ -12,7 +13,7 @@ import { SelectCountry } from "react-native-element-dropdown";
 import { colleges } from "../../../colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { DarkenColor, LightenColor } from "@/components/Helper";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 
 const SignInScreen = () => {
@@ -20,7 +21,12 @@ const SignInScreen = () => {
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
-				<Image source={signinBg} />
+				<Image
+					source={signinBg}
+					style={{
+						width: "100%",
+					}}
+				/>
 				<View style={styles.inputContainer}>
 					<Text style={styles.para}>
 						The most convinient way to get freelance jobs while you're in
@@ -61,15 +67,37 @@ const SignInScreen = () => {
 						labelField={"name"}
 						dropdownPosition='auto'
 					/>
-					<TouchableOpacity style={styles.googleButton}>
-						<AntDesign
-							name='google'
-							size={21}
-							color={palette.white}
-							style={{ marginRight: 16 }}
-						/>
-						<Text style={styles.para}>Sign in with Google</Text>
-					</TouchableOpacity>
+					<View
+						style={{
+							borderRadius: 12,
+							overflow: "hidden",
+							margin: 16,
+						}}
+					>
+						<Pressable
+							style={styles.googleButton}
+							android_ripple={{
+								color: DarkenColor("#4285F4", 1),
+								borderless: false,
+							}}
+						>
+							<AntDesign
+								name='google'
+								size={21}
+								color={palette.white}
+								style={{ marginRight: 16 }}
+							/>
+							<Text
+								style={{
+									fontSize: 16,
+									color: palette.white,
+									fontFamily: "Inter",
+								}}
+							>
+								Sign in with Google
+							</Text>
+						</Pressable>
+					</View>
 					<Text style={styles.terms}>
 						Use your college email to sign in. By signing in, you agree to our
 						Terms of Service and Privacy Policy
@@ -146,7 +174,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "#4285F4",
 		padding: 16,
-		margin: 16,
 		borderRadius: 12,
 	},
 	terms: {
