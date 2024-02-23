@@ -4,7 +4,6 @@ import {
 	Image,
 	ImageSourcePropType,
 	useColorScheme,
-	TouchableOpacity,
 	Pressable,
 } from "react-native";
 import React from "react";
@@ -13,7 +12,8 @@ import { SelectCountry } from "react-native-element-dropdown";
 import { colleges } from "../../../colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { DarkenColor, LightenColor } from "@/components/Helper";
+import { DarkenColor } from "@/components/Helper";
+import { router } from "expo-router";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 
 const SignInScreen = () => {
@@ -75,6 +75,9 @@ const SignInScreen = () => {
 						}}
 					>
 						<Pressable
+							onPress={() => {
+								router.push("/getprofile");
+							}}
 							style={styles.googleButton}
 							android_ripple={{
 								color: DarkenColor("#4285F4", 1),

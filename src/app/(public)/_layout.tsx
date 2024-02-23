@@ -17,6 +17,22 @@ const PublicLayout = () => {
 			}}
 		>
 			<Stack.Screen
+				name='getstarted'
+				options={{
+					headerTitle: "UniWork",
+					headerTitleAlign: "center",
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
+				}}
+			/>
+			<Stack.Screen
 				name='signin'
 				options={{
 					headerTitle: "UniWork",
@@ -32,9 +48,8 @@ const PublicLayout = () => {
 					},
 				}}
 			/>
-
 			<Stack.Screen
-				name='getstarted'
+				name='getprofile'
 				options={{
 					headerTitle: "UniWork",
 					headerTitleAlign: "center",

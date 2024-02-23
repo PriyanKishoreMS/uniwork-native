@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
 export { ErrorBoundary } from "expo-router";
 import { useState } from "react";
+import Colors from "@/constants/Colors";
+import * as SystemUI from "expo-system-ui";
 
 export const unstable_settings = {
 	initialRouteName: "(tabs)",
@@ -19,6 +21,10 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+	const colorScheme = useColorScheme();
+	colorScheme === "dark"
+		? SystemUI.setBackgroundColorAsync(Colors.dark.background)
+		: SystemUI.setBackgroundColorAsync(Colors.light.background);
 	const [loaded, error] = useFonts({
 		Inter: require("../../assets/fonts/InterDisplay-Regular.ttf"),
 		InterBold: require("../../assets/fonts/InterDisplay-Bold.ttf"),
@@ -61,6 +67,8 @@ const InitialLayout = () => {
 
 const RootLayoutNav = () => {
 	const colorScheme = useColorScheme();
+	DefaultTheme.colors.background =
+		colorScheme === "dark" ? Colors.dark.background : Colors.light.background;
 
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
