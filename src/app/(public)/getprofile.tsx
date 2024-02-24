@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { View as DView } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
+import { User } from "@/components/contexts/AuthContext";
 import {
 	StyleSheet,
 	ScrollView,
@@ -12,12 +13,19 @@ import {
 } from "react-native";
 import { useState } from "react";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin2.png");
+import { useAuth } from "@/components/contexts/AuthContext";
 
 const GetProfile = () => {
 	const [image, setImage] = useState("");
+	const [profile, setProfile] = useState({
+		name: "",
+		department: "",
+		mobile: "",
+	});
+
+	const { user, setUser } = useAuth();
 
 	const pickImage = async () => {
-		// No permissions request is necessary for launching the image library
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -81,6 +89,12 @@ const GetProfile = () => {
 				</View>
 				<View style={styles.inputContainer}>
 					<TextInput
+						onChangeText={text => {
+							setProfile({
+								...profile,
+								name: text,
+							});
+						}}
 						lightColor={palette.text}
 						darkColor={palette.white}
 						bgLight={palette.white}
@@ -91,6 +105,12 @@ const GetProfile = () => {
 						icon='person'
 					/>
 					<TextInput
+						onChangeText={text => {
+							setProfile({
+								...profile,
+								department: text,
+							});
+						}}
 						lightColor={palette.text}
 						darkColor={palette.white}
 						bgLight={palette.white}
@@ -101,6 +121,12 @@ const GetProfile = () => {
 						icon='school'
 					/>
 					<TextInput
+						onChangeText={text => {
+							setProfile({
+								...profile,
+								mobile: text,
+							});
+						}}
 						lightColor={palette.text}
 						darkColor={palette.white}
 						bgLight={palette.white}
@@ -119,7 +145,7 @@ const GetProfile = () => {
 						<Pressable
 							style={styles.finishButton}
 							onPress={() => {
-								// router.push("/");
+								router.push("/");
 							}}
 						>
 							<DView

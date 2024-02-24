@@ -5,17 +5,20 @@ import {
 	ImageSourcePropType,
 	useColorScheme,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Text, View, Pressable } from "@/components/Themed";
 import { SelectCountry } from "react-native-element-dropdown";
 import { colleges } from "../../../colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { User } from "@/components/contexts/AuthContext";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 
 const SignInScreen = () => {
 	const colorScheme = useColorScheme();
+	const { user, setUser } = useAuth();
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
@@ -55,14 +58,19 @@ const SignInScreen = () => {
 						}
 						placeholder='Select your college'
 						searchPlaceholder='Type here to search'
-						valueField={"name"}
+						valueField='name'
 						activeColor={palette.primaryDark}
 						search
 						fontFamily='Inter'
-						onChange={(value: any) => console.log(value)}
+						onChange={value => {
+							setUser((prev: User | null) => ({
+								...(prev as User),
+								college: value.name || "",
+							}));
+						}}
 						imageField='image'
 						maxHeight={300}
-						labelField={"name"}
+						labelField='name'
 						dropdownPosition='auto'
 					/>
 					<View

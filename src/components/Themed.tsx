@@ -74,7 +74,6 @@ export function Pressable(props: PressableProps) {
 	const rippleColor = String(
 		flattenedStyle?.backgroundColor || palette.primary
 	);
-	console.log(rippleColor);
 	return (
 		<View
 			style={{

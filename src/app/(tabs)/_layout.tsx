@@ -2,7 +2,7 @@ import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
-import Colors from "@/constants/Colors";
+import Colors, { palette } from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 
 function TabBarIcon(props: {
@@ -24,46 +24,81 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name='index'
 				options={{
-					title: "Tasks",
-					tabBarShowLabel: false,
-					headerTitle: "Uniwork",
-					
+					headerTitle: "UniWork",
 					headerTitleAlign: "center",
+					tabBarShowLabel: false,
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon name='add-task' color={color} />
 					),
+					tabBarActiveTintColor: palette.primary,
 				}}
 			/>
 			<Tabs.Screen
 				name='people'
 				options={{
-					title: "Discover",
-					tabBarShowLabel: false,
-					headerTitle: "Uniwork",
+					headerTitle: "UniWork",
 					headerTitleAlign: "center",
+					tabBarShowLabel: false,
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
 					tabBarIcon: ({ color }) => <TabBarIcon name='search' color={color} />,
+					tabBarActiveTintColor: palette.primary,
 				}}
 			/>
 			<Tabs.Screen
 				name='notification'
 				options={{
-					title: "Notifications",
-					tabBarShowLabel: false,
-					headerTitle: "Uniwork",
+					headerTitle: "UniWork",
 					headerTitleAlign: "center",
+					tabBarShowLabel: false,
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon name='notifications-on' color={color} />
 					),
+					tabBarActiveTintColor: palette.primary,
 				}}
 			/>
 			<Tabs.Screen
 				name='profile'
 				options={{
-					title: "Profile",
-					tabBarShowLabel: false,
-					headerTitle: "Uniwork",
+					headerTitle: "UniWork",
 					headerTitleAlign: "center",
+					tabBarShowLabel: false,
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
 					tabBarIcon: ({ color }) => <TabBarIcon name='person' color={color} />,
+					tabBarActiveTintColor: palette.primary,
 				}}
 			/>
 		</Tabs>
