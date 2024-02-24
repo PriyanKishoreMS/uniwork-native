@@ -1,19 +1,19 @@
-/**
- * Learn more about Light and Dark modes:
- * https://docs.expo.io/guides/color-schemes/
- */
-
 import {
 	Text as DefaultText,
 	View as DefaultView,
 	TextInput as DefaultTextInput,
 	TextInputProps as DefaultTextInputProps,
+	Pressable as DefaultPressable,
+	PressableProps as DefaultPressableProps,
+	StyleSheet,
+	ViewStyle,
 } from "react-native";
 
 import Colors, { palette } from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
+import { DarkenColor } from "./Helper";
 
 type TextInputProp = {
 	borderDark?: string;
@@ -28,9 +28,14 @@ type ThemeProps = {
 	darkColor?: string;
 };
 
+type PressableProp = {
+	rippleColor?: string;
+};
+
 export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
 export type TextInputProps = TextInputProp & ThemeProps & DefaultTextInputProps;
+export type PressableProps = DefaultPressableProps & PressableProp;
 
 export function useThemeColor(
 	props: { light?: string; dark?: string },
@@ -63,6 +68,33 @@ export function View(props: ViewProps) {
 	return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
+export function Pressable(props: PressableProps) {
+	let { children, ...otherProps } = props;
+	const flattenedStyle = StyleSheet.flatten(props.style as ViewStyle);
+	const rippleColor = String(
+		flattenedStyle?.backgroundColor || palette.primary
+	);
+	console.log(rippleColor);
+	return (
+		<View
+			style={{
+				borderRadius: 12,
+				overflow: "hidden",
+			}}
+		>
+			<DefaultPressable
+				android_ripple={{
+					color: DarkenColor(rippleColor, -40),
+					borderless: false,
+				}}
+				{...otherProps}
+			>
+				{children}
+			</DefaultPressable>
+		</View>
+	);
+}
+
 export function TextInput(props: TextInputProps) {
 	const [isFocused, setIsFocused] = useState(false);
 	const {
@@ -92,6 +124,7 @@ export function TextInput(props: TextInputProps) {
 			style={{
 				flexDirection: "row",
 				alignItems: "center",
+				justifyContent: "center",
 			}}
 		>
 			{icon && (
@@ -123,6 +156,7 @@ export function TextInput(props: TextInputProps) {
 						borderWidth: 3,
 					},
 				]}
+				selectionColor={color}
 				onFocus={() => setIsFocused(true)}
 				onBlur={() => setIsFocused(false)}
 				{...otherProps}

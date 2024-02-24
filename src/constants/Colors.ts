@@ -10,7 +10,8 @@ export const palette = {
 	blue: "#2f95dc",
 	//conver primary to rgba
 	//#94D6F2
-	primary: "rgba(148, 214, 242, 1)",
+	primary: "#94D6F2",
+	success: "#A5D6A7",
 	primaryDark: "#66AED6",
 	text: "#0D171C",
 	transparent: "rgba(0,0,0,0)",

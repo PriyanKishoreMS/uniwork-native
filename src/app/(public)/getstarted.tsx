@@ -3,9 +3,8 @@ import {
 	TouchableOpacity,
 	ScrollView,
 	FlatList,
-	Pressable,
 } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { Text, View, Pressable } from "@/components/Themed";
 import React from "react";
 import { Image } from "react-native";
 import { router } from "expo-router";
@@ -66,14 +65,7 @@ const GetStartedScreen = () => {
 				</View>
 			</View>
 			<View style={styles.buttonContainer}>
-				<Pressable
-					style={styles.button}
-					android_ripple={{
-						color: DarkenColor(palette.primary, 1),
-						borderless: false,
-					}}
-					onPress={() => router.push("/signin")}
-				>
+				<Pressable style={styles.button} onPress={() => router.push("/signin")}>
 					<Text style={styles.buttonText}>Get Started Bro</Text>
 				</Pressable>
 			</View>
@@ -111,7 +103,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		backgroundColor: palette.primary,
-		padding: 5,
 		height: 40,
 		borderRadius: 12,
 	},
@@ -123,8 +114,6 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		width: "90%",
 		alignSelf: "center",
-		borderRadius: 12,
-		overflow: "hidden",
 		margin: 16,
 	},
 	introContainer: {

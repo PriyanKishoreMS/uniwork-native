@@ -4,15 +4,13 @@ import {
 	Image,
 	ImageSourcePropType,
 	useColorScheme,
-	Pressable,
 } from "react-native";
 import React from "react";
-import { Text, View } from "@/components/Themed";
+import { Text, View, Pressable } from "@/components/Themed";
 import { SelectCountry } from "react-native-element-dropdown";
 import { colleges } from "../../../colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
-import { DarkenColor } from "@/components/Helper";
 import { router } from "expo-router";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 
@@ -69,8 +67,6 @@ const SignInScreen = () => {
 					/>
 					<View
 						style={{
-							borderRadius: 12,
-							overflow: "hidden",
 							margin: 16,
 						}}
 					>
@@ -79,10 +75,6 @@ const SignInScreen = () => {
 								router.push("/getprofile");
 							}}
 							style={styles.googleButton}
-							android_ripple={{
-								color: DarkenColor("#4285F4", 1),
-								borderless: false,
-							}}
 						>
 							<AntDesign
 								name='google'
@@ -176,7 +168,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#4285F4",
-		padding: 16,
+		padding: 12,
 		borderRadius: 12,
 	},
 	terms: {
