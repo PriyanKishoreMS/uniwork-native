@@ -5,7 +5,7 @@ import {
 	ImageSourcePropType,
 	useColorScheme,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, Pressable } from "@/components/Themed";
 import { SelectCountry } from "react-native-element-dropdown";
 import { colleges } from "../../../colleges";
@@ -15,10 +15,37 @@ import { router } from "expo-router";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { User } from "@/components/contexts/AuthContext";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import auth from "@react-native-firebase/auth";
+import { webClientId } from "../../../.config/firebase.config";
 
 const SignInScreen = () => {
 	const colorScheme = useColorScheme();
 	const { user, setUser } = useAuth();
+
+	useEffect(() => {
+		GoogleSignin.configure({
+			webClientId: webClientId,
+			offlineAccess: true,
+		});
+	}, []);
+
+	const signIn = async () => {
+		try {
+			await GoogleSignin.hasPlayServices();
+			const userInfo = await GoogleSignin.signIn();
+			const googleCredential = auth.GoogleAuthProvider.credential(
+				userInfo.idToken
+			);
+			await auth().signInWithCredential(googleCredential);
+			console.log(userInfo);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			router.push("/getprofile");
+		}
+	};
+
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
@@ -78,12 +105,7 @@ const SignInScreen = () => {
 							margin: 16,
 						}}
 					>
-						<Pressable
-							onPress={() => {
-								router.push("/getprofile");
-							}}
-							style={styles.googleButton}
-						>
+						<Pressable onPress={signIn} style={styles.googleButton}>
 							<AntDesign
 								name='google'
 								size={21}

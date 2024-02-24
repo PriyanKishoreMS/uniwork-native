@@ -16,14 +16,16 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.priyankishore.uniwork"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./.config/google-services.json"
+      "googleServicesFile": "./.config/google-services.json",
+      "package": "com.priyankishore.uniwork"
     },
     "web": {
       "bundler": "metro",
@@ -32,10 +34,18 @@
     },
     "plugins": [
       "expo-router",
-      ["@react-native-google-signin/google-signin"]
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "101d02dc-ca94-4c89-a0c0-26eaf04c1908"
+      }
     }
   }
 }

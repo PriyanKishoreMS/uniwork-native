@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin2.png");
 import { useAuth } from "@/components/contexts/AuthContext";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const GetProfile = () => {
 	const [image, setImage] = useState("");
@@ -145,7 +146,8 @@ const GetProfile = () => {
 						<Pressable
 							style={styles.finishButton}
 							onPress={() => {
-								router.push("/");
+								GoogleSignin.revokeAccess();
+								GoogleSignin.signOut();
 							}}
 						>
 							<DView
