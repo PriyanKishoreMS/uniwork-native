@@ -8,66 +8,72 @@ import { Text, View, Pressable } from "@/components/Themed";
 import React from "react";
 import { Image } from "react-native";
 import { router } from "expo-router";
-import { data } from "../../../services";
+import { data } from "../../../temp/services";
 import { palette } from "@/constants/Colors";
-import { DarkenColor } from "@/components/Helper";
 
 const getStartedBg = require("../../../assets/images/getStarted/getStarted.png");
 
 const GetStartedScreen = () => {
 	return (
-		<ScrollView style={styles.container}>
-			<View style={styles.banner}>
-				<Image
-					source={getStartedBg}
-					style={{
-						width: "100%",
-					}}
-				/>
-				<View style={styles.bannerText}>
-					<Text style={styles.bannertitle}>
-						Find your next {"\n"} freelance job
-					</Text>
-					<Text style={styles.bannerParagraph}>
-						Work done for and done by{"\n"} your fellow students!
-					</Text>
-				</View>
-			</View>
-			<View style={styles.introContainer}>
-				<Text style={styles.introTitle}>Why UniWork?</Text>
-				<Text style={styles.introParagraph}>
-					UniWork is the best way to get freelance jobs while you're in college
-					or university
-				</Text>
-				<View style={styles.introBoxes}>
-					<ScrollView horizontal={true}>
-						<FlatList
-							data={data}
-							renderItem={({ item }) => (
-								<TouchableOpacity style={styles.introBox}>
-									<Image
-										source={item.image}
-										style={{
-											width: "100%",
-											height: "100%",
-											borderRadius: 12,
-										}}
-									/>
-									<View style={styles.introbg}></View>
-									<Text style={styles.introBoxText}>{item.key}</Text>
-								</TouchableOpacity>
-							)}
-							numColumns={2}
-							keyExtractor={item => item.key}
-							contentContainerStyle={styles.introBoxRow}
+		<ScrollView>
+			<View style={styles.container}>
+				<View style={styles.banner}>
+					{getStartedBg && (
+						<Image
+							source={getStartedBg}
+							style={{
+								width: "100%",
+							}}
 						/>
-					</ScrollView>
+					)}
+					<View style={styles.bannerText}>
+						<Text style={styles.bannertitle}>
+							Find your next {"\n"} freelance job
+						</Text>
+						<Text style={styles.bannerParagraph}>
+							Work done for and done by{"\n"} your fellow students!
+						</Text>
+					</View>
 				</View>
-			</View>
-			<View style={styles.buttonContainer}>
-				<Pressable style={styles.button} onPress={() => router.push("/signin")}>
-					<Text style={styles.buttonText}>Get Started Bro</Text>
-				</Pressable>
+				<View style={styles.introContainer}>
+					<Text style={styles.introTitle}>Why UniWork?</Text>
+					<Text style={styles.introParagraph}>
+						UniWork is the best way to get freelance jobs while you're in
+						college or university
+					</Text>
+					<View style={styles.introBoxes}>
+						<ScrollView horizontal={true}>
+							<FlatList
+								data={data}
+								renderItem={({ item }) => (
+									<TouchableOpacity style={styles.introBox}>
+										<Image
+											source={item.image}
+											style={{
+												width: "100%",
+												height: "100%",
+												borderRadius: 12,
+											}}
+										/>
+										<View style={styles.introbg}></View>
+										<Text style={styles.introBoxText}>{item.key}</Text>
+									</TouchableOpacity>
+								)}
+								numColumns={2}
+								keyExtractor={item => item.key}
+								contentContainerStyle={styles.introBoxRow}
+							/>
+						</ScrollView>
+					</View>
+				</View>
+				<View style={styles.buttonContainer}>
+					<Pressable
+						style={styles.button}
+						onPress={() => router.push("/signin")}
+					>
+						<Text style={styles.buttonText}>Get Started Bro</Text>
+					</Pressable>
+				</View>
 			</View>
 		</ScrollView>
 	);

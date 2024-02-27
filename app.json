@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "uniwork-native",
-    "slug": "uniwork-native",
+    "name": "uniwork",
+    "slug": "uniwork",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

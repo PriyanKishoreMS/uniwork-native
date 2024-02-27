@@ -1,34 +1,29 @@
-import { StyleSheet } from "react-native";
-
-import { Text, View } from "@/components/Themed";
+import { StyleSheet, ScrollView } from "react-native";
+import { tasks } from "../../../temp/tasks";
+import { router } from "expo-router";
+import { palette } from "@/constants/Colors";
+import { useWindowDimensions } from "react-native";
+import { Text, View, Pressable } from "@/components/Themed";
 
 const TasksScreen = () => {
+	var { height } = useWindowDimensions();
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Tasks Screen</Text>
+		<ScrollView>
 			<View
-				style={styles.separator}
-				lightColor='#eee'
-				darkColor='rgba(255,255,255,0.1)'
-			/>
-		</View>
+				style={[
+					styles.container,
+					{
+						height: height,
+					},
+				]}
+			></View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: "80%",
 	},
 });
 

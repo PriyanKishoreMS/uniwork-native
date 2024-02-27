@@ -22,10 +22,6 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-	const colorScheme = useColorScheme();
-	colorScheme === "dark"
-		? SystemUI.setBackgroundColorAsync(Colors.dark.background)
-		: SystemUI.setBackgroundColorAsync(Colors.light.background);
 	const [loaded, error] = useFonts({
 		Inter: require("../../assets/fonts/InterDisplay-Regular.ttf"),
 		InterBold: require("../../assets/fonts/InterDisplay-Bold.ttf"),
@@ -52,7 +48,7 @@ export default function RootLayout() {
 }
 
 const InitialLayout = () => {
-	const [signedIn, setSignedIn] = useState(false);
+	const [signedIn, setSignedIn] = useState(true);
 	const router = useRouter();
 
 	useEffect(() => {
@@ -68,6 +64,9 @@ const InitialLayout = () => {
 
 const RootLayoutNav = () => {
 	const colorScheme = useColorScheme();
+	colorScheme === "dark"
+		? SystemUI.setBackgroundColorAsync(Colors.dark.background)
+		: SystemUI.setBackgroundColorAsync(Colors.light.background);
 	DefaultTheme.colors.background =
 		colorScheme === "dark" ? Colors.dark.background : Colors.light.background;
 

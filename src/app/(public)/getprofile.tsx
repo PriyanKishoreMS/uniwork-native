@@ -4,7 +4,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { View as DView } from "react-native";
 import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import { User } from "@/components/contexts/AuthContext";
 import {
 	StyleSheet,
 	ScrollView,
@@ -14,7 +13,6 @@ import {
 import { useState } from "react";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin2.png");
 import { useAuth } from "@/components/contexts/AuthContext";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const GetProfile = () => {
 	const [image, setImage] = useState("");
@@ -24,7 +22,7 @@ const GetProfile = () => {
 		mobile: "",
 	});
 
-	const { user, setUser } = useAuth();
+	const { user, setUser, signOut } = useAuth();
 
 	const pickImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
@@ -146,8 +144,8 @@ const GetProfile = () => {
 						<Pressable
 							style={styles.finishButton}
 							onPress={() => {
-								GoogleSignin.revokeAccess();
-								GoogleSignin.signOut();
+								signOut();
+								router.push("/");
 							}}
 						>
 							<DView

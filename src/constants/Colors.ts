@@ -25,6 +25,7 @@ export default {
 		borderColor: tintColorDark,
 		tabIconDefault: "#ccc",
 		tabIconSelected: tintColorLight,
+		tabBackground: "#f2f2f2",
 	},
 	dark: {
 		text: "#fff",
@@ -33,5 +34,6 @@ export default {
 		borderColor: tintColorLight,
 		tabIconDefault: "#ccc",
 		tabIconSelected: tintColorDark,
+		tabBackground: "#111",
 	},
 };

@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import auth from "@react-native-firebase/auth";
+import { router } from "expo-router";
 
 export interface User {
 	name: string;
@@ -10,7 +13,7 @@ export interface User {
 interface AuthContextType {
 	user: User | null;
 	setUser: React.Dispatch<React.SetStateAction<User | null>>;
-	signIn: (userData: User) => void;
+	signIn: () => void;
 	signOut: () => void;
 }
 
@@ -23,12 +26,28 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
 
-	const signIn = (userData: User) => {
-		setUser(userData);
+	const signIn = async () => {
+		try {
+			await GoogleSignin.hasPlayServices();
+			const userInfo = await GoogleSignin.signIn();
+			const googleCredential = auth.GoogleAuthProvider.credential(
+				userInfo.idToken
+			);
+			await auth().signInWithCredential(googleCredential);
+			console.log(userInfo);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			router.push("/getprofile");
+		}
 	};
 
 	const signOut = () => {
-		setUser(null);
+		GoogleSignin.revokeAccess();
+		GoogleSignin.signOut().then(() => {
+			setUser(null);
+			console.log("Signed out");
+		});
 	};
 
 	return (
