@@ -31,6 +31,7 @@ export default function TabLayout() {
 				name='index'
 				options={{
 					headerTitle: "UniWork",
+					headerShown: false,
 					headerTitleAlign: "center",
 					tabBarShowLabel: false,
 					headerTitleStyle: {
@@ -39,13 +40,13 @@ export default function TabLayout() {
 					headerStyle: {
 						backgroundColor:
 							colorScheme === "dark"
-								? Colors.dark.background
-								: Colors.light.background,
+								? Colors.dark.tabBackground
+								: Colors.light.tabBackground,
 					},
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon name='add-task' color={color} />
 					),
-					tabBarActiveTintColor: palette.primary,
+					tabBarActiveTintColor: palette.primaryDark,
 				}}
 			/>
 			<Tabs.Screen
@@ -64,7 +65,7 @@ export default function TabLayout() {
 								: Colors.light.background,
 					},
 					tabBarIcon: ({ color }) => <TabBarIcon name='search' color={color} />,
-					tabBarActiveTintColor: palette.primary,
+					tabBarActiveTintColor: palette.primaryDark,
 				}}
 			/>
 			<Tabs.Screen
@@ -85,7 +86,7 @@ export default function TabLayout() {
 					tabBarIcon: ({ color }) => (
 						<TabBarIcon name='notifications-on' color={color} />
 					),
-					tabBarActiveTintColor: palette.primary,
+					tabBarActiveTintColor: palette.primaryDark,
 				}}
 			/>
 			<Tabs.Screen
@@ -104,7 +105,7 @@ export default function TabLayout() {
 								: Colors.light.background,
 					},
 					tabBarIcon: ({ color }) => <TabBarIcon name='person' color={color} />,
-					tabBarActiveTintColor: palette.primary,
+					tabBarActiveTintColor: palette.primaryDark,
 				}}
 			/>
 		</Tabs>

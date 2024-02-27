@@ -6,6 +6,7 @@ export const palette = {
 	white: "#ffffff",
 	gray: "#666666",
 	grayLight: "#999999",
+	grayLight2: "#A9A9A9",
 	grayDark: "#333333",
 	blue: "#2f95dc",
 	//conver primary to rgba
