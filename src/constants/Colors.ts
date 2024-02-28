@@ -18,6 +18,24 @@ export const palette = {
 	transparent: "rgba(0,0,0,0)",
 };
 
+export const categoryColors = {
+	"Academic Assistance": "#FFB6C1",
+	"Tutor Home/Virtual": "#FFD700",
+	"Books Rent/Buy": "#87CEEB",
+	"Vehicle Rent": "#FFA07A",
+	"Document Printing": "#98FB98",
+	"Resume Creation": "#FF6347",
+	"Job Search Support": "#FF4500",
+	"Grocery Shopping": "#8A2BE2",
+	Fashion: "#00BFFF",
+	"Social Media": "#20B2AA",
+	"IT Support": "#FF1493",
+	"Graphic Design": "#4B0082",
+	Delivery: "#FF8C00",
+	"Ride sharing": "#1E90FF",
+	"Catering/Cooking": "#FF00FF",
+};
+
 export default {
 	light: {
 		text: "#000",

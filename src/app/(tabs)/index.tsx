@@ -1,12 +1,9 @@
 import {
 	StyleSheet,
-	ScrollView,
 	FlatList,
 	useColorScheme,
 	Image,
 	TouchableOpacity,
-	Pressable,
-	TouchableNativeFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tasks, TaskCategories } from "../../../temp/tasks";
@@ -16,29 +13,26 @@ import { Text, View } from "@/components/Themed";
 import { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import ImageSlider from "@/components/custom/ImageSlider";
+import { DarkenColor, formatTime } from "@/components/Helper";
+import StarRating from "@/components/custom/StarRating";
+import { categoryColors } from "@/constants/Colors";
 
-function formatTime(timestamp: string): string {
-	const currentDate = new Date();
-	const providedDate = new Date(
-		timestamp.replace(" ", "T").replace(/\+\d+/, "")
-	);
-
-	const timeDifference = currentDate.getTime() - providedDate.getTime();
-
-	const seconds = Math.floor(timeDifference / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const hours = Math.floor(minutes / 60);
-	const days = Math.floor(hours / 24);
-
-	if (seconds < 60) {
-		return `${seconds} second${seconds !== 1 ? "s" : ""} ago`;
-	} else if (minutes < 60) {
-		return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
-	} else if (hours < 24) {
-		return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
-	} else {
-		return `${days} day${days !== 1 ? "s" : ""} ago`;
-	}
+enum TaskCategory {
+	AcademicAssistance = "Academic Assistance",
+	TutorHomeVirtual = "Tutor Home/Virtual",
+	BooksRentBuy = "Books Rent/Buy",
+	VehicleRent = "Vehicle Rent",
+	DocumentPrinting = "Document Printing",
+	ResumeCreation = "Resume Creation",
+	JobSearchSupport = "Job Search Support",
+	GroceryShopping = "Grocery Shopping",
+	Fashion = "Fashion",
+	SocialMedia = "Social Media",
+	ITSupport = "IT Support",
+	GraphicDesign = "Graphic Design",
+	Delivery = "Delivery",
+	RideSharing = "Ride sharing",
+	CateringCooking = "Catering/Cooking",
 }
 
 const TasksScreen = () => {
@@ -90,7 +84,14 @@ const TasksScreen = () => {
 									justifyContent: "center",
 								}}
 							>
-								<Text style={styles.para}>{item}</Text>
+								<Text
+									style={[
+										styles.para,
+										selected === item && { color: palette.black },
+									]}
+								>
+									{item}
+								</Text>
 							</TouchableOpacity>
 						</View>
 					)}
@@ -105,6 +106,7 @@ const TasksScreen = () => {
 							style={{
 								borderBottomWidth: 1,
 								borderColor: palette.grayLight,
+								// paddingBottom: 16,
 							}}
 						>
 							<View>
@@ -124,16 +126,18 @@ const TasksScreen = () => {
 														borderRadius: 20,
 													}}
 												/>
-												<Text style={styles.name}>{item.name}</Text>
-												<Entypo
-													name='dot-single'
-													size={24}
-													color={palette.grayLight2}
-												/>
-												<Text>{formatTime(item.created_at)}</Text>
+												<View
+													style={{
+														alignItems: "flex-start",
+														justifyContent: "flex-start",
+													}}
+												>
+													<Text style={styles.name}>{item.name}</Text>
+													<StarRating rating={item.rating} />
+												</View>
 											</View>
 											<View>
-												<Text>₹{item.price}</Text>
+												<Text style={styles.para}>₹{item.price}</Text>
 											</View>
 										</View>
 										<Text style={styles.heading}>{item.title}</Text>
@@ -145,6 +149,38 @@ const TasksScreen = () => {
 										<ImageSlider images={item.images} />
 									</View>
 								)}
+							</View>
+							<View style={styles.footer}>
+								<View
+									style={[
+										styles.category,
+										{
+											borderColor: DarkenColor(
+												categoryColors[item.category as TaskCategory],
+												-40
+											),
+											backgroundColor:
+												categoryColors[item.category as TaskCategory],
+										},
+									]}
+								>
+									<Text
+										style={[
+											styles.categoryText,
+											{
+												color: DarkenColor(
+													categoryColors[item.category as TaskCategory],
+													-60
+												),
+											},
+										]}
+									>
+										{item.category}
+									</Text>
+								</View>
+								<View>
+									<Text style={styles.time}>{formatTime(item.created_at)}</Text>
+								</View>
 							</View>
 						</View>
 					)}
@@ -165,6 +201,10 @@ const styles = StyleSheet.create({
 	},
 	para: {
 		fontSize: 15,
+		fontFamily: "Inter",
+	},
+	time: {
+		fontSize: 12,
 		fontFamily: "Inter",
 	},
 	userDetails: {
@@ -191,6 +231,27 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		fontFamily: "Inter",
 		marginTop: 4,
+	},
+	categoryText: {
+		fontSize: 12,
+		fontFamily: "Inter",
+	},
+	category: {
+		borderWidth: 2,
+		padding: 4,
+		paddingHorizontal: 8,
+		borderRadius: 18,
+		backgroundColor: palette.primary,
+		alignSelf: "flex-start",
+		marginVertical: 8,
+		marginLeft: 8,
+	},
+	footer: {
+		marginRight: 16,
+		marginVertical: 4,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 	},
 });
 

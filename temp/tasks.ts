@@ -30,12 +30,13 @@ export const tasks = [
 		created_at: "2024-02-13 16:56:28+00",
 		expiry: "2024-02-14 16:56:28+00",
 		images: [
-			"https://via.placeholder.com/150",
+			"https://pbs.twimg.com/media/GHWFaH0W0AAmVx7?format=jpg&name=large",
 			"https://via.placeholder.com/180",
+			"https://via.placeholder.com/160",
 		],
 		name: "Rajan",
 		avatar: "https://via.placeholder.com/150",
-		rating: 4.5,
+		rating: 3.5,
 	},
 	{
 		id: 2,
@@ -85,7 +86,7 @@ export const tasks = [
 	{
 		id: 5,
 		college_id: 1,
-		category: "Document Printing",
+		category: "Fashion",
 		title: "Need to print documents",
 		description: "I need to print some documents",
 		price: 500,
