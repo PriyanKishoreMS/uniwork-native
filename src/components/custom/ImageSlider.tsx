@@ -66,7 +66,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 
 				<ImageView
 					images={images.map(img => ({ uri: img }))}
-					imageIndex={0}
+					imageIndex={active}
 					visible={visible}
 					onRequestClose={() => setVisible(false)}
 				/>

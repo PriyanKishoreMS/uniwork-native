@@ -3,18 +3,21 @@ import {
 	FlatList,
 	useColorScheme,
 	Image,
+	View as DefaultView,
 	TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tasks, TaskCategories } from "../../../temp/tasks";
 import Colors, { palette } from "@/constants/Colors";
 import { useWindowDimensions } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { Pressable, Text, View } from "@/components/Themed";
 import { useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
 import { DarkenColor, formatTime, limitDescription } from "@/components/Helper";
 import StarRating from "@/components/custom/StarRating";
 import { categoryColors } from "@/constants/Colors";
+import FastImage from "react-native-fast-image";
+import { TaskPopupMenu } from "@/components/custom/DropDowns";
 
 enum TaskCategory {
 	AcademicAssistance = "Academic Assistance",
@@ -57,7 +60,39 @@ const TasksScreen = () => {
 							: Colors.light.tabBackground,
 				}}
 			>
-				<Text style={styles.title}>Categories</Text>
+				<DefaultView
+					style={{
+						flexDirection: "row",
+						justifyContent: "space-between",
+						alignItems: "center",
+						marginHorizontal: 8,
+						marginBottom: 8,
+					}}
+				>
+					<Text style={styles.title}>Categories</Text>
+					<TouchableOpacity
+						onPress={() => {
+							console.log("Profile");
+						}}
+						style={{
+							borderWidth: 1.2,
+							borderColor: palette.primary,
+							borderRadius: 18,
+						}}
+					>
+						<FastImage
+							source={{
+								uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+							}}
+							style={{
+								width: 32,
+								height: 32,
+								borderRadius: 16,
+								margin: 2,
+							}}
+						/>
+					</TouchableOpacity>
+				</DefaultView>
 				<FlatList
 					horizontal
 					showsHorizontalScrollIndicator={false}
@@ -103,9 +138,8 @@ const TasksScreen = () => {
 					renderItem={({ item }) => (
 						<View
 							style={{
-								borderBottomWidth: 1,
+								borderBottomWidth: 0.7,
 								borderColor: palette.grayLight,
-								// paddingBottom: 16,
 							}}
 						>
 							<View>
@@ -135,8 +169,22 @@ const TasksScreen = () => {
 													<StarRating rating={item.rating} />
 												</View>
 											</View>
-											<View>
-												<Text style={styles.para}>₹{item.price}</Text>
+											<View style={styles.moneyContainer}>
+												<Text style={styles.currencyText}>₹</Text>
+												<Text style={styles.para}>{item.price}</Text>
+												<View
+													style={{
+														marginLeft: 12,
+														marginRight: -8,
+													}}
+												>
+													<Pressable>
+														<TaskPopupMenu
+															taskId={item.id}
+															colorScheme={colorScheme}
+														/>
+													</Pressable>
+												</View>
 											</View>
 										</View>
 										<Text style={styles.heading}>{item.title}</Text>
@@ -247,6 +295,16 @@ const styles = StyleSheet.create({
 		backgroundColor: palette.primary,
 		alignSelf: "flex-start",
 		marginVertical: 8,
+	},
+	moneyContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	currencyText: {
+		fontSize: 20,
+		color: "green",
+		marginRight: 5,
 	},
 	footer: {
 		margin: 12,

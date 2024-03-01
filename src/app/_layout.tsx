@@ -13,6 +13,7 @@ export { ErrorBoundary } from "expo-router";
 import { useState } from "react";
 import Colors from "@/constants/Colors";
 import { AuthProvider } from "@/components/contexts/AuthContext";
+import { MenuProvider } from "react-native-popup-menu";
 import * as SystemUI from "expo-system-ui";
 
 export const unstable_settings = {
@@ -73,7 +74,9 @@ const RootLayoutNav = () => {
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
 			<AuthProvider>
-				<InitialLayout />
+				<MenuProvider>
+					<InitialLayout />
+				</MenuProvider>
 			</AuthProvider>
 		</ThemeProvider>
 	);

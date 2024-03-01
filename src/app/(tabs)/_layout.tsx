@@ -44,7 +44,7 @@ export default function TabLayout() {
 								: Colors.light.tabBackground,
 					},
 					tabBarIcon: ({ color }) => (
-						<TabBarIcon name='add-task' color={color} />
+						<TabBarIcon name='home-filled' color={color} />
 					),
 					tabBarActiveTintColor: palette.primaryDark,
 				}}
@@ -64,7 +64,30 @@ export default function TabLayout() {
 								? Colors.dark.background
 								: Colors.light.background,
 					},
-					tabBarIcon: ({ color }) => <TabBarIcon name='search' color={color} />,
+					tabBarIcon: ({ color }) => (
+						<TabBarIcon name='leaderboard' color={color} />
+					),
+					tabBarActiveTintColor: palette.primaryDark,
+				}}
+			/>
+			<Tabs.Screen
+				name='create'
+				options={{
+					headerTitle: "UniWork",
+					headerTitleAlign: "center",
+					tabBarShowLabel: false,
+					headerTitleStyle: {
+						fontFamily: "InterSemiBold",
+					},
+					headerStyle: {
+						backgroundColor:
+							colorScheme === "dark"
+								? Colors.dark.background
+								: Colors.light.background,
+					},
+					tabBarIcon: ({ color }) => (
+						<TabBarIcon name='add-task' color={color} />
+					),
 					tabBarActiveTintColor: palette.primaryDark,
 				}}
 			/>

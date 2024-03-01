@@ -27,7 +27,7 @@ export const tasks = [
 		category: "Academic Assistance",
 		price: 1000,
 		status: "open",
-		created_at: "2024-02-13 16:56:28+00",
+		created_at: "2024-03-01 20:55:28+00",
 		expiry: "2024-02-14 16:56:28+00",
 		images: [
 			"https://pbs.twimg.com/media/GHWFaH0W0AAmVx7?format=jpg&name=large",
