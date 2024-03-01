@@ -11,9 +11,8 @@ import Colors, { palette } from "@/constants/Colors";
 import { useWindowDimensions } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { useState } from "react";
-import { Entypo } from "@expo/vector-icons";
 import ImageSlider from "@/components/custom/ImageSlider";
-import { DarkenColor, formatTime } from "@/components/Helper";
+import { DarkenColor, formatTime, limitDescription } from "@/components/Helper";
 import StarRating from "@/components/custom/StarRating";
 import { categoryColors } from "@/constants/Colors";
 
@@ -110,12 +109,12 @@ const TasksScreen = () => {
 							}}
 						>
 							<View>
-								<View
-									style={{
-										margin: 16,
-									}}
-								>
-									<TouchableOpacity>
+								<TouchableOpacity>
+									<View
+										style={{
+											margin: 16,
+										}}
+									>
 										<View style={styles.userContainer}>
 											<View style={styles.userDetails}>
 												<Image
@@ -141,46 +140,50 @@ const TasksScreen = () => {
 											</View>
 										</View>
 										<Text style={styles.heading}>{item.title}</Text>
-										<Text style={styles.desc}>{item.description}</Text>
-									</TouchableOpacity>
-								</View>
-								{item?.images && item.images.length > 0 && (
-									<View>
-										<ImageSlider images={item.images} />
+										<View
+											style={[
+												styles.category,
+												{
+													borderColor: DarkenColor(
+														categoryColors[item.category as TaskCategory],
+														-40
+													),
+													backgroundColor:
+														categoryColors[item.category as TaskCategory],
+												},
+											]}
+										>
+											<Text
+												style={[
+													styles.categoryText,
+													{
+														color: DarkenColor(
+															categoryColors[item.category as TaskCategory],
+															-60
+														),
+													},
+												]}
+											>
+												{item.category}
+											</Text>
+										</View>
+										<Text style={styles.desc}>
+											{limitDescription(item.description, 150)}
+										</Text>
 									</View>
-								)}
-							</View>
-							<View style={styles.footer}>
-								<View
-									style={[
-										styles.category,
-										{
-											borderColor: DarkenColor(
-												categoryColors[item.category as TaskCategory],
-												-40
-											),
-											backgroundColor:
-												categoryColors[item.category as TaskCategory],
-										},
-									]}
-								>
-									<Text
-										style={[
-											styles.categoryText,
-											{
-												color: DarkenColor(
-													categoryColors[item.category as TaskCategory],
-													-60
-												),
-											},
-										]}
-									>
-										{item.category}
-									</Text>
-								</View>
-								<View>
-									<Text style={styles.time}>{formatTime(item.created_at)}</Text>
-								</View>
+									{item?.images && item.images.length > 0 && (
+										<View>
+											<ImageSlider images={item.images} />
+										</View>
+									)}
+									<View style={styles.footer}>
+										<View>
+											<Text style={styles.time}>
+												{formatTime(item.created_at)}
+											</Text>
+										</View>
+									</View>
+								</TouchableOpacity>
 							</View>
 						</View>
 					)}
@@ -238,19 +241,18 @@ const styles = StyleSheet.create({
 	},
 	category: {
 		borderWidth: 2,
-		padding: 4,
+		padding: 2,
 		paddingHorizontal: 8,
 		borderRadius: 18,
 		backgroundColor: palette.primary,
 		alignSelf: "flex-start",
 		marginVertical: 8,
-		marginLeft: 8,
 	},
 	footer: {
+		margin: 12,
 		marginRight: 16,
-		marginVertical: 4,
 		flexDirection: "row",
-		justifyContent: "space-between",
+		justifyContent: "flex-end",
 		alignItems: "center",
 	},
 });

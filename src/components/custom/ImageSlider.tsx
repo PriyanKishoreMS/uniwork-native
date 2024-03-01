@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import {
 	View,
-	Image,
 	StyleSheet,
 	ScrollView,
 	useWindowDimensions,
 	Text,
-	TouchableHighlight,
 	Pressable,
 } from "react-native";
 import FastImage from "react-native-fast-image";
@@ -17,6 +15,7 @@ interface ImageSliderProps {
 
 const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 	let { width } = useWindowDimensions();
+	width = width - 20;
 	const height = width * 0.7;
 
 	const [visible, setVisible] = useState(false);
@@ -32,13 +31,20 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 	};
 
 	return (
-		<View>
+		<View
+			style={{
+				alignItems: "center",
+			}}
+		>
 			<ScrollView
 				pagingEnabled
 				horizontal
 				onScroll={onScrollChange}
 				showsHorizontalScrollIndicator={false}
-				style={{ width, height }}
+				style={{
+					width,
+					height,
+				}}
 			>
 				{images.map((image, index) => (
 					<Pressable key={index} onPress={() => setVisible(true)}>
@@ -51,6 +57,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 							style={{
 								width: width,
 								height,
+								borderRadius: 12,
 							}}
 							resizeMode={FastImage.resizeMode.cover}
 						/>

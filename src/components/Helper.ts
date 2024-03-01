@@ -51,6 +51,13 @@ export function formatTime(timestamp: string): string {
 	}
 }
 
+export const limitDescription = (description: string, limit: number) => {
+	if (description.length > limit) {
+		return description.slice(0, limit) + "...";
+	}
+	return description;
+};
+
 export const LightenColor = (color: string, factor: number) => {
 	let num = parseInt(color.replace("#", ""), 16);
 	let newColor = (num & num) << factor;

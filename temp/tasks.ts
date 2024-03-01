@@ -23,7 +23,7 @@ export const tasks = [
 		college_id: 1,
 		title: "Need help with my project",
 		description:
-			"I need help with my project, I am looking for someone who can help me with my project",
+			"I need help with my project, I am looking for someone who can help me with my project I need help with my project, I am looking for someone who can help me with my project I need help with my project, I am looking for someone who can help me with my project",
 		category: "Academic Assistance",
 		price: 1000,
 		status: "open",
