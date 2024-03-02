@@ -215,9 +215,11 @@ const TasksScreen = () => {
 												{item.category}
 											</Text>
 										</View>
-										<Text style={styles.desc}>
-											{limitDescription(item.description, 150)}
-										</Text>
+										{item?.description && (
+											<Text style={styles.desc}>
+												{limitDescription(item?.description, 150)}
+											</Text>
+										)}
 									</View>
 									{item?.images && item.images.length > 0 && (
 										<View>
@@ -292,7 +294,6 @@ const styles = StyleSheet.create({
 		padding: 2,
 		paddingHorizontal: 8,
 		borderRadius: 18,
-		backgroundColor: palette.primary,
 		alignSelf: "flex-start",
 		marginVertical: 8,
 	},

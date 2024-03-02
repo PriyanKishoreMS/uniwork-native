@@ -17,15 +17,16 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
-			screenOptions={{
+			screenOptions={({ route }) => ({
 				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
 				tabBarStyle: {
 					backgroundColor:
 						colorScheme === "dark"
 							? Colors.dark.tabBackground
 							: Colors.light.tabBackground,
+					display: route.name === "create" ? "none" : "flex",
 				},
-			}}
+			})}
 		>
 			<Tabs.Screen
 				name='index'
@@ -74,6 +75,7 @@ export default function TabLayout() {
 				name='create'
 				options={{
 					headerTitle: "UniWork",
+					headerShown: false,
 					headerTitleAlign: "center",
 					tabBarShowLabel: false,
 					headerTitleStyle: {
@@ -89,6 +91,7 @@ export default function TabLayout() {
 						<TabBarIcon name='add-task' color={color} />
 					),
 					tabBarActiveTintColor: palette.primaryDark,
+					tabBarHideOnKeyboard: true,
 				}}
 			/>
 			<Tabs.Screen

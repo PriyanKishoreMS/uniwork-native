@@ -12,10 +12,13 @@ export const palette = {
 	//conver primary to rgba
 	//#94D6F2
 	primary: "#94D6F2",
+	//pastel orange hex code for secondary
+	secondary: "#FF7F50",
 	success: "#A5D6A7",
 	primaryDark: "#66AED6",
 	text: "#0D171C",
 	transparent: "rgba(0,0,0,0)",
+	red: "#FF0000",
 };
 
 export const categoryColors = {
