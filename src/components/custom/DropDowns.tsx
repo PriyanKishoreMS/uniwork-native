@@ -10,7 +10,7 @@ import { ColorSchemeName, ScrollView, useWindowDimensions } from "react-native";
 import Colors, { palette } from "@/constants/Colors";
 import { StyleSheet, View } from "react-native";
 import { Pressable, Text } from "../Themed";
-import { DarkenColor } from "../Helper";
+import { DarkenColor } from "../../utils";
 import { categoryColors } from "@/constants/Colors";
 
 enum TaskCategory {

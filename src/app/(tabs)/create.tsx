@@ -12,8 +12,10 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { router } from "expo-router";
 import { CategoryMenu } from "@/components/custom/DropDowns";
-import * as ImagePicker from "expo-image-picker";
 import ImageSlider from "@/components/custom/ImageSlider";
+import { pickMultipleImages, pickMultipleFiles, DarkenColor } from "@/utils";
+import { DocumentPickerResult } from "expo-document-picker";
+import { Dropdown } from "react-native-element-dropdown";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
@@ -21,22 +23,27 @@ const CreateScreen = () => {
 	const [buttonDisabled, setButtonDisabled] = useState(true);
 	const [category, setCategory] = useState("");
 	const [images, setImages] = useState<string[]>([]);
+	const [files, setFiles] = useState<DocumentPickerResult["assets"]>(null);
+
+	const handleImages = async () => {
+		const result = await pickMultipleImages();
+		if (!result.canceled) {
+			setImages(result.assets.map(file => file.uri));
+		}
+
+		console.log(images);
+	};
+
+	const handleFiles = async () => {
+		const result = await pickMultipleFiles();
+		if (!result.canceled) {
+			setFiles(result.assets);
+		}
+		console.log(result);
+	};
 
 	const handleGoBack = () => {
 		router.back();
-	};
-
-	const pickMultipleImages = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsMultipleSelection: true,
-			quality: 1,
-		});
-		console.log(result);
-
-		if (!result.canceled) {
-			setImages(result.assets.map(image => image.uri));
-		}
 	};
 
 	return (
@@ -56,41 +63,42 @@ const CreateScreen = () => {
 					justifyContent: "space-between",
 				}}
 			>
+				<View
+					style={{
+						flexDirection: "row",
+						marginHorizontal: 16,
+						alignItems: "center",
+						justifyContent: "space-between",
+						marginTop: 12,
+					}}
+				>
+					<MaterialIcons
+						onPress={handleGoBack}
+						name='arrow-back-ios-new'
+						size={25}
+						color={colorScheme === "dark" ? palette.white : palette.black}
+					/>
+					<Pressable
+						disabled={buttonDisabled}
+						style={[
+							styles.postButton,
+							{
+								opacity: buttonDisabled ? 0.5 : 1,
+								backgroundColor: buttonDisabled
+									? palette.transparent
+									: palette.secondary,
+								borderWidth: buttonDisabled ? 1 : 0,
+								borderColor: buttonDisabled
+									? palette.gray
+									: palette.transparent,
+							},
+						]}
+					>
+						<Text style={styles.postButtonText}>Post</Text>
+					</Pressable>
+				</View>
 				<ScrollView>
 					<View style={styles.container}>
-						<View
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "space-between",
-								marginTop: 12,
-							}}
-						>
-							<MaterialIcons
-								onPress={handleGoBack}
-								name='arrow-back-ios-new'
-								size={25}
-								color={colorScheme === "dark" ? palette.white : palette.black}
-							/>
-							<Pressable
-								disabled={buttonDisabled}
-								style={[
-									styles.postButton,
-									{
-										opacity: buttonDisabled ? 0.5 : 1,
-										backgroundColor: buttonDisabled
-											? palette.transparent
-											: palette.secondary,
-										borderWidth: buttonDisabled ? 1 : 0,
-										borderColor: buttonDisabled
-											? palette.gray
-											: palette.transparent,
-									},
-								]}
-							>
-								<Text style={styles.postButtonText}>Post</Text>
-							</Pressable>
-						</View>
 						<TextInput
 							placeholder='Title'
 							multiline={true}
@@ -108,17 +116,55 @@ const CreateScreen = () => {
 								colorScheme === "dark" ? palette.white : palette.black
 							}
 						/>
-						<Pressable
+						<View
 							style={{
-								alignItems: "flex-start",
+								flexDirection: "row",
+								alignItems: "center",
+								justifyContent: "space-between",
 							}}
 						>
-							<CategoryMenu
-								colorScheme={colorScheme}
-								category={category}
-								setCategory={setCategory}
-							/>
-						</Pressable>
+							<Pressable>
+								<CategoryMenu
+									colorScheme={colorScheme}
+									category={category}
+									setCategory={setCategory}
+								/>
+							</Pressable>
+							<View
+								style={[
+									styles.priceView,
+									{
+										backgroundColor:
+											colorScheme === "dark"
+												? palette.grayDark
+												: palette.transparent,
+									},
+								]}
+							>
+								<MaterialIcons
+									name='currency-rupee'
+									size={20}
+									color={DarkenColor(palette.green, 20)}
+								/>
+								<TextInput
+									placeholder='Put a price'
+									keyboardType='numeric'
+									maxLength={7}
+									placeholderTextColor={palette.grayLight2}
+									selectionColor={
+										colorScheme === "dark" ? palette.white : palette.black
+									}
+									style={{
+										color:
+											colorScheme === "dark" ? palette.white : palette.black,
+										fontFamily: "Inter",
+										padding: 2,
+										borderColor: palette.green,
+										fontSize: 16,
+									}}
+								/>
+							</View>
+						</View>
 
 						<TextInput
 							placeholder='What is your task about?'
@@ -146,40 +192,140 @@ const CreateScreen = () => {
 							<ImageSlider images={images} />
 						</View>
 					)}
+					{files && (
+						<View
+							style={{
+								margin: 16,
+							}}
+						>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 20,
+									color: colorScheme === "dark" ? palette.white : palette.black,
+								}}
+							>
+								Files
+							</Text>
+							<View style={styles.filesContainer}>
+								{files.map((file, index) => (
+									<View
+										key={index}
+										style={[
+											styles.filesBox,
+											{
+												backgroundColor:
+													colorScheme === "dark"
+														? palette.grayDark
+														: palette.grayLight2,
+											},
+										]}
+									>
+										<MaterialCommunityIcons
+											name='file-document-outline'
+											size={24}
+											color={
+												colorScheme === "dark" ? palette.white : palette.black
+											}
+											style={{
+												marginRight: 4,
+											}}
+										/>
+										<Text
+											style={{
+												fontFamily: "Inter",
+												fontSize: 16,
+												color:
+													colorScheme === "dark"
+														? palette.white
+														: palette.black,
+											}}
+										>
+											{file.name}
+										</Text>
+									</View>
+								))}
+							</View>
+						</View>
+					)}
 				</ScrollView>
 				<View
 					style={{
 						flexDirection: "row",
-						margin: 12,
-						justifyContent: "flex-start",
 						alignItems: "center",
-						gap: 16,
+						justifyContent: "space-between",
+						marginHorizontal: 16,
 					}}
 				>
-					<Pressable onPress={pickMultipleImages}>
-						<MaterialCommunityIcons
-							name='file-image-outline'
-							size={30}
-							color={colorScheme === "dark" ? palette.white : palette.gray}
-							style={styles.filesInput}
-						/>
-					</Pressable>
-					<Pressable>
-						<MaterialCommunityIcons
-							name='file-plus-outline'
-							size={30}
-							color={colorScheme === "dark" ? palette.white : palette.gray}
-							style={styles.filesInput}
-						/>
-					</Pressable>
-					<Pressable>
-						<MaterialCommunityIcons
-							name='link-variant-plus'
-							size={30}
-							color={colorScheme === "dark" ? palette.white : palette.gray}
-							style={styles.filesInput}
-						/>
-					</Pressable>
+					<View
+						style={{
+							flexDirection: "row",
+							marginVertical: 6,
+							justifyContent: "flex-start",
+							alignItems: "center",
+							gap: 16,
+						}}
+					>
+						<Pressable onPress={handleImages}>
+							<MaterialCommunityIcons
+								name='file-image-outline'
+								size={30}
+								color={colorScheme === "dark" ? palette.white : palette.gray}
+								style={styles.filesInput}
+							/>
+						</Pressable>
+						<Pressable onPress={handleFiles}>
+							<MaterialCommunityIcons
+								name='file-plus-outline'
+								size={30}
+								color={colorScheme === "dark" ? palette.white : palette.gray}
+								style={styles.filesInput}
+							/>
+						</Pressable>
+						<Pressable>
+							<MaterialCommunityIcons
+								name='link-variant-plus'
+								size={30}
+								color={colorScheme === "dark" ? palette.white : palette.gray}
+								style={styles.filesInput}
+							/>
+						</Pressable>
+					</View>
+					<Dropdown
+						data={[
+							{
+								label: "College",
+								value: "college",
+							},
+							{
+								label: "Public",
+								value: "public",
+							},
+						]}
+						valueField={"value"}
+						onChange={value => console.log(value)}
+						labelField={"label"}
+						placeholder='Scope'
+						dropdownPosition='top'
+						placeholderStyle={{
+							color: colorScheme === "dark" ? palette.grayLight : palette.gray,
+							fontSize: 16,
+							fontFamily: "Inter",
+						}}
+						containerStyle={{
+							borderWidth: 1,
+							borderColor: palette.gray,
+						}}
+						style={{
+							width: "40%",
+							marginLeft: 12,
+							borderWidth: 1,
+							borderColor: palette.gray,
+							borderRadius: 12,
+							padding: 2,
+							paddingHorizontal: 12,
+						}}
+					/>
 				</View>
 			</View>
 		</SafeAreaView>
@@ -209,6 +355,30 @@ const styles = StyleSheet.create({
 	},
 	filesInput: {
 		padding: 8,
+	},
+	filesContainer: {
+		flexDirection: "row",
+		flexWrap: "wrap",
+		marginTop: 12,
+		justifyContent: "flex-start",
+		alignItems: "center",
+		gap: 12,
+	},
+	filesBox: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		padding: 8,
+		borderRadius: 12,
+	},
+	priceView: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		borderWidth: 2,
+		paddingHorizontal: 12,
+		borderColor: palette.green,
+		borderRadius: 20,
 	},
 });
 

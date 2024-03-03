@@ -13,7 +13,7 @@ import Colors, { palette } from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { DarkenColor } from "./Helper";
+import { DarkenColor } from "../utils";
 
 type TextInputProp = {
 	borderDark?: string;
@@ -128,7 +128,6 @@ export function TextInput(props: TextInputProps) {
 	const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 	const icon = props.icon;
 	return (
-		// position the icon at the beginning of the input
 		<View
 			style={{
 				flexDirection: "row",

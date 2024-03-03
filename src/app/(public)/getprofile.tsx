@@ -3,7 +3,7 @@ import { palette } from "@/constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { View as DView } from "react-native";
 import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
+import { pickImage } from "@/utils";
 import {
 	StyleSheet,
 	ScrollView,
@@ -24,20 +24,14 @@ const GetProfile = () => {
 
 	const { user, setUser, signOut } = useAuth();
 
-	const pickImage = async () => {
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 1,
-		});
-
-		console.log(result);
-
+	const handleImage = async () => {
+		console.log("\nImage");
+		const result = await pickImage();
 		if (!result.canceled) {
 			setImage(result.assets[0].uri);
 		}
 	};
+
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
@@ -59,7 +53,7 @@ const GetProfile = () => {
 								borderStyle: "dashed",
 								borderRadius: 12,
 							}}
-							onPress={pickImage}
+							onPress={handleImage}
 						>
 							<Image
 								source={{ uri: image }}
@@ -71,7 +65,7 @@ const GetProfile = () => {
 							/>
 						</Pressable>
 					) : (
-						<Pressable style={styles.addPhoto} onPress={pickImage}>
+						<Pressable style={styles.addPhoto} onPress={handleImage}>
 							<MaterialIcons
 								name='add-a-photo'
 								size={24}

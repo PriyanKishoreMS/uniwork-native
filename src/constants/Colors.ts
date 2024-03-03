@@ -19,6 +19,7 @@ export const palette = {
 	text: "#0D171C",
 	transparent: "rgba(0,0,0,0)",
 	red: "#FF0000",
+	green: "#008000",
 };
 
 export const categoryColors = {

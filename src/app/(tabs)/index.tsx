@@ -13,7 +13,7 @@ import { useWindowDimensions } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
-import { DarkenColor, formatTime, limitDescription } from "@/components/Helper";
+import { DarkenColor, formatTime, limitDescription } from "@/utils";
 import StarRating from "@/components/custom/StarRating";
 import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
 	},
 	currencyText: {
 		fontSize: 20,
-		color: "green",
+		color: palette.green,
 		marginRight: 5,
 	},
 	footer: {
