@@ -48,16 +48,16 @@ const TasksScreen = () => {
 				height: height,
 				backgroundColor:
 					colorScheme === "dark"
-						? Colors.dark.tabBackground
-						: Colors.light.tabBackground,
+						? Colors.dark.background
+						: Colors.light.background,
 			}}
 		>
 			<View
 				style={{
 					backgroundColor:
 						colorScheme === "dark"
-							? Colors.dark.tabBackground
-							: Colors.light.tabBackground,
+							? Colors.dark.background
+							: Colors.light.background,
 				}}
 			>
 				<DefaultView

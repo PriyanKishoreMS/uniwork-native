@@ -174,11 +174,28 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 							},
 						]}
 					>
-						<MaterialIcons
-							name='clear'
-							size={20}
-							color={colorScheme === "dark" ? palette.white : palette.black}
-						/>
+						<View
+							style={{
+								flexDirection: "row",
+								alignItems: "center",
+								margin: 8,
+							}}
+						>
+							<MaterialIcons
+								name='clear'
+								size={24}
+								color={colorScheme === "dark" ? palette.white : palette.black}
+							/>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									paddingHorizontal: 4,
+									fontSize: 16,
+								}}
+							>
+								Clear
+							</Text>
+						</View>
 					</MenuOption>
 					<ScrollView
 						style={{

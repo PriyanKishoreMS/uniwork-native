@@ -3,6 +3,7 @@ import {
 	TextInput,
 	useWindowDimensions,
 	ScrollView,
+	ActivityIndicator,
 } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useColorScheme } from "react-native";
@@ -17,6 +18,16 @@ import { pickMultipleImages, pickMultipleFiles, DarkenColor } from "@/utils";
 import { DocumentPickerResult } from "expo-document-picker";
 import { Dropdown } from "react-native-element-dropdown";
 
+interface ScopeOption {
+	label: string;
+	value: string;
+}
+
+interface loadingStates {
+	images: boolean | null;
+	files: boolean | null;
+}
+
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
 	var { height } = useWindowDimensions();
@@ -24,22 +35,55 @@ const CreateScreen = () => {
 	const [category, setCategory] = useState("");
 	const [images, setImages] = useState<string[]>([]);
 	const [files, setFiles] = useState<DocumentPickerResult["assets"]>(null);
+	const [scope, setScope] = useState<ScopeOption | null>(null);
+	const [loading, setLoading] = useState<loadingStates>({
+		images: null,
+		files: null,
+	});
 
 	const handleImages = async () => {
-		const result = await pickMultipleImages();
-		if (!result.canceled) {
-			setImages(result.assets.map(file => file.uri));
+		try {
+			setLoading({
+				...loading,
+				images: true,
+			});
+			const result = await pickMultipleImages();
+			if (!result.canceled) {
+				setImages(result.assets.map(file => file.uri));
+			}
+			console.log(loading.images, "loading");
+			console.log(images);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			console.log("done");
+			setLoading({
+				...loading,
+				images: false,
+			});
 		}
-
-		console.log(images);
 	};
 
 	const handleFiles = async () => {
-		const result = await pickMultipleFiles();
-		if (!result.canceled) {
-			setFiles(result.assets);
+		try {
+			setLoading({
+				...loading,
+				files: true,
+			});
+			const result = await pickMultipleFiles();
+			if (!result.canceled) {
+				setFiles(result.assets);
+			}
+			console.log(result);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			console.log("done");
+			setLoading({
+				...loading,
+				files: false,
+			});
 		}
-		console.log(result);
 	};
 
 	const handleGoBack = () => {
@@ -183,70 +227,85 @@ const CreateScreen = () => {
 							}
 						/>
 					</View>
-					{images.length > 0 && (
-						<View
-							style={{
-								marginVertical: 16,
-							}}
-						>
-							<ImageSlider images={images} />
+					{loading.images === true ? (
+						<View style={styles.loader}>
+							<ActivityIndicator size='large' color={palette.primary} />
+							<Text style={styles.loadingText}>Loading Images</Text>
 						</View>
-					)}
-					{files && (
-						<View
-							style={{
-								margin: 16,
-							}}
-						>
-							<Text
+					) : (
+						images.length > 0 && (
+							<View
 								style={{
-									fontFamily: "InterSemiBold",
-									fontSize: 20,
-									color: colorScheme === "dark" ? palette.white : palette.black,
+									marginVertical: 16,
 								}}
 							>
-								Files
-							</Text>
-							<View style={styles.filesContainer}>
-								{files.map((file, index) => (
-									<View
-										key={index}
-										style={[
-											styles.filesBox,
-											{
-												backgroundColor:
-													colorScheme === "dark"
-														? palette.grayDark
-														: palette.grayLight2,
-											},
-										]}
-									>
-										<MaterialCommunityIcons
-											name='file-document-outline'
-											size={24}
-											color={
-												colorScheme === "dark" ? palette.white : palette.black
-											}
-											style={{
-												marginRight: 4,
-											}}
-										/>
-										<Text
-											style={{
-												fontFamily: "Inter",
-												fontSize: 16,
-												color:
-													colorScheme === "dark"
-														? palette.white
-														: palette.black,
-											}}
-										>
-											{file.name}
-										</Text>
-									</View>
-								))}
+								<ImageSlider images={images} />
 							</View>
+						)
+					)}
+					{loading.files === true ? (
+						<View style={styles.loader}>
+							<ActivityIndicator size='large' color={palette.primary} />
+							<Text style={styles.loadingText}>Loading Files</Text>
 						</View>
+					) : (
+						files && (
+							<View
+								style={{
+									margin: 16,
+								}}
+							>
+								<Text
+									style={{
+										fontFamily: "InterSemiBold",
+										fontSize: 20,
+										color:
+											colorScheme === "dark" ? palette.white : palette.black,
+									}}
+								>
+									Files
+								</Text>
+								<View style={styles.filesContainer}>
+									{files.map((file, index) => (
+										<View
+											key={index}
+											style={[
+												styles.filesBox,
+												{
+													backgroundColor:
+														colorScheme === "dark"
+															? palette.grayDark
+															: palette.grayLight2,
+												},
+											]}
+										>
+											<MaterialCommunityIcons
+												name='file-document-outline'
+												size={24}
+												color={
+													colorScheme === "dark" ? palette.white : palette.black
+												}
+												style={{
+													marginRight: 4,
+												}}
+											/>
+											<Text
+												style={{
+													fontFamily: "Inter",
+													fontSize: 16,
+													color:
+														colorScheme === "dark"
+															? palette.white
+															: palette.black,
+												}}
+											>
+												{file.name}
+											</Text>
+										</View>
+									))}
+								</View>
+							</View>
+						)
 					)}
 				</ScrollView>
 				<View
@@ -303,18 +362,70 @@ const CreateScreen = () => {
 							},
 						]}
 						valueField={"value"}
-						onChange={value => console.log(value)}
+						value={scope}
+						onChange={value => {
+							console.log(value);
+							setScope(value);
+						}}
 						labelField={"label"}
 						placeholder='Scope'
 						dropdownPosition='top'
+						activeColor={palette.primaryDark}
+						renderLeftIcon={() => {
+							return scope && scope.value === "college" ? (
+								<MaterialCommunityIcons
+									name='school'
+									size={24}
+									color={palette.primaryDark}
+									style={{
+										marginRight: 8,
+									}}
+								/>
+							) : (
+								<MaterialCommunityIcons
+									name='earth'
+									size={18}
+									color={palette.primaryDark}
+									style={{
+										marginRight: 8,
+									}}
+								/>
+							);
+						}}
+						renderRightIcon={() => {
+							return (
+								<MaterialCommunityIcons
+									name='chevron-up'
+									size={24}
+									color={palette.gray}
+								/>
+							);
+						}}
 						placeholderStyle={{
 							color: colorScheme === "dark" ? palette.grayLight : palette.gray,
 							fontSize: 16,
 							fontFamily: "Inter",
 						}}
 						containerStyle={{
-							borderWidth: 1,
-							borderColor: palette.gray,
+							borderRadius: 12,
+							marginBottom: 56,
+							borderWidth: 0,
+							// paddingHorizontal: 8,
+							backgroundColor:
+								colorScheme === "dark" ? palette.grayDark : palette.grayLight2,
+						}}
+						itemTextStyle={{
+							color: colorScheme === "dark" ? palette.white : palette.black,
+							fontFamily: "Inter",
+							fontSize: 16,
+						}}
+						selectedTextStyle={{
+							color: colorScheme === "dark" ? palette.white : palette.black,
+							fontFamily: "InterSemiBold",
+							fontSize: 16,
+						}}
+						itemContainerStyle={{
+							borderRadius: 12,
 						}}
 						style={{
 							width: "40%",
@@ -322,7 +433,6 @@ const CreateScreen = () => {
 							borderWidth: 1,
 							borderColor: palette.gray,
 							borderRadius: 12,
-							padding: 2,
 							paddingHorizontal: 12,
 						}}
 					/>
@@ -379,6 +489,18 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 12,
 		borderColor: palette.green,
 		borderRadius: 20,
+	},
+	loader: {
+		flex: 1,
+		marginTop: 100,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	loadingText: {
+		marginLeft: 12,
+		fontFamily: "InterLight",
+		fontSize: 18,
 	},
 });
 

@@ -1,3 +1,4 @@
+import { palette } from "@/constants/Colors";
 import React, { useState } from "react";
 import {
 	View,
@@ -68,6 +69,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 					images={images.map(img => ({ uri: img }))}
 					imageIndex={active}
 					visible={visible}
+					presentationStyle='overFullScreen'
 					onRequestClose={() => setVisible(false)}
 				/>
 			</ScrollView>

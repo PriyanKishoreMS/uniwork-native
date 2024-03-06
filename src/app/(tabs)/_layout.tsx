@@ -22,8 +22,8 @@ export default function TabLayout() {
 				tabBarStyle: {
 					backgroundColor:
 						colorScheme === "dark"
-							? Colors.dark.tabBackground
-							: Colors.light.tabBackground,
+							? Colors.dark.background
+							: Colors.light.background,
 					display: route.name === "create" ? "none" : "flex",
 				},
 			})}
