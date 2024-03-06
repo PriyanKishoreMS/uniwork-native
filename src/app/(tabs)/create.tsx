@@ -14,7 +14,11 @@ import { useState } from "react";
 import { router } from "expo-router";
 import { CategoryMenu } from "@/components/custom/DropDowns";
 import ImageSlider from "@/components/custom/ImageSlider";
-import { pickMultipleImages, pickMultipleFiles, DarkenColor } from "@/utils";
+import {
+	pickMultipleImages,
+	pickMultipleFiles,
+	convertColorIntensity,
+} from "@/utils";
 import { DocumentPickerResult } from "expo-document-picker";
 import { Dropdown } from "react-native-element-dropdown";
 
@@ -56,7 +60,6 @@ const CreateScreen = () => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			console.log("done");
 			setLoading({
 				...loading,
 				images: false,
@@ -78,7 +81,6 @@ const CreateScreen = () => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			console.log("done");
 			setLoading({
 				...loading,
 				files: false,
@@ -188,7 +190,7 @@ const CreateScreen = () => {
 								<MaterialIcons
 									name='currency-rupee'
 									size={20}
-									color={DarkenColor(palette.green, 20)}
+									color={convertColorIntensity(palette.green, 20)}
 								/>
 								<TextInput
 									placeholder='Put a price'

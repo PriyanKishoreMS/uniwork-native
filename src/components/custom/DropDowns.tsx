@@ -10,7 +10,7 @@ import { ColorSchemeName, ScrollView, useWindowDimensions } from "react-native";
 import Colors, { palette } from "@/constants/Colors";
 import { StyleSheet, View } from "react-native";
 import { Pressable, Text } from "../Themed";
-import { DarkenColor } from "../../utils";
+import { convertColorIntensity } from "../../utils";
 import { categoryColors } from "@/constants/Colors";
 
 enum TaskCategory {
@@ -104,7 +104,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 						style={[
 							styles.category,
 							{
-								borderColor: DarkenColor(
+								borderColor: convertColorIntensity(
 									categoryColors[category as TaskCategory],
 									-40
 								),
@@ -116,7 +116,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 							style={[
 								styles.categoryText,
 								{
-									color: DarkenColor(
+									color: convertColorIntensity(
 										categoryColors[category as TaskCategory],
 										-60
 									),
@@ -131,7 +131,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 						style={[
 							styles.category,
 							{
-								borderColor: DarkenColor(palette.primary, -60),
+								borderColor: convertColorIntensity(palette.primary, -60),
 								backgroundColor: palette.transparent,
 							},
 						]}
@@ -140,7 +140,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 							style={[
 								styles.categoryText,
 								{
-									color: DarkenColor(
+									color: convertColorIntensity(
 										categoryColors[category as TaskCategory],
 										-20
 									),
@@ -209,7 +209,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 									style={[
 										styles.category,
 										{
-											borderColor: DarkenColor(
+											borderColor: convertColorIntensity(
 												categoryColors[category as TaskCategory],
 												-40
 											),
@@ -221,7 +221,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 										style={[
 											styles.categoryText,
 											{
-												color: DarkenColor(
+												color: convertColorIntensity(
 													categoryColors[category as TaskCategory],
 													-60
 												),

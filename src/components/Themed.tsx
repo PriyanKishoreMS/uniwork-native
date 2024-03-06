@@ -13,7 +13,7 @@ import Colors, { palette } from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { DarkenColor } from "../utils";
+import { convertColorIntensity } from "../utils";
 
 type TextInputProp = {
 	borderDark?: string;
@@ -93,7 +93,7 @@ export function Pressable(props: PressableProps) {
 		>
 			<DefaultPressable
 				android_ripple={{
-					color: DarkenColor(rippleColor, -40),
+					color: convertColorIntensity(rippleColor, -40),
 					borderless: false,
 				}}
 				{...otherProps}

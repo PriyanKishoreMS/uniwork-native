@@ -1,6 +1,6 @@
 import { palette } from "@/constants/Colors";
 
-export function DarkenColor(color: string, percent: number): string {
+export function convertColorIntensity(color: string, percent: number): string {
 	if (color === undefined) {
 		color = palette.primary;
 	}
@@ -27,8 +27,7 @@ export function DarkenColor(color: string, percent: number): string {
 	return "#" + RR + GG + BB;
 }
 
-export const LightenColor = (color: string, factor: number) => {
-	let num = parseInt(color.replace("#", ""), 16);
-	let newColor = (num & num) << factor;
-	return `#${newColor.toString(16)}`;
-};
+export function changeOpacity(color: string, opacity: number): string {
+	var alpha = Math.round(opacity * 255);
+	return color + alpha.toString(16);
+}

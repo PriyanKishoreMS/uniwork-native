@@ -5,6 +5,7 @@ import {
 	Image,
 	View as DefaultView,
 	TouchableOpacity,
+	TouchableNativeFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tasks, TaskCategories } from "../../../temp/tasks";
@@ -13,11 +14,17 @@ import { useWindowDimensions } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
-import { DarkenColor, formatTime, limitDescription } from "@/utils";
+import {
+	convertColorIntensity,
+	formatTime,
+	limitDescription,
+	changeOpacity,
+} from "@/utils";
 import StarRating from "@/components/custom/StarRating";
 import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
 import { TaskPopupMenu } from "@/components/custom/DropDowns";
+import { Link, router } from "expo-router";
 
 enum TaskCategory {
 	AcademicAssistance = "Academic Assistance",
@@ -142,8 +149,14 @@ const TasksScreen = () => {
 								borderColor: palette.grayLight,
 							}}
 						>
-							<View>
-								<TouchableOpacity>
+							<TouchableNativeFeedback
+								background={TouchableNativeFeedback.Ripple(
+									changeOpacity(palette.primary, 0.2),
+									false
+								)}
+								useForeground={true}
+							>
+								<View>
 									<View
 										style={{
 											margin: 16,
@@ -192,7 +205,7 @@ const TasksScreen = () => {
 											style={[
 												styles.category,
 												{
-													borderColor: DarkenColor(
+													borderColor: convertColorIntensity(
 														categoryColors[item.category as TaskCategory],
 														-40
 													),
@@ -205,7 +218,7 @@ const TasksScreen = () => {
 												style={[
 													styles.categoryText,
 													{
-														color: DarkenColor(
+														color: convertColorIntensity(
 															categoryColors[item.category as TaskCategory],
 															-60
 														),
@@ -233,8 +246,8 @@ const TasksScreen = () => {
 											</Text>
 										</View>
 									</View>
-								</TouchableOpacity>
-							</View>
+								</View>
+							</TouchableNativeFeedback>
 						</View>
 					)}
 				/>

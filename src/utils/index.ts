@@ -1,10 +1,11 @@
-import { DarkenColor } from "./colors";
+import { convertColorIntensity, changeOpacity } from "./colors";
 import { limitDescription } from "./text";
 import { formatTime } from "./time";
 import { pickImage, pickMultipleImages, pickMultipleFiles } from "./files";
 
 export {
-	DarkenColor,
+	convertColorIntensity,
+	changeOpacity,
 	limitDescription,
 	formatTime,
 	pickImage,
