@@ -5,7 +5,7 @@ import {
 	ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -60,7 +60,13 @@ const InitialLayout = () => {
 		}
 	}, [signedIn]);
 
-	return <Slot />;
+	return (
+		<Stack
+			screenOptions={{
+				headerShown: false,
+			}}
+		/>
+	);
 };
 
 const RootLayoutNav = () => {
