@@ -12,7 +12,7 @@ import { tasks, TaskCategories } from "../../../temp/tasks";
 import Colors, { palette } from "@/constants/Colors";
 import { useWindowDimensions } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
 import {
 	convertColorIntensity,
@@ -44,10 +44,27 @@ enum TaskCategory {
 	CateringCooking = "Catering/Cooking",
 }
 
+interface tasksProps {
+	id: number;
+	title: string;
+	description: string;
+	category: string;
+	price: number;
+	status: string;
+	created_at: string;
+	expiry: string;
+	images?: string[];
+	files?: string[];
+	name: string;
+	avatar: string;
+	rating: number;
+}
+
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	var { height } = useWindowDimensions();
 	const [selected, setSelected] = useState("All");
+	const [task, setTask] = useState<tasksProps[] | null>(tasks);
 
 	return (
 		<SafeAreaView
@@ -140,7 +157,7 @@ const TasksScreen = () => {
 			</View>
 			<View style={styles.container}>
 				<FlatList
-					data={tasks}
+					data={task}
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<View
@@ -150,6 +167,14 @@ const TasksScreen = () => {
 							}}
 						>
 							<TouchableNativeFeedback
+								onPress={() => {
+									router.push({
+										pathname: "/pages/taskDetails",
+										params: {
+											itemId: item.id,
+										},
+									});
+								}}
 								background={TouchableNativeFeedback.Ripple(
 									changeOpacity(palette.primary, 0.2),
 									false
@@ -178,7 +203,9 @@ const TasksScreen = () => {
 														justifyContent: "flex-start",
 													}}
 												>
-													<Text style={styles.name}>{item.name}</Text>
+													<Text style={styles.name}>
+														{limitDescription(item.name, 25)}
+													</Text>
 													<StarRating rating={item.rating} />
 												</View>
 											</View>
@@ -325,7 +352,7 @@ const styles = StyleSheet.create({
 		marginRight: 16,
 		flexDirection: "row",
 		justifyContent: "flex-end",
-		alignItems: "center",
+		// alignItems: "center",
 	},
 });
 
