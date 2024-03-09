@@ -1,15 +1,28 @@
-import { StyleSheet, useColorScheme, Image, View as DView } from "react-native";
-import { View, Text, Pressable as ThemedPressable } from "@/components/Themed";
+import {
+	StyleSheet,
+	useColorScheme,
+	Image,
+	TouchableNativeFeedback,
+} from "react-native";
+import { View, Text } from "@/components/Themed";
 import React, { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { Pressable, ScrollView, TextInput } from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+	MaterialIcons,
+	MaterialCommunityIcons,
+	Entypo,
+} from "@expo/vector-icons";
 import Colors, { palette } from "@/constants/Colors";
 import ImageSlider from "@/components/custom/ImageSlider";
 import { router } from "expo-router";
-import { convertColorIntensity, limitDescription } from "@/utils";
+import {
+	changeOpacity,
+	convertColorIntensity,
+	limitDescription,
+} from "@/utils";
 import { tasks } from "../../../temp/tasks";
 import { categoryColors } from "@/constants/Colors";
 import StarRating from "@/components/custom/StarRating";
@@ -32,27 +45,41 @@ enum TaskCategory {
 	CateringCooking = "Catering/Cooking",
 }
 
-interface tasksProps {
-	id: number;
-	title: string;
-	description: string;
-	category: string;
-	price: number;
-	status: string;
-	created_at: string;
-	expiry: string;
-	images?: string[];
-	files?: string[];
-	name: string;
-	avatar: string;
-	rating: number;
-}
+// interface tasksProps {
+// 	id: number;
+// 	title: string;
+// 	description: string;
+// 	category: string;
+// 	price: number;
+// 	status: string;
+// 	created_at: string;
+// 	expiry: string;
+// 	images?: string[];
+// 	files?: string[];
+// 	name: string;
+// 	avatar: string;
+// 	rating: number;
+// }
 
 const task = () => {
 	const { itemId } = useLocalSearchParams();
 	const { height } = useWindowDimensions();
 	const colorScheme = useColorScheme();
 	const data = tasks.find(task => task.id === Number(itemId));
+	const files = [
+		{
+			name: "file1namebigfilename.pdf",
+		},
+		{
+			name: "file2.jpg",
+		},
+		{
+			name: "file3.zip",
+		},
+		{
+			name: "file4.docx",
+		},
+	];
 	// const [loading, setLoading] = useState<loadingStates>({
 	// 	images: null,
 	// 	files: null,
@@ -93,30 +120,6 @@ const task = () => {
 						size={25}
 						color={colorScheme === "dark" ? palette.white : palette.black}
 					/>
-
-					<View style={styles.userDetails}>
-						<View
-							style={{
-								alignItems: "flex-start",
-								justifyContent: "flex-start",
-								marginBottom: 8,
-							}}
-						>
-							<Text style={styles.name}>
-								{limitDescription(String(data?.name), 25)}
-							</Text>
-							<StarRating rating={Number(data?.rating)} size={15} />
-						</View>
-						<Image
-							source={{ uri: data?.avatar }}
-							style={{
-								width: 40,
-								height: 40,
-								borderRadius: 20,
-								marginLeft: 12,
-							}}
-						/>
-					</View>
 				</View>
 				<ScrollView>
 					<View style={styles.container}>
@@ -205,6 +208,7 @@ const task = () => {
 									color: colorScheme === "dark" ? palette.white : palette.black,
 									fontFamily: "Inter",
 									fontSize: 18,
+									marginBottom: 16,
 								},
 							]}
 						>
@@ -232,60 +236,141 @@ const task = () => {
 							<ActivityIndicator size='large' color={palette.primary} />
 							<Text style={styles.loadingText}>Loading Files</Text>
 						</View>
-					) : (
-						files && ( */}
+					) : ( */}
+
 					<View
 						style={{
-							margin: 16,
+							marginHorizontal: 12,
+							borderRadius: 12,
+							overflow: "hidden",
+							borderWidth: 1,
+							borderColor: palette.grayLight,
+							marginVertical: 16,
 						}}
 					>
-						{/* <Text
-							style={{
-								fontFamily: "InterSemiBold",
-								fontSize: 20,
-								color: colorScheme === "dark" ? palette.white : palette.black,
-							}}
+						<TouchableNativeFeedback
+							background={TouchableNativeFeedback.Ripple(
+								changeOpacity(palette.primary, 0.2),
+								false
+							)}
+							useForeground={true}
 						>
-							Files
-						</Text> */}
-						{/* <View style={styles.filesContainer}>
-							{files.map((file, index) => (
+							<View style={styles.userDetails}>
+								<Image
+									source={{ uri: data?.avatar }}
+									style={{
+										width: 60,
+										height: 60,
+										borderRadius: 30,
+										marginLeft: 4,
+									}}
+								/>
 								<View
-									key={index}
-									style={[
-										styles.filesBox,
-										{
-											backgroundColor:
-												colorScheme === "dark"
-													? palette.grayDark
-													: palette.grayLight2,
-										},
-									]}
+									style={{
+										alignItems: "flex-start",
+										justifyContent: "flex-start",
+										marginBottom: 8,
+									}}
 								>
-									<MaterialCommunityIcons
-										name='file-document-outline'
-										size={24}
-										color={
-											colorScheme === "dark" ? palette.white : palette.black
-										}
-										style={{
-											marginRight: 4,
-										}}
-									/>
+									<Text style={styles.name}>
+										{limitDescription(String(data?.name), 25)}
+									</Text>
 									<Text
 										style={{
 											fontFamily: "Inter",
-											fontSize: 16,
-											color:
-												colorScheme === "dark" ? palette.white : palette.black,
+											fontSize: 12,
+											marginLeft: 12,
 										}}
 									>
-										{file.name}
+										Hindustan Institute of Technology and Science
 									</Text>
+									<View
+										style={{
+											flexDirection: "row",
+											alignItems: "center",
+											justifyContent: "flex-start",
+											marginTop: 4,
+										}}
+									>
+										<StarRating rating={Number(data?.rating)} size={15} />
+										<Entypo
+											name='dot-single'
+											size={15}
+											color={palette.gray}
+											style={{
+												marginLeft: 1,
+											}}
+										/>
+										<Text
+											style={{
+												fontFamily: "Inter",
+												fontSize: 12,
+												marginLeft: 1,
+											}}
+										>
+											12 ratings
+										</Text>
+									</View>
 								</View>
-							))}
-						</View> */}
+							</View>
+						</TouchableNativeFeedback>
 					</View>
+					{files && (
+						<View
+							style={{
+								margin: 16,
+							}}
+						>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 20,
+									color: colorScheme === "dark" ? palette.white : palette.black,
+								}}
+							>
+								File Attachments
+							</Text>
+							<View style={styles.filesContainer}>
+								{files.map((file, index) => (
+									<View
+										key={index}
+										style={[
+											styles.filesBox,
+											{
+												backgroundColor:
+													colorScheme === "dark"
+														? palette.grayDark
+														: palette.grayLight2,
+											},
+										]}
+									>
+										<MaterialCommunityIcons
+											name='file-document-outline'
+											size={24}
+											color={
+												colorScheme === "dark" ? palette.white : palette.black
+											}
+											style={{
+												marginRight: 4,
+											}}
+										/>
+										<Text
+											style={{
+												fontFamily: "Inter",
+												fontSize: 16,
+												color:
+													colorScheme === "dark"
+														? palette.white
+														: palette.black,
+											}}
+										>
+											{file.name}
+										</Text>
+									</View>
+								))}
+							</View>
+						</View>
+					)}
 				</ScrollView>
 			</View>
 			<View
@@ -395,10 +480,7 @@ const styles = StyleSheet.create({
 	userDetails: {
 		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "flex-end",
-		borderWidth: 1,
-		borderRadius: 12,
-		borderColor: palette.grayLight,
+		justifyContent: "flex-start",
 		padding: 8,
 	},
 	name: {

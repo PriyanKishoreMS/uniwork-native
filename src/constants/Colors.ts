@@ -43,7 +43,7 @@ export const categoryColors = {
 export default {
 	light: {
 		text: "#000",
-		background: "#fff",
+		background: "#FAF9F6",
 		tint: tintColorLight,
 		borderColor: tintColorDark,
 		tabIconDefault: "#ccc",
