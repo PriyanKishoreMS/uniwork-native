@@ -12,6 +12,23 @@ import { StyleSheet, View } from "react-native";
 import { Pressable, Text } from "../Themed";
 import { convertColorIntensity } from "../../utils";
 import { categoryColors } from "@/constants/Colors";
+import { DocumentPickerResult } from "expo-document-picker";
+import SlideInMenuFromTop from "./SlideInMenuFromTop";
+
+interface ScopeOption {
+	label: string;
+	value: string;
+}
+
+interface FormData {
+	title: string;
+	description: string;
+	price: number;
+	category: string;
+	images?: string[];
+	files?: DocumentPickerResult["assets"];
+	scope: ScopeOption | null;
+}
 
 enum TaskCategory {
 	AcademicAssistance = "Academic Assistance",
@@ -40,6 +57,16 @@ type CategoryMenuProps = {
 	colorScheme: ColorSchemeName;
 	category: string;
 	setCategory: (category: string) => void;
+	data: FormData;
+	setData: React.Dispatch<React.SetStateAction<FormData>>;
+};
+interface ScopeOption {
+	label: string;
+	value: string;
+}
+
+type ScopeMenuProps = {
+	scope: ScopeOption;
 };
 
 export const TaskPopupMenu: React.FC<TaskPopupMenuProps> = ({
@@ -77,15 +104,51 @@ export const TaskPopupMenu: React.FC<TaskPopupMenuProps> = ({
 	);
 };
 
+export const ScopeMenu = () => {
+	return (
+		<Menu
+			renderer={renderers.SlideInMenu}
+			onSelect={value => console.log(`Selected number: ${value}`)}
+		>
+			<MenuTrigger>
+				<MaterialCommunityIcons
+					name='dots-vertical'
+					size={20}
+					color={palette.white}
+				/>
+			</MenuTrigger>
+			<MenuOptions
+				customStyles={{
+					optionsContainer: {
+						backgroundColor: palette.black,
+						borderTopStartRadius: 12,
+						borderTopEndRadius: 12,
+					},
+				}}
+			>
+				<MenuOption style={styles.menuItem} value={1}>
+					<Text style={styles.text}>Edit</Text>
+				</MenuOption>
+				<MenuOption style={styles.menuItem} value={2}>
+					<Text style={styles.text}>Delete</Text>
+				</MenuOption>
+			</MenuOptions>
+		</Menu>
+	);
+};
+
 export const CategoryMenu: React.FC<CategoryMenuProps> = ({
 	colorScheme,
 	setCategory,
 	category,
+	data,
+	setData,
 }) => {
 	let { height } = useWindowDimensions();
 	height = height * 0.75;
 	const handleCategorySelect = (value: string) => {
 		setCategory(value);
+		setData({ ...data, category: value });
 		console.log("Selected Category", value);
 	};
 	return (
