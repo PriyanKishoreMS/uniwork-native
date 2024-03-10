@@ -10,7 +10,7 @@ import { useColorScheme } from "react-native";
 import Colors, { palette } from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { router } from "expo-router";
 import { CategoryMenu } from "@/components/custom/DropDowns";
 import ImageSlider from "@/components/custom/ImageSlider";
@@ -32,6 +32,16 @@ interface loadingStates {
 	files: boolean | null;
 }
 
+interface FormData {
+	title: string;
+	description: string;
+	price: number;
+	category: string;
+	images?: string[];
+	files?: DocumentPickerResult["assets"];
+	scope: ScopeOption | null;
+}
+
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
 	var { height } = useWindowDimensions();
@@ -39,11 +49,39 @@ const CreateScreen = () => {
 	const [category, setCategory] = useState("");
 	const [images, setImages] = useState<string[]>([]);
 	const [files, setFiles] = useState<DocumentPickerResult["assets"]>(null);
-	const [scope, setScope] = useState<ScopeOption | null>(null);
+	const [scope, setScope] = useState<ScopeOption>({
+		label: "College",
+		value: "college",
+	});
 	const [loading, setLoading] = useState<loadingStates>({
 		images: null,
 		files: null,
 	});
+	const [data, setData] = useState<FormData>({
+		title: "",
+		description: "",
+		price: 0,
+		category: "",
+		scope: null,
+	});
+
+	const handleButtonDisabled = () => {
+		if (
+			data.title &&
+			data.description &&
+			data.price &&
+			data.category &&
+			data.scope
+		) {
+			setButtonDisabled(false);
+		} else {
+			setButtonDisabled(true);
+		}
+	};
+
+	useEffect(() => {
+		handleButtonDisabled();
+	}, [data]);
 
 	const handleImages = async () => {
 		try {
@@ -54,6 +92,10 @@ const CreateScreen = () => {
 			const result = await pickMultipleImages();
 			if (!result.canceled) {
 				setImages(result.assets.map(file => file.uri));
+				setData({
+					...data,
+					images: result.assets.map(file => file.uri),
+				});
 			}
 			console.log(loading.images, "loading");
 			console.log(images);
@@ -76,6 +118,10 @@ const CreateScreen = () => {
 			const result = await pickMultipleFiles();
 			if (!result.canceled) {
 				setFiles(result.assets);
+				setData({
+					...data,
+					files: result.assets,
+				});
 			}
 			console.log(result);
 		} catch (error) {
@@ -126,6 +172,10 @@ const CreateScreen = () => {
 					/>
 					<Pressable
 						disabled={buttonDisabled}
+						onPress={() => {
+							console.log(data);
+							router.push("/(tabs)/");
+						}}
 						style={[
 							styles.postButton,
 							{
@@ -147,6 +197,12 @@ const CreateScreen = () => {
 					<View style={styles.container}>
 						<TextInput
 							placeholder='Title'
+							onChangeText={text => {
+								setData({
+									...data,
+									title: text,
+								});
+							}}
 							multiline={true}
 							placeholderTextColor={palette.grayLight2}
 							style={[
@@ -174,6 +230,8 @@ const CreateScreen = () => {
 									colorScheme={colorScheme}
 									category={category}
 									setCategory={setCategory}
+									setData={setData}
+									data={data}
 								/>
 							</Pressable>
 							<View
@@ -194,6 +252,12 @@ const CreateScreen = () => {
 								/>
 								<TextInput
 									placeholder='Put a price'
+									onChangeText={text => {
+										setData({
+											...data,
+											price: parseInt(text),
+										});
+									}}
 									keyboardType='numeric'
 									maxLength={7}
 									placeholderTextColor={palette.grayLight2}
@@ -214,6 +278,12 @@ const CreateScreen = () => {
 
 						<TextInput
 							placeholder='What is your task about?'
+							onChangeText={text => {
+								setData({
+									...data,
+									description: text,
+								});
+							}}
 							multiline={true}
 							placeholderTextColor={palette.grayLight2}
 							style={[
@@ -368,6 +438,10 @@ const CreateScreen = () => {
 						onChange={value => {
 							console.log(value);
 							setScope(value);
+							setData({
+								...data,
+								scope: value,
+							});
 						}}
 						labelField={"label"}
 						placeholder='Scope'

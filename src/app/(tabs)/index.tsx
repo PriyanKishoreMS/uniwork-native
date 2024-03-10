@@ -6,6 +6,7 @@ import {
 	View as DefaultView,
 	TouchableOpacity,
 	TouchableNativeFeedback,
+	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tasks, TaskCategories } from "../../../temp/tasks";
@@ -21,6 +22,7 @@ import {
 	changeOpacity,
 } from "@/utils";
 import StarRating from "@/components/custom/StarRating";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
 import { TaskPopupMenu } from "@/components/custom/DropDowns";
@@ -63,8 +65,102 @@ interface tasksProps {
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	var { height } = useWindowDimensions();
-	const [selected, setSelected] = useState("All");
+	const [category, setCategory] = useState("All");
 	const [task, setTask] = useState<tasksProps[] | null>(tasks);
+	const [scope, setScope] = useState<"college" | "Public">("college");
+
+	const [isDisplayCategory, setIsDisplayCategory] = useState(false);
+	const [isDisplayScope, setIsDisplayScope] = useState(false);
+	const [animatedViewCategory] = useState(new Animated.Value(0));
+	const [animatedViewScope] = useState(new Animated.Value(0));
+	const [animatedViewInterpolateCategory] = useState(
+		animatedViewCategory.interpolate({
+			inputRange: [0, 180],
+			outputRange: [0, 100],
+		})
+	);
+
+	const [animatedViewInterpolateScope] = useState(
+		animatedViewScope.interpolate({
+			inputRange: [0, 180],
+			outputRange: [0, 100],
+		})
+	);
+	const animateDuration = 300;
+
+	const closeCategory = () => {
+		Animated.timing(animatedViewCategory, {
+			toValue: 0,
+			duration: animateDuration,
+			useNativeDriver: false,
+		}).start(() => {
+			setIsDisplayCategory(false);
+		});
+	};
+
+	const closeScope = () => {
+		Animated.timing(animatedViewScope, {
+			toValue: 0,
+			duration: animateDuration,
+			useNativeDriver: false,
+		}).start(() => {
+			setIsDisplayScope(false);
+		});
+	};
+
+	const handleShowCategories = () => {
+		if (isDisplayCategory) {
+			Animated.timing(animatedViewCategory, {
+				toValue: 0,
+				duration: animateDuration,
+				useNativeDriver: false,
+			}).start(() => {
+				setIsDisplayCategory(false);
+			});
+		} else {
+			if (isDisplayScope) {
+				closeScope(); // Close the scope view first
+			}
+			Animated.timing(animatedViewCategory, {
+				toValue: 100,
+				duration: animateDuration,
+				useNativeDriver: false,
+			}).start(() => {
+				setIsDisplayCategory(true);
+			});
+		}
+	};
+
+	const handleShowScope = () => {
+		if (isDisplayScope) {
+			Animated.timing(animatedViewScope, {
+				toValue: 0,
+				duration: animateDuration,
+				useNativeDriver: false,
+			}).start(() => {
+				setIsDisplayScope(false);
+			});
+		} else {
+			if (isDisplayCategory) {
+				closeCategory(); // Close the category view first
+			}
+
+			Animated.timing(animatedViewScope, {
+				toValue: 175,
+				duration: animateDuration,
+				useNativeDriver: false,
+			}).start(() => {
+				setIsDisplayScope(true);
+			});
+		}
+	};
+
+	useEffect(() => {
+		return () => {
+			animatedViewCategory.stopAnimation();
+			animatedViewScope.stopAnimation();
+		};
+	}, []);
 
 	return (
 		<SafeAreaView
@@ -89,71 +185,202 @@ const TasksScreen = () => {
 						flexDirection: "row",
 						justifyContent: "space-between",
 						alignItems: "center",
-						marginHorizontal: 8,
+						marginHorizontal: 16,
 						marginBottom: 8,
 					}}
 				>
-					<Text style={styles.title}>Categories</Text>
-					<TouchableOpacity
-						onPress={() => {
-							console.log("Profile");
-						}}
+					<View
 						style={{
-							borderWidth: 1.2,
+							flexDirection: "row",
+							alignItems: "center",
+							borderWidth: 1,
+							borderRadius: 12,
 							borderColor: palette.primary,
-							borderRadius: 18,
 						}}
 					>
-						<FastImage
-							source={{
-								uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-							}}
+						<Pressable
 							style={{
-								width: 32,
-								height: 32,
-								borderRadius: 16,
-								margin: 2,
+								padding: 4,
+								flexDirection: "row",
+								alignItems: "center",
 							}}
-						/>
-					</TouchableOpacity>
-				</DefaultView>
-				<FlatList
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					data={TaskCategories}
-					renderItem={({ item }) => (
-						<View
-							style={{
-								margin: 6,
-								borderRadius: 12,
-							}}
+							onPress={handleShowScope}
 						>
-							<TouchableOpacity
-								onPress={() => setSelected(item)}
+							{scope === "Public" ? (
+								<MaterialCommunityIcons
+									name='earth'
+									size={18}
+									color={palette.primary}
+									marginLeft={4}
+								/>
+							) : (
+								<MaterialCommunityIcons
+									name='school'
+									size={18}
+									color={palette.primary}
+									marginLeft={4}
+								/>
+							)}
+							<Text
 								style={{
-									borderWidth: 1,
-									borderRadius: 12,
-									borderColor: palette.primary,
-									padding: 8,
-									backgroundColor:
-										selected === item ? palette.primary : palette.transparent,
-									paddingHorizontal: 16,
-									alignItems: "center",
-									justifyContent: "center",
+									fontSize: 18,
+									paddingHorizontal: 8,
+									fontFamily: "InterBold",
+									textTransform: "capitalize",
 								}}
 							>
-								<Text
-									style={[
-										styles.para,
-										selected === item && { color: palette.black },
-									]}
+								{scope}
+							</Text>
+							{isDisplayScope ? (
+								<MaterialCommunityIcons
+									name='chevron-up'
+									size={24}
+									color={colorScheme === "dark" ? palette.white : palette.black}
+								/>
+							) : (
+								<MaterialCommunityIcons
+									name='chevron-down'
+									size={24}
+									color={colorScheme === "dark" ? palette.white : palette.black}
+								/>
+							)}
+						</Pressable>
+					</View>
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							gap: 8,
+						}}
+					>
+						<Pressable
+							style={{
+								padding: 4,
+								flexDirection: "row",
+								alignItems: "center",
+							}}
+							onPress={handleShowCategories}
+						>
+							<Text
+								style={{
+									fontSize: 12,
+									fontFamily: "InterSemiBold",
+									color: palette.primary,
+									paddingHorizontal: 8,
+								}}
+							>
+								{category}
+							</Text>
+							<Ionicons
+								name='options-outline'
+								size={24}
+								color={colorScheme === "dark" ? palette.white : palette.black}
+							/>
+						</Pressable>
+						<TouchableOpacity
+							onPress={() => {
+								console.log("Profile");
+							}}
+							style={{
+								borderWidth: 1.2,
+								borderColor: palette.primary,
+								borderRadius: 18,
+							}}
+						>
+							<FastImage
+								source={{
+									uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+								}}
+								style={{
+									width: 32,
+									height: 32,
+									borderRadius: 16,
+									margin: 2,
+								}}
+							/>
+						</TouchableOpacity>
+					</View>
+				</DefaultView>
+				<Animated.View
+					style={{
+						height: animatedViewInterpolateScope,
+						marginHorizontal: 16,
+						gap: 2,
+					}}
+				>
+					<TouchableOpacity
+						onPress={() => {
+							setScope("Public");
+							closeScope();
+						}}
+						style={styles.scopeTOContainer}
+					>
+						<MaterialCommunityIcons
+							name='earth'
+							size={24}
+							color={palette.primary}
+							style={{ top: 5 }}
+						/>
+						<Text style={styles.scopeText}>Public</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => {
+							setScope("college");
+							closeScope();
+						}}
+						style={styles.scopeTOContainer}
+					>
+						<MaterialCommunityIcons
+							name='school'
+							size={24}
+							color={palette.primary}
+							style={{ top: 5 }}
+						/>
+						<Text style={styles.scopeText}>College</Text>
+					</TouchableOpacity>
+				</Animated.View>
+				<Animated.View style={{ height: animatedViewInterpolateCategory }}>
+					<FlatList
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						data={TaskCategories}
+						renderItem={({ item }) => (
+							<View
+								style={{
+									margin: 6,
+									borderRadius: 12,
+								}}
+							>
+								<TouchableOpacity
+									onPress={() => {
+										setCategory(item);
+										closeCategory();
+									}}
+									style={{
+										borderWidth: 1,
+										borderRadius: 12,
+										borderColor: palette.primary,
+										padding: 8,
+										backgroundColor:
+											category === item ? palette.primary : palette.transparent,
+										paddingHorizontal: 16,
+										alignItems: "center",
+										justifyContent: "center",
+									}}
 								>
-									{item}
-								</Text>
-							</TouchableOpacity>
-						</View>
-					)}
-				/>
+									<Text
+										style={[
+											styles.para,
+											category === item && { color: palette.black },
+										]}
+									>
+										{item}
+									</Text>
+								</TouchableOpacity>
+							</View>
+						)}
+					/>
+				</Animated.View>
 			</View>
 			<View style={styles.container}>
 				<FlatList
@@ -353,6 +580,22 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "flex-end",
 		// alignItems: "center",
+	},
+	scopeText: {
+		fontSize: 18,
+		paddingHorizontal: 8,
+		paddingVertical: 4,
+		fontFamily: "Inter",
+	},
+	scopeTOContainer: {
+		flexDirection: "row",
+		gap: 8,
+		marginTop: 4,
+		// backgroundColor: palette.grayDark,
+		borderRadius: 12,
+		paddingLeft: 8,
+		padding: 2,
+		// justifyContent: "center",
 	},
 });
 
