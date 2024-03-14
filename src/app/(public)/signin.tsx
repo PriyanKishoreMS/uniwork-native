@@ -12,11 +12,11 @@ import { colleges } from "../../../temp/colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { User } from "@/components/contexts/AuthContext";
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { webClientId } from "../../../.config/firebase.config";
 import RadioButton from "@/components/custom/RadioButton";
+import { User } from "@/types";
 
 const SignInScreen = () => {
 	const colorScheme = useColorScheme();

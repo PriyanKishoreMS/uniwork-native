@@ -15,7 +15,7 @@ import Colors from "@/constants/Colors";
 import { AuthProvider } from "@/components/contexts/AuthContext";
 import { MenuProvider } from "react-native-popup-menu";
 import * as SystemUI from "expo-system-ui";
-
+import { useAuth } from "@/components/contexts/AuthContext";
 export const unstable_settings = {
 	initialRouteName: "(tabs)",
 };
@@ -49,7 +49,7 @@ export default function RootLayout() {
 }
 
 const InitialLayout = () => {
-	const [signedIn, setSignedIn] = useState(true);
+	const { signedIn } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {

@@ -26,24 +26,7 @@ import {
 import { tasks } from "../../../temp/tasks";
 import { categoryColors } from "@/constants/Colors";
 import StarRating from "@/components/custom/StarRating";
-
-enum TaskCategory {
-	AcademicAssistance = "Academic Assistance",
-	TutorHomeVirtual = "Tutor Home/Virtual",
-	BooksRentBuy = "Books Rent/Buy",
-	VehicleRent = "Vehicle Rent",
-	DocumentPrinting = "Document Printing",
-	ResumeCreation = "Resume Creation",
-	JobSearchSupport = "Job Search Support",
-	GroceryShopping = "Grocery Shopping",
-	Fashion = "Fashion",
-	SocialMedia = "Social Media",
-	ITSupport = "IT Support",
-	GraphicDesign = "Graphic Design",
-	Delivery = "Delivery",
-	RideSharing = "Ride sharing",
-	CateringCooking = "Catering/Cooking",
-}
+import { TaskCategory } from "@/types";
 
 // interface tasksProps {
 // 	id: number;

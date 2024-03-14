@@ -2,19 +2,15 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
 import { router } from "expo-router";
-
-export interface User {
-	name: string;
-	mobile: string;
-	college: string;
-	department: string;
-}
+import { User } from "@/types";
 
 interface AuthContextType {
 	user: User | null;
 	setUser: React.Dispatch<React.SetStateAction<User | null>>;
 	signIn: () => void;
 	signOut: () => void;
+	signedIn: boolean;
+	setSignedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +21,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
+	const [signedIn, setSignedIn] = useState(true);
 
 	const signIn = async () => {
 		try {
@@ -51,7 +48,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	};
 
 	return (
-		<AuthContext.Provider value={{ user, setUser, signIn, signOut }}>
+		<AuthContext.Provider
+			value={{ user, setUser, signIn, signOut, signedIn, setSignedIn }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

@@ -21,26 +21,11 @@ import {
 } from "@/utils";
 import { DocumentPickerResult } from "expo-document-picker";
 import { Dropdown } from "react-native-element-dropdown";
-
-interface ScopeOption {
-	label: string;
-	value: string;
-}
-
-interface loadingStates {
-	images: boolean | null;
-	files: boolean | null;
-}
-
-interface FormData {
-	title: string;
-	description: string;
-	price: number;
-	category: string;
-	images?: string[];
-	files?: DocumentPickerResult["assets"];
-	scope: ScopeOption | null;
-}
+import {
+	ScopeOption,
+	PostPageLoadingStates as loadingStates,
+	FormData,
+} from "@/types";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();

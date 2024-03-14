@@ -22,7 +22,7 @@ const GetProfile = () => {
 		mobile: "",
 	});
 
-	const { user, setUser, signOut } = useAuth();
+	const { user, setUser, signOut, setSignedIn } = useAuth();
 
 	const handleImage = async () => {
 		console.log("\nImage");
@@ -138,8 +138,8 @@ const GetProfile = () => {
 						<Pressable
 							style={styles.finishButton}
 							onPress={() => {
-								signOut();
-								router.push("/");
+								setSignedIn(true);
+								router.replace("/");
 							}}
 						>
 							<DView
