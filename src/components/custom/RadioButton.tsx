@@ -7,11 +7,11 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 const radioButtonSize = 16;
 
-interface RadioButtonProps {
+type RadioButtonProps = {
 	isSelected: boolean;
 	onPress: () => void;
 	text: string;
-}
+};
 
 const RadioButton: React.FC<RadioButtonProps> = ({
 	isSelected,

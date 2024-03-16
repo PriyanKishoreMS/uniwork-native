@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
 import {
 	convertColorIntensity,
-	formatTime,
+	formatPastTime,
 	limitDescription,
 	changeOpacity,
 } from "@/utils";
@@ -463,7 +463,7 @@ const TasksScreen = () => {
 									<View style={styles.footer}>
 										<View>
 											<Text style={styles.time}>
-												{formatTime(item.created_at)}
+												{formatPastTime(item.created_at)}
 											</Text>
 										</View>
 									</View>

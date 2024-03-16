@@ -26,6 +26,7 @@ import {
 	PostPageLoadingStates as loadingStates,
 	FormData,
 } from "@/types";
+import DateTimePicker from "@/components/DateTimePicker";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
@@ -47,6 +48,7 @@ const CreateScreen = () => {
 		description: "",
 		price: 0,
 		category: "",
+		expiry: null,
 		scope: null,
 	});
 
@@ -178,192 +180,210 @@ const CreateScreen = () => {
 						<Text style={styles.postButtonText}>Post</Text>
 					</Pressable>
 				</View>
-				<ScrollView>
-					<View style={styles.container}>
-						<TextInput
-							placeholder='Title'
-							onChangeText={text => {
-								setData({
-									...data,
-									title: text,
-								});
-							}}
-							multiline={true}
-							placeholderTextColor={palette.grayLight2}
-							style={[
-								styles.textInput,
-								{
-									color: colorScheme === "dark" ? palette.white : palette.black,
-									fontFamily: "InterSemiBold",
-									fontSize: 30,
-									marginBottom: 12,
-								},
-							]}
-							selectionColor={
-								colorScheme === "dark" ? palette.white : palette.black
-							}
-						/>
-						<View
-							style={{
-								flexDirection: "row",
-								alignItems: "center",
-								justifyContent: "space-between",
-							}}
-						>
-							<Pressable>
-								<CategoryMenu
-									colorScheme={colorScheme}
-									category={category}
-									setCategory={setCategory}
-									setData={setData}
-									data={data}
-								/>
-							</Pressable>
-							<View
+				<ScrollView
+					contentContainerStyle={{
+						flexGrow: 1,
+						justifyContent: "space-between",
+					}}
+				>
+					<View>
+						<View style={styles.container}>
+							<TextInput
+								placeholder='Title'
+								onChangeText={text => {
+									setData({
+										...data,
+										title: text,
+									});
+								}}
+								multiline={true}
+								placeholderTextColor={palette.grayLight2}
 								style={[
-									styles.priceView,
+									styles.textInput,
 									{
-										backgroundColor:
-											colorScheme === "dark"
-												? palette.grayDark
-												: palette.transparent,
+										color:
+											colorScheme === "dark" ? palette.white : palette.black,
+										fontFamily: "InterSemiBold",
+										fontSize: 30,
+										marginBottom: 12,
 									},
 								]}
+								selectionColor={
+									colorScheme === "dark" ? palette.white : palette.black
+								}
+							/>
+							<View
+								style={{
+									flexDirection: "row",
+									alignItems: "center",
+									justifyContent: "space-between",
+								}}
 							>
-								<MaterialIcons
-									name='currency-rupee'
-									size={20}
-									color={convertColorIntensity(palette.green, 20)}
-								/>
-								<TextInput
-									placeholder='Put a price'
-									onChangeText={text => {
-										setData({
-											...data,
-											price: parseInt(text),
-										});
-									}}
-									keyboardType='numeric'
-									maxLength={7}
-									placeholderTextColor={palette.grayLight2}
-									selectionColor={
-										colorScheme === "dark" ? palette.white : palette.black
-									}
-									style={{
+								<Pressable>
+									<CategoryMenu
+										colorScheme={colorScheme}
+										category={category}
+										setCategory={setCategory}
+										setData={setData}
+										data={data}
+									/>
+								</Pressable>
+								<View
+									style={[
+										styles.priceView,
+										{
+											backgroundColor:
+												colorScheme === "dark"
+													? palette.grayDark
+													: palette.transparent,
+										},
+									]}
+								>
+									<MaterialIcons
+										name='currency-rupee'
+										size={20}
+										color={convertColorIntensity(palette.green, 20)}
+									/>
+									<TextInput
+										placeholder='Put a price'
+										onChangeText={text => {
+											setData({
+												...data,
+												price: parseInt(text),
+											});
+										}}
+										keyboardType='numeric'
+										maxLength={7}
+										placeholderTextColor={palette.grayLight2}
+										selectionColor={
+											colorScheme === "dark" ? palette.white : palette.black
+										}
+										style={{
+											color:
+												colorScheme === "dark" ? palette.white : palette.black,
+											fontFamily: "Inter",
+											padding: 2,
+											borderColor: palette.green,
+											fontSize: 16,
+										}}
+									/>
+								</View>
+							</View>
+
+							<TextInput
+								placeholder='What is your task about?'
+								onChangeText={text => {
+									setData({
+										...data,
+										description: text,
+									});
+								}}
+								multiline={true}
+								placeholderTextColor={palette.grayLight2}
+								style={[
+									styles.textInput,
+									{
 										color:
 											colorScheme === "dark" ? palette.white : palette.black,
 										fontFamily: "Inter",
-										padding: 2,
-										borderColor: palette.green,
-										fontSize: 16,
-									}}
-								/>
+										fontSize: 18,
+									},
+								]}
+								selectionColor={
+									colorScheme === "dark" ? palette.white : palette.black
+								}
+							/>
+						</View>
+						{loading.images === true ? (
+							<View style={styles.loader}>
+								<ActivityIndicator size='large' color={palette.primary} />
+								<Text style={styles.loadingText}>Loading Images</Text>
 							</View>
-						</View>
-
-						<TextInput
-							placeholder='What is your task about?'
-							onChangeText={text => {
-								setData({
-									...data,
-									description: text,
-								});
-							}}
-							multiline={true}
-							placeholderTextColor={palette.grayLight2}
-							style={[
-								styles.textInput,
-								{
-									color: colorScheme === "dark" ? palette.white : palette.black,
-									fontFamily: "Inter",
-									fontSize: 18,
-								},
-							]}
-							selectionColor={
-								colorScheme === "dark" ? palette.white : palette.black
-							}
-						/>
-					</View>
-					{loading.images === true ? (
-						<View style={styles.loader}>
-							<ActivityIndicator size='large' color={palette.primary} />
-							<Text style={styles.loadingText}>Loading Images</Text>
-						</View>
-					) : (
-						images.length > 0 && (
-							<View
-								style={{
-									marginVertical: 16,
-								}}
-							>
-								<ImageSlider images={images} />
-							</View>
-						)
-					)}
-					{loading.files === true ? (
-						<View style={styles.loader}>
-							<ActivityIndicator size='large' color={palette.primary} />
-							<Text style={styles.loadingText}>Loading Files</Text>
-						</View>
-					) : (
-						files && (
-							<View
-								style={{
-									margin: 16,
-								}}
-							>
-								<Text
+						) : (
+							images.length > 0 && (
+								<View
 									style={{
-										fontFamily: "InterSemiBold",
-										fontSize: 20,
-										color:
-											colorScheme === "dark" ? palette.white : palette.black,
+										marginVertical: 16,
 									}}
 								>
-									Files
-								</Text>
-								<View style={styles.filesContainer}>
-									{files.map((file, index) => (
-										<View
-											key={index}
-											style={[
-												styles.filesBox,
-												{
-													backgroundColor:
-														colorScheme === "dark"
-															? palette.grayDark
-															: palette.grayLight2,
-												},
-											]}
-										>
-											<MaterialCommunityIcons
-												name='file-document-outline'
-												size={24}
-												color={
-													colorScheme === "dark" ? palette.white : palette.black
-												}
-												style={{
-													marginRight: 4,
-												}}
-											/>
-											<Text
-												style={{
-													fontFamily: "Inter",
-													fontSize: 16,
-													color:
+									<ImageSlider images={images} />
+								</View>
+							)
+						)}
+						{loading.files === true ? (
+							<View style={styles.loader}>
+								<ActivityIndicator size='large' color={palette.primary} />
+								<Text style={styles.loadingText}>Loading Files</Text>
+							</View>
+						) : (
+							files && (
+								<View
+									style={{
+										margin: 16,
+									}}
+								>
+									<Text
+										style={{
+											fontFamily: "InterSemiBold",
+											fontSize: 20,
+											color:
+												colorScheme === "dark" ? palette.white : palette.black,
+										}}
+									>
+										Files
+									</Text>
+									<View style={styles.filesContainer}>
+										{files.map((file, index) => (
+											<View
+												key={index}
+												style={[
+													styles.filesBox,
+													{
+														backgroundColor:
+															colorScheme === "dark"
+																? palette.grayDark
+																: palette.grayLight2,
+													},
+												]}
+											>
+												<MaterialCommunityIcons
+													name='file-document-outline'
+													size={24}
+													color={
 														colorScheme === "dark"
 															? palette.white
-															: palette.black,
-												}}
-											>
-												{file.name}
-											</Text>
-										</View>
-									))}
+															: palette.black
+													}
+													style={{
+														marginRight: 4,
+													}}
+												/>
+												<Text
+													style={{
+														fontFamily: "Inter",
+														fontSize: 16,
+														color:
+															colorScheme === "dark"
+																? palette.white
+																: palette.black,
+													}}
+												>
+													{file.name}
+												</Text>
+											</View>
+										))}
+									</View>
 								</View>
-							</View>
-						)
-					)}
+							)
+						)}
+					</View>
+					<View>
+						<DateTimePicker
+							colorScheme={colorScheme}
+							setData={setData}
+							data={data}
+						/>
+					</View>
 				</ScrollView>
 				<View
 					style={{

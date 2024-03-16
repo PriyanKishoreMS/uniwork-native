@@ -17,6 +17,7 @@ export type FormData = {
 	images?: string[];
 	files?: DocumentPickerResult["assets"];
 	scope: ScopeOption | null;
+	expiry?: Date | null;
 };
 
 export enum TaskCategory {

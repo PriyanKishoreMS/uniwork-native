@@ -12,41 +12,7 @@ import { StyleSheet, View } from "react-native";
 import { Pressable, Text } from "../Themed";
 import { convertColorIntensity } from "../../utils";
 import { categoryColors } from "@/constants/Colors";
-import { DocumentPickerResult } from "expo-document-picker";
-import SlideInMenuFromTop from "./SlideInMenuFromTop";
-
-interface ScopeOption {
-	label: string;
-	value: string;
-}
-
-interface FormData {
-	title: string;
-	description: string;
-	price: number;
-	category: string;
-	images?: string[];
-	files?: DocumentPickerResult["assets"];
-	scope: ScopeOption | null;
-}
-
-enum TaskCategory {
-	AcademicAssistance = "Academic Assistance",
-	TutorHomeVirtual = "Tutor Home/Virtual",
-	BooksRentBuy = "Books Rent/Buy",
-	VehicleRent = "Vehicle Rent",
-	DocumentPrinting = "Document Printing",
-	ResumeCreation = "Resume Creation",
-	JobSearchSupport = "Job Search Support",
-	GroceryShopping = "Grocery Shopping",
-	Fashion = "Fashion",
-	SocialMedia = "Social Media",
-	ITSupport = "IT Support",
-	GraphicDesign = "Graphic Design",
-	Delivery = "Delivery",
-	RideSharing = "Ride sharing",
-	CateringCooking = "Catering/Cooking",
-}
+import { FormData, ScopeOption, TaskCategory } from "@/types";
 
 type TaskPopupMenuProps = {
 	colorScheme: ColorSchemeName;
@@ -59,14 +25,6 @@ type CategoryMenuProps = {
 	setCategory: (category: string) => void;
 	data: FormData;
 	setData: React.Dispatch<React.SetStateAction<FormData>>;
-};
-interface ScopeOption {
-	label: string;
-	value: string;
-}
-
-type ScopeMenuProps = {
-	scope: ScopeOption;
 };
 
 export const TaskPopupMenu: React.FC<TaskPopupMenuProps> = ({
