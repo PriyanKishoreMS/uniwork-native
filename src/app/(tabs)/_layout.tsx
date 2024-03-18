@@ -56,13 +56,14 @@ export default function TabLayout() {
 					headerTitle: "UniWork",
 					headerTitleAlign: "center",
 					tabBarShowLabel: false,
+					headerShown: false,
 					headerTitleStyle: {
 						fontFamily: "InterSemiBold",
 					},
 					headerStyle: {
 						backgroundColor:
 							colorScheme === "dark"
-								? Colors.dark.background
+								? Colors.dark.tabBackground
 								: Colors.light.background,
 					},
 					tabBarIcon: ({ color }) => (
@@ -120,6 +121,7 @@ export default function TabLayout() {
 				options={{
 					headerTitle: "UniWork",
 					headerTitleAlign: "center",
+					headerShown: false,
 					tabBarShowLabel: false,
 					headerTitleStyle: {
 						fontFamily: "InterSemiBold",

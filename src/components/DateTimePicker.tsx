@@ -16,10 +16,13 @@ type DateTimePickerProps = {
 	setData: React.Dispatch<React.SetStateAction<FormData>>;
 };
 
-const DateTimePicker: React.FC<DateTimePickerProps> = () => {
+const DateTimePicker: React.FC<DateTimePickerProps> = ({
+	colorScheme,
+	data,
+	setData,
+}) => {
 	const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 	const [dateTime, setDateTime] = useState<string>("");
-
 	const showDatePicker = () => {
 		setDatePickerVisibility(true);
 	};
@@ -52,6 +55,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = () => {
 				<DateTimePickerModal
 					isVisible={isDatePickerVisible}
 					mode='datetime'
+					isDarkModeEnabled={colorScheme === "dark" ? true : false}
 					onConfirm={handleConfirm}
 					onCancel={hideDatePicker}
 				/>
