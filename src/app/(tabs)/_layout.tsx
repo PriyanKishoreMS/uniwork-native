@@ -24,6 +24,13 @@ export default function TabLayout() {
 						colorScheme === "dark"
 							? Colors.dark.background
 							: Colors.light.background,
+					// backgroundColor:
+					// 	route.name === "profile"
+					// 		? getRandomColor()
+					// 		: colorScheme === "dark"
+					// 		? Colors.dark.background
+					// 		: Colors.light.background,
+					// display: route.name === "create" ? "none" : "flex",
 					display: route.name === "create" ? "none" : "flex",
 				},
 			})}

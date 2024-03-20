@@ -132,7 +132,7 @@ const TasksScreen = () => {
 	return (
 		<SafeAreaView
 			style={{
-				height: height,
+				flex: 1,
 				backgroundColor:
 					colorScheme === "dark"
 						? Colors.dark.background
@@ -160,7 +160,7 @@ const TasksScreen = () => {
 						style={{
 							flexDirection: "row",
 							alignItems: "center",
-							borderWidth: 1,
+							// borderWidth: 1,
 							borderRadius: 12,
 							borderColor: palette.primary,
 						}}

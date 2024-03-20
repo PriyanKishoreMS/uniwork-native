@@ -75,7 +75,7 @@ const PeopleScreen = () => {
 								>
 									<FastImage
 										style={{ width: 32, height: 32, borderRadius: 16 }}
-										source={{ uri: user.avatar + `&n=${Math.random() * 100}` }}
+										source={{ uri: user.avatar + `&n=${Math.random() * 78}` }}
 									/>
 									<Text style={[styles.textFont]}>{user.name}</Text>
 								</View>

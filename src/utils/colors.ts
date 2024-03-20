@@ -1,6 +1,9 @@
 import { palette } from "@/constants/Colors";
 
-export function convertColorIntensity(color: string, percent: number): string {
+export const convertColorIntensity = (
+	color: string,
+	percent: number
+): string => {
 	if (color === undefined) {
 		color = palette.primary;
 	}
@@ -25,9 +28,18 @@ export function convertColorIntensity(color: string, percent: number): string {
 	var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
 
 	return "#" + RR + GG + BB;
-}
+};
 
 export function changeOpacity(color: string, opacity: number): string {
 	var alpha = Math.round(opacity * 255);
 	return color + alpha.toString(16);
 }
+
+export const getRandomColor = () => {
+	var letters = "BCDEF".split("");
+	var color = "#";
+	for (var i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * letters.length)];
+	}
+	return color;
+};
