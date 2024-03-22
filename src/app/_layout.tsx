@@ -19,6 +19,7 @@ import { useAuth } from "@/components/contexts/AuthContext";
 export const unstable_settings = {
 	initialRouteName: "(tabs)",
 };
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,16 +50,26 @@ export default function RootLayout() {
 }
 
 const InitialLayout = () => {
-	const { signedIn } = useAuth();
 	const router = useRouter();
+	const { signedIn, checkSignedIn } = useAuth();
 
 	useEffect(() => {
-		if (signedIn) {
-			router.replace("/(tabs)/");
-		} else {
-			router.replace("/getstarted");
-		}
-	}, [signedIn]);
+		checkSignedIn().then(res => {
+			if (res) {
+				router.replace("/(tabs)/");
+			} else {
+				router.replace("/getstarted");
+			}
+		});
+	}, []);
+
+	// useEffect(() => {
+	// 	if (signedIn) {
+	// 		router.replace("/(tabs)/");
+	// 	} else {
+	// 		router.replace("/getstarted");
+	// 	}
+	// }, [signedIn]);
 
 	return (
 		<Stack
@@ -76,14 +87,17 @@ const RootLayoutNav = () => {
 		: SystemUI.setBackgroundColorAsync(Colors.light.background);
 	DefaultTheme.colors.background =
 		colorScheme === "dark" ? Colors.dark.background : Colors.light.background;
+	const queryClient = new QueryClient();
 
 	return (
 		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<AuthProvider>
-				<MenuProvider>
-					<InitialLayout />
-				</MenuProvider>
-			</AuthProvider>
+			<QueryClientProvider client={queryClient}>
+				<AuthProvider>
+					<MenuProvider>
+						<InitialLayout />
+					</MenuProvider>
+				</AuthProvider>
+			</QueryClientProvider>
 		</ThemeProvider>
 	);
 };

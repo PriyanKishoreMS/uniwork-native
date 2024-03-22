@@ -138,7 +138,6 @@ const GetProfile = () => {
 						<Pressable
 							style={styles.finishButton}
 							onPress={() => {
-								setSignedIn(true);
 								router.replace("/");
 							}}
 						>

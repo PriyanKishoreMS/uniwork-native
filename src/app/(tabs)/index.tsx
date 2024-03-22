@@ -31,7 +31,6 @@ import { tasksProps, TaskCategory } from "@/types";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
-	var { height } = useWindowDimensions();
 	const [category, setCategory] = useState("All");
 	const [task, setTask] = useState<tasksProps[] | null>(tasks);
 	const [scope, setScope] = useState<"college" | "Public">("college");

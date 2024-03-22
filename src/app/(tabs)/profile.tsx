@@ -15,6 +15,7 @@ import { convertColorIntensity, getRandomColor } from "@/utils";
 import FastImage from "react-native-fast-image";
 import { MaterialIcons } from "@expo/vector-icons";
 import StarRating from "@/components/custom/StarRating";
+import { useAuth } from "@/components/contexts/AuthContext";
 
 const ProfileScreen = () => {
 	const colorScheme = useColorScheme();
@@ -25,6 +26,7 @@ const ProfileScreen = () => {
 	const imageWidthHeight = 110;
 	const imageBorderRadius = imageWidthHeight / 2;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
+	const { signOut } = useAuth();
 
 	return (
 		<Fragment>
@@ -166,6 +168,18 @@ const ProfileScreen = () => {
 								</Text>
 							</View>
 						</View>
+						<Pressable
+							onPress={async () => {
+								await signOut();
+							}}
+							style={{
+								width: "100%",
+								backgroundColor: "red",
+								height: 50,
+							}}
+						>
+							<Text>Logout</Text>
+						</Pressable>
 					</View>
 				</View>
 			</ScrollView>

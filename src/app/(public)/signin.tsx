@@ -8,20 +8,51 @@ import {
 import React, { useEffect, useState } from "react";
 import { Text, View, Pressable } from "@/components/Themed";
 import { SelectCountry } from "react-native-element-dropdown";
-import { colleges } from "../../../temp/colleges";
+import { colleges } from "@/../temp/colleges";
 import { palette } from "@/constants/Colors";
 import { AntDesign } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
-const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { webClientId } from "../../../.config/firebase.config";
+import { webClientId } from "@/../.config/firebase.config";
 import RadioButton from "@/components/custom/RadioButton";
 import { User } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import auth from "@react-native-firebase/auth";
+import { ipAddrPort } from "@/../temp/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 const SignInScreen = () => {
+	const handleLogin = async () => {
+		try {
+			await signIn("/");
+			const response = await fetch(ipAddrPort + "/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: auth().currentUser?.email,
+				}),
+			});
+			const data = await response.json();
+			return data;
+		} catch (err) {
+			console.log(err);
+		}
+	};
 	const colorScheme = useColorScheme();
 	const { user, setUser, signIn } = useAuth();
 	const [haveAccount, setHaveAccount] = useState(false);
+	const { mutateAsync: addUser } = useMutation({
+		mutationFn: handleLogin,
+		onSuccess: async data => {
+			await AsyncStorage.setItem("accessToken", data.accessToken);
+			await AsyncStorage.setItem("refreshToken", data.refreshToken);
+			await AsyncStorage.setItem("user", JSON.stringify(data.data));
+			console.log(data, "Data from login");
+		},
+	});
 
 	useEffect(() => {
 		GoogleSignin.configure({
@@ -108,7 +139,12 @@ const SignInScreen = () => {
 								margin: 16,
 							}}
 						>
-							<Pressable onPress={signIn} style={styles.googleButton}>
+							<Pressable
+								onPress={() => {
+									signIn("/getprofile");
+								}}
+								style={styles.googleButton}
+							>
 								<AntDesign
 									name='google'
 									size={21}
@@ -123,6 +159,29 @@ const SignInScreen = () => {
 									}}
 								>
 									Sign in with Google
+								</Text>
+							</Pressable>
+
+							<Pressable
+								onPress={async () => {
+									await addUser();
+								}}
+								style={styles.googleButton}
+							>
+								<AntDesign
+									name='google'
+									size={21}
+									color={palette.white}
+									style={{ marginRight: 16 }}
+								/>
+								<Text
+									style={{
+										fontSize: 16,
+										color: palette.white,
+										fontFamily: "Inter",
+									}}
+								>
+									Login with Google
 								</Text>
 							</Pressable>
 						</View>
@@ -199,6 +258,7 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 	},
 	googleButton: {
+		marginBottom: 16,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",

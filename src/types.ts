@@ -56,7 +56,9 @@ export type tasksProps = {
 
 export type User = {
 	name: string;
+	email: string;
 	mobile: string;
 	college: string;
-	department: string;
+	dept: string;
+	avatar?: string;
 };
