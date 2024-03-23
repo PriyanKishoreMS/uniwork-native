@@ -11,7 +11,6 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { tasks, TaskCategories } from "../../../temp/tasks";
 import Colors, { palette } from "@/constants/Colors";
-import { useWindowDimensions } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useEffect, useState } from "react";
 import ImageSlider from "@/components/custom/ImageSlider";
@@ -26,14 +25,18 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
 import { TaskPopupMenu } from "@/components/custom/DropDowns";
-import { Link, router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { tasksProps, TaskCategory } from "@/types";
+import { useAuth } from "@/components/contexts/AuthContext";
+import SignInScreen from "../(public)/signin";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	const [category, setCategory] = useState("All");
 	const [task, setTask] = useState<tasksProps[] | null>(tasks);
 	const [scope, setScope] = useState<"college" | "Public">("college");
+	const { signedIn, isLoading } = useAuth();
 
 	const [isDisplayCategory, setIsDisplayCategory] = useState(false);
 	const [isDisplayScope, setIsDisplayScope] = useState(false);
@@ -127,6 +130,15 @@ const TasksScreen = () => {
 			animatedViewScope.stopAnimation();
 		};
 	}, []);
+
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (!signedIn) {
+		console.log(signedIn, "signedIn status");
+		return <Redirect href={"/(public)/signin"} />;
+	}
 
 	return (
 		<SafeAreaView

@@ -6,9 +6,21 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { leaderBoard } from "../../../temp/users";
 import { Fragment } from "react";
 import FastImage from "react-native-fast-image";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { Redirect } from "expo-router";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const PeopleScreen = () => {
+	const { signedIn, isLoading } = useAuth();
 	const colorScheme = useColorScheme();
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (!signedIn) {
+		console.log(signedIn, "signedIn status");
+		return <Redirect href={"/(public)/signin"} />;
+	}
 	return (
 		<Fragment>
 			{/* <SafeAreaView

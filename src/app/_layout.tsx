@@ -10,7 +10,6 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "@/components/useColorScheme";
 export { ErrorBoundary } from "expo-router";
-import { useState } from "react";
 import Colors from "@/constants/Colors";
 import { AuthProvider } from "@/components/contexts/AuthContext";
 import { MenuProvider } from "react-native-popup-menu";
@@ -62,14 +61,6 @@ const InitialLayout = () => {
 			}
 		});
 	}, []);
-
-	// useEffect(() => {
-	// 	if (signedIn) {
-	// 		router.replace("/(tabs)/");
-	// 	} else {
-	// 		router.replace("/getstarted");
-	// 	}
-	// }, [signedIn]);
 
 	return (
 		<Stack

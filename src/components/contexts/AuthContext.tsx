@@ -13,6 +13,7 @@ interface AuthContextType {
 	signedIn: Boolean;
 	setSignedIn: React.Dispatch<React.SetStateAction<Boolean>>;
 	checkSignedIn: () => Promise<Boolean>;
+	isLoading: Boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,61 +25,79 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [signedIn, setSignedIn] = useState<Boolean>(false);
+	const [isLoading, setIsLoading] = useState<Boolean>(true);
 
 	const signIn = async (route: "/getprofile" | "/") => {
 		try {
+			setIsLoading(true);
 			await GoogleSignin.hasPlayServices();
 			const userInfo = await GoogleSignin.signIn();
 			const googleCredential = auth.GoogleAuthProvider.credential(
 				userInfo.idToken
 			);
 			await auth().signInWithCredential(googleCredential);
+			setSignedIn(true);
 			// console.log(userInfo);
 		} catch (error) {
 			console.log(error);
 		} finally {
-			router.push(route);
+			router.replace(route);
+			setIsLoading(false);
 		}
 	};
 
 	const signOut = async () => {
-		router.replace("/signin");
-		await AsyncStorage.removeItem("accessToken");
-		await AsyncStorage.removeItem("refreshToken");
-		await AsyncStorage.removeItem("user");
-		GoogleSignin.revokeAccess();
-		GoogleSignin.signOut().then(() => {
-			setUser(null);
-			setSignedIn(false);
-			console.log("Signed out");
-		});
+		try {
+			setIsLoading(true);
+			router.replace("/signin");
+			await AsyncStorage.removeItem("accessToken");
+			await AsyncStorage.removeItem("refreshToken");
+			await AsyncStorage.removeItem("user");
+			GoogleSignin.revokeAccess();
+			GoogleSignin.signOut().then(() => {
+				setUser(null);
+				setSignedIn(false);
+				console.log("Signed out");
+			});
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const checkSignedIn = async () => {
-		const user = await AsyncStorage.getItem("user");
-		const accessToken = await AsyncStorage.getItem("accessToken");
-		const refreshToken = await AsyncStorage.getItem("refreshToken");
-		console.log(
-			user,
-			accessToken,
-			refreshToken,
-			"User, accessToken, refreshToken"
-		);
-		if (user && accessToken && refreshToken) {
-			const userData: User = JSON.parse(user);
-			console.log(userData, "User data");
-			setUser({
-				name: userData.name,
-				email: userData.email,
-				dept: userData.dept,
-				mobile: userData.mobile,
-				avatar: userData?.avatar,
-				college: userData.college,
-			});
-			setSignedIn(true);
-			return true;
+		try {
+			const user = await AsyncStorage.getItem("user");
+			const accessToken = await AsyncStorage.getItem("accessToken");
+			const refreshToken = await AsyncStorage.getItem("refreshToken");
+			console.log(
+				user,
+				accessToken,
+				refreshToken,
+				"User, accessToken, refreshToken"
+			);
+			if (user && accessToken && refreshToken) {
+				const userData: User = JSON.parse(user);
+				console.log(userData, "User data");
+				setSignedIn(true);
+				setUser({
+					name: userData.name,
+					email: userData.email,
+					dept: userData.dept,
+					mobile: userData.mobile,
+					avatar: userData?.avatar,
+					college: userData.college,
+				});
+				return true;
+			}
+			return false;
+		} catch (error) {
+			console.log(error);
+			return false;
+		} finally {
+			setIsLoading(false);
 		}
-		return false;
 	};
 
 	return (
@@ -91,6 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				signedIn,
 				setSignedIn,
 				checkSignedIn,
+				isLoading,
 			}}
 		>
 			{children}

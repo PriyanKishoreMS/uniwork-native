@@ -1,8 +1,21 @@
 import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { Redirect } from "expo-router";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const NotificationScreen = () => {
+	const { signedIn, isLoading } = useAuth();
+
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (!signedIn) {
+		console.log(signedIn, "signedIn status");
+		return <Redirect href={"/(public)/signin"} />;
+	}
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Notification Screen</Text>

@@ -16,6 +16,8 @@ import FastImage from "react-native-fast-image";
 import { MaterialIcons } from "@expo/vector-icons";
 import StarRating from "@/components/custom/StarRating";
 import { useAuth } from "@/components/contexts/AuthContext";
+import { Redirect } from "expo-router";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const ProfileScreen = () => {
 	const colorScheme = useColorScheme();
@@ -26,8 +28,16 @@ const ProfileScreen = () => {
 	const imageWidthHeight = 110;
 	const imageBorderRadius = imageWidthHeight / 2;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
-	const { signOut } = useAuth();
+	const { signOut, isLoading, signedIn } = useAuth();
 
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (!signedIn) {
+		console.log(signedIn, "signedIn status");
+		return <Redirect href={"/(public)/signin"} />;
+	}
 	return (
 		<Fragment>
 			<SafeAreaView style={{ flex: 0, backgroundColor: bannerColor }} />

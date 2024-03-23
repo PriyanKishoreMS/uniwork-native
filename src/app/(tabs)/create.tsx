@@ -27,10 +27,14 @@ import {
 	FormData,
 } from "@/types";
 import DateTimePicker from "@/components/DateTimePicker";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { Redirect } from "expo-router";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
 	var { height } = useWindowDimensions();
+	const { signedIn, isLoading } = useAuth();
 	const [buttonDisabled, setButtonDisabled] = useState(true);
 	const [category, setCategory] = useState("");
 	const [images, setImages] = useState<string[]>([]);
@@ -124,6 +128,15 @@ const CreateScreen = () => {
 	const handleGoBack = () => {
 		router.back();
 	};
+
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (!signedIn) {
+		console.log(signedIn, "signedIn status");
+		return <Redirect href={"/(public)/signin"} />;
+	}
 
 	return (
 		<SafeAreaView
