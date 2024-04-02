@@ -1,4 +1,5 @@
 import { DocumentPickerResult } from "expo-document-picker";
+import { ImagePickerResult } from "expo-image-picker";
 export type ScopeOption = {
 	label: string;
 	value: string;
@@ -14,10 +15,10 @@ export type FormData = {
 	description: string;
 	price: number;
 	category: string;
-	images?: string[];
+	images?: ImagePickerResult["assets"];
 	files?: DocumentPickerResult["assets"];
-	scope: ScopeOption | null;
-	expiry?: Date | null;
+	scope: ScopeOption | null
+	expiry: string;
 };
 
 export enum TaskCategory {

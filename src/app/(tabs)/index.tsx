@@ -9,7 +9,7 @@ import {
 	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { tasks, TaskCategories } from "../../../temp/tasks";
+import { tasks as tasksTemp, TaskCategories } from "../../../temp/tasks";
 import Colors, { palette } from "@/constants/Colors";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useEffect, useState } from "react";
@@ -20,6 +20,7 @@ import {
 	limitDescription,
 	changeOpacity,
 } from "@/utils";
+
 import StarRating from "@/components/custom/StarRating";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { categoryColors } from "@/constants/Colors";
@@ -28,15 +29,41 @@ import { TaskPopupMenu } from "@/components/custom/DropDowns";
 import { Redirect, router } from "expo-router";
 import { tasksProps, TaskCategory } from "@/types";
 import { useAuth } from "@/components/contexts/AuthContext";
-import SignInScreen from "../(public)/signin";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useQuery } from "@tanstack/react-query";
+import { ipAddrPort } from "../../../temp/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	const [category, setCategory] = useState("All");
-	const [task, setTask] = useState<tasksProps[] | null>(tasks);
+	const [task, setTask] = useState<tasksProps[] | null>(tasksTemp);
 	const [scope, setScope] = useState<"college" | "Public">("college");
 	const { signedIn, isLoading } = useAuth();
+
+	const fetchTasks = async () => {
+		try {
+			// console.log("starting here");
+			const accessToken = await AsyncStorage.getItem("accessToken");
+			// console.log(accessToken, "accessToken");
+			const response = await fetch(`${ipAddrPort}/task`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			// console.log("response", response);
+			const data = await response.json();
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const { data: tasks, isLoading: isLoadingTaks } = useQuery({
+		queryKey: ["tasks"],
+		queryFn: fetchTasks,
+	});
 
 	const [isDisplayCategory, setIsDisplayCategory] = useState(false);
 	const [isDisplayScope, setIsDisplayScope] = useState(false);
@@ -131,7 +158,7 @@ const TasksScreen = () => {
 		};
 	}, []);
 
-	if (isLoading) {
+	if (isLoading || isLoadingTaks) {
 		return <LoadingScreen />;
 	}
 
@@ -362,7 +389,7 @@ const TasksScreen = () => {
 			</View>
 			<View style={styles.container}>
 				<FlatList
-					data={task}
+					data={tasks?.data}
 					showsVerticalScrollIndicator={false}
 					renderItem={({ item }) => (
 						<View
@@ -376,7 +403,7 @@ const TasksScreen = () => {
 									router.push({
 										pathname: "/pages/taskDetails",
 										params: {
-											itemId: item.id,
+											itemId: item?.id,
 										},
 									});
 								}}
@@ -395,7 +422,12 @@ const TasksScreen = () => {
 										<View style={styles.userContainer}>
 											<View style={styles.userDetails}>
 												<Image
-													source={{ uri: item.avatar }}
+													source={{
+														uri:
+															item?.user_avatar && "default"
+																? "https://via.placeholder.com/150"
+																: item?.user_,
+													}}
 													style={{
 														width: 32,
 														height: 32,
@@ -409,9 +441,10 @@ const TasksScreen = () => {
 													}}
 												>
 													<Text style={styles.name}>
-														{limitDescription(item.name, 25)}
+														{limitDescription(item?.user_name, 25)}
+														{/* {item?.user_name} */}
 													</Text>
-													<StarRating rating={item.rating} />
+													{/* <StarRating rating={item?.rating} /> */}
 												</View>
 											</View>
 											<View style={styles.moneyContainer}>
@@ -425,14 +458,14 @@ const TasksScreen = () => {
 												>
 													<Pressable>
 														<TaskPopupMenu
-															taskId={item.id}
+															taskId={item?.id}
 															colorScheme={colorScheme}
 														/>
 													</Pressable>
 												</View>
 											</View>
 										</View>
-										<Text style={styles.heading}>{item.title}</Text>
+										<Text style={styles.heading}>{item?.title}</Text>
 										<View
 											style={[
 												styles.category,
@@ -457,12 +490,13 @@ const TasksScreen = () => {
 													},
 												]}
 											>
-												{item.category}
+												{item?.category}
 											</Text>
 										</View>
 										{item?.description && (
 											<Text style={styles.desc}>
-												{limitDescription(item?.description, 150)}
+												{limitDescription(item.description, 200)}
+												{/* {item?.description} */}
 											</Text>
 										)}
 									</View>
@@ -474,7 +508,7 @@ const TasksScreen = () => {
 									<View style={styles.footer}>
 										<View>
 											<Text style={styles.time}>
-												{formatPastTime(item.created_at)}
+												{formatPastTime(item.time)}
 											</Text>
 										</View>
 									</View>

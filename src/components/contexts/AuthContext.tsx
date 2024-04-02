@@ -81,13 +81,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				const userData: User = JSON.parse(user);
 				console.log(userData, "User data");
 				setSignedIn(true);
-				setUser({
-					name: userData.name,
-					email: userData.email,
-					dept: userData.dept,
-					mobile: userData.mobile,
-					avatar: userData?.avatar,
-					college: userData.college,
+				setUser(() => {
+					return userData;
 				});
 				return true;
 			}

@@ -10,7 +10,7 @@ import {
 import { Text, View, Pressable } from "@/components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors, { palette } from "@/constants/Colors";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { convertColorIntensity, getRandomColor } from "@/utils";
 import FastImage from "react-native-fast-image";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -28,7 +28,7 @@ const ProfileScreen = () => {
 	const imageWidthHeight = 110;
 	const imageBorderRadius = imageWidthHeight / 2;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
-	const { signOut, isLoading, signedIn } = useAuth();
+	const { signOut, isLoading, signedIn, user } = useAuth();
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -85,7 +85,7 @@ const ProfileScreen = () => {
 					<View style={styles.imageView}>
 						<FastImage
 							source={{
-								uri: uri,
+								uri: user?.avatar === "default" ? uri : user?.avatar,
 							}}
 							style={{
 								width: imageWidthHeight,
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
 							alignItems: "center",
 						}}
 					>
-						<Text style={styles.nameText}>Margaret Miaz</Text>
+						<Text style={styles.nameText}>{user?.name}</Text>
 						<View
 							style={{
 								flexDirection: "row",

@@ -24,12 +24,15 @@ import { Dropdown } from "react-native-element-dropdown";
 import {
 	ScopeOption,
 	PostPageLoadingStates as loadingStates,
-	FormData,
+	FormData as FormDataType,
 } from "@/types";
 import DateTimePicker from "@/components/DateTimePicker";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Redirect } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ipAddrPort } from "../../../temp/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();
@@ -47,13 +50,75 @@ const CreateScreen = () => {
 		images: null,
 		files: null,
 	});
-	const [data, setData] = useState<FormData>({
+	const [data, setData] = useState<FormDataType>({
 		title: "",
 		description: "",
 		price: 0,
 		category: "",
-		expiry: null,
+		expiry: "",
 		scope: null,
+		images: null,
+		files: null,
+	});
+
+	const postData = async () => {
+		try {
+			const formdata = new FormData();
+			formdata.append("title", data.title);
+			formdata.append("description", data.description);
+			formdata.append("price", data.price.toString());
+			formdata.append("category", data.category);
+			formdata.append("expiry", data.expiry);
+			console.log(data.expiry, "expiry data\n");
+			formdata.append("status", "open");
+
+			if (data.images) {
+				for (const asset of data.images) {
+					formdata.append("images", {
+						uri: asset.uri,
+						name: asset.fileName,
+						type: asset.mimeType,
+					} as any);
+				}
+			}
+			if (data.files) {
+				for (const asset of data.files) {
+					formdata.append("files", {
+						uri: asset.uri,
+						name: asset.name,
+						type: asset.mimeType,
+					} as any);
+				}
+			}
+			const imagesValues = formdata.getAll("images");
+			console.log(imagesValues, "\n\nformdata images\n");
+
+			const accessToken = await AsyncStorage.getItem("accessToken");
+			const response = await fetch(`${ipAddrPort}/task`, {
+				method: "POST",
+				headers: {
+					"content-type": "multipart/form-data",
+					Accept: "multipart/form-data",
+					Authorization: `Bearer ${accessToken}`,
+				},
+				body: formdata,
+			});
+
+			const res = await response.json();
+			console.log(res, "response");
+			return res;
+		} catch (error) {
+			console.error(error, "error here");
+		}
+	};
+
+	const queryClient = useQueryClient();
+	const { mutateAsync: addTaskMutation } = useMutation({
+		mutationFn: postData,
+		onSuccess: () => {
+			console.log("Task added");
+			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+		},
 	});
 
 	const handleButtonDisabled = () => {
@@ -85,7 +150,7 @@ const CreateScreen = () => {
 				setImages(result.assets.map(file => file.uri));
 				setData({
 					...data,
-					images: result.assets.map(file => file.uri),
+					images: result.assets,
 				});
 			}
 			console.log(loading.images, "loading");
@@ -172,9 +237,13 @@ const CreateScreen = () => {
 					/>
 					<Pressable
 						disabled={buttonDisabled}
-						onPress={() => {
-							console.log(data);
-							router.push("/(tabs)/");
+						onPress={async () => {
+							try {
+								await addTaskMutation();
+							} catch (error) {
+								console.log(error);
+							}
+							// router.push("/(tabs)/");
 						}}
 						style={[
 							styles.postButton,

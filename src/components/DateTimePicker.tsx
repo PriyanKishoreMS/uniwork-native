@@ -32,6 +32,8 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
 	};
 
 	const handleConfirm = (date: Date) => {
+		setData({ ...data, expiry: String(date) });
+		console.log(date, "date here");
 		console.log("A date has been picked: ", formatFutureTime(String(date)));
 		setDateTime(String(date));
 		hideDatePicker();

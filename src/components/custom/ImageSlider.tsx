@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import ImageView from "react-native-image-viewing";
+import { ipAddrPort } from "../../../temp/config";
 interface ImageSliderProps {
 	images: string[];
 }
@@ -47,26 +48,30 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
 					height,
 				}}
 			>
-				{images.map((image, index) => (
-					<Pressable key={index} onPress={() => setVisible(true)}>
-						<FastImage
-							key={index}
-							source={{
-								uri: image,
-								priority: FastImage.priority.normal,
-							}}
-							style={{
-								width: width,
-								height,
-								borderRadius: 12,
-							}}
-							resizeMode={FastImage.resizeMode.cover}
-						/>
-					</Pressable>
-				))}
-
+				{images.length > 0 &&
+					images.map((image, index) => (
+						<Pressable key={index} onPress={() => setVisible(true)}>
+							{image !== "" && (
+								<FastImage
+									key={index}
+									source={{
+										uri: `${image[0] == "/" ? ipAddrPort + image : image}`,
+										priority: FastImage.priority.normal,
+									}}
+									style={{
+										width: width,
+										height,
+										borderRadius: 12,
+									}}
+									resizeMode={FastImage.resizeMode.cover}
+								/>
+							)}
+						</Pressable>
+					))}
 				<ImageView
-					images={images.map(img => ({ uri: img }))}
+					images={images.map(img => ({
+						uri: `${img[0] == "/" ? ipAddrPort + img : img}`,
+					}))}
 					imageIndex={active}
 					visible={visible}
 					presentationStyle='overFullScreen'
