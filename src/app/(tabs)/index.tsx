@@ -9,7 +9,7 @@ import {
 	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { tasks as tasksTemp, TaskCategories } from "../../../temp/tasks";
+import { TaskCategories } from "../../../temp/tasks";
 import Colors, { palette } from "@/constants/Colors";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useEffect, useState } from "react";
@@ -20,51 +20,75 @@ import {
 	limitDescription,
 	changeOpacity,
 } from "@/utils";
-
-import StarRating from "@/components/custom/StarRating";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
 import { TaskPopupMenu } from "@/components/custom/DropDowns";
 import { Redirect, router } from "expo-router";
-import { tasksProps, TaskCategory } from "@/types";
+import { TaskCategory } from "@/types";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
-import { useQuery } from "@tanstack/react-query";
+import {
+	useQuery,
+	keepPreviousData,
+	useInfiniteQuery,
+} from "@tanstack/react-query";
 import { ipAddrPort } from "../../../temp/config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	const [category, setCategory] = useState("All");
-	const [task, setTask] = useState<tasksProps[] | null>(tasksTemp);
 	const [scope, setScope] = useState<"college" | "Public">("college");
-	const { signedIn, isLoading } = useAuth();
+	const { signedIn, isLoading, userData } = useAuth();
 
-	const fetchTasks = async () => {
+	const fetchTasks = async ({ pageParam = 1 }) => {
 		try {
-			// console.log("starting here");
-			const accessToken = await AsyncStorage.getItem("accessToken");
-			// console.log(accessToken, "accessToken");
-			const response = await fetch(`${ipAddrPort}/task`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
-			// console.log("response", response);
-			const data = await response.json();
-			return data;
+			console.log(userData, "\n\nuserData");
+			const accessToken = userData?.accessToken;
+			const response = await fetch(
+				`${ipAddrPort}/task?page_size=10&page=${pageParam}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${accessToken}`,
+					},
+				}
+			);
+			const res = await response.json();
+			return res;
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const { data: tasks, isLoading: isLoadingTaks } = useQuery({
+
+	const {
+		data: task,
+		error,
+		fetchNextPage,
+		hasNextPage,
+		isFetching,
+		isFetchingNextPage,
+		status,
+		isLoading: isLoadingTasks,
+	} = useInfiniteQuery({
 		queryKey: ["tasks"],
 		queryFn: fetchTasks,
+		initialPageParam: 1,
+		enabled: !!userData,
+		getNextPageParam: (lastPage, pages) => {
+			if (lastPage.length === 0) return undefined;
+			return pages.length + 1;
+		},
 	});
 
+	const onEndReachedFunc = () => {
+		if (hasNextPage && !isLoadingTasks) {
+			fetchNextPage();
+		}
+	};
+
+	const flatData = task?.pages.flatMap(page => page.data);
 	const [isDisplayCategory, setIsDisplayCategory] = useState(false);
 	const [isDisplayScope, setIsDisplayScope] = useState(false);
 	const [animatedViewCategory] = useState(new Animated.Value(0));
@@ -158,7 +182,7 @@ const TasksScreen = () => {
 		};
 	}, []);
 
-	if (isLoading || isLoadingTaks) {
+	if (isLoading || isLoadingTasks) {
 		return <LoadingScreen />;
 	}
 
@@ -389,8 +413,11 @@ const TasksScreen = () => {
 			</View>
 			<View style={styles.container}>
 				<FlatList
-					data={tasks?.data}
+					data={flatData}
 					showsVerticalScrollIndicator={false}
+					keyExtractor={item => item?.id.toString()}
+					onEndReached={onEndReachedFunc}
+					onEndReachedThreshold={0.5}
 					renderItem={({ item }) => (
 						<View
 							style={{

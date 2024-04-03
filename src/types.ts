@@ -17,7 +17,7 @@ export type FormData = {
 	category: string;
 	images?: ImagePickerResult["assets"];
 	files?: DocumentPickerResult["assets"];
-	scope: ScopeOption | null
+	scope: ScopeOption | null;
 	expiry: string;
 };
 
@@ -62,4 +62,10 @@ export type User = {
 	college: string;
 	dept: string;
 	avatar?: string;
+};
+
+export type UserData = {
+	user: User;
+	accessToken: string;
+	refreshToken: string;
 };

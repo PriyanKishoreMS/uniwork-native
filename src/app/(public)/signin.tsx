@@ -42,7 +42,7 @@ const SignInScreen = () => {
 		}
 	};
 	const colorScheme = useColorScheme();
-	const { user, setUser, signIn } = useAuth();
+	const { user, setUser, signIn, setUserData } = useAuth();
 	const [haveAccount, setHaveAccount] = useState(false);
 	const { mutateAsync: addUser } = useMutation({
 		mutationFn: handleLogin,
@@ -50,6 +50,11 @@ const SignInScreen = () => {
 			await AsyncStorage.setItem("accessToken", data.accessToken);
 			await AsyncStorage.setItem("refreshToken", data.refreshToken);
 			await AsyncStorage.setItem("user", JSON.stringify(data.data));
+			setUserData({
+				user: data.data,
+				accessToken: data.accessToken,
+				refreshToken: data.refreshToken,
+			});
 			console.log(data, "Data from login");
 		},
 	});

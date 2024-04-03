@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import auth from "@react-native-firebase/auth";
 import { router } from "expo-router";
-import { User } from "@/types";
+import { User, UserData } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface AuthContextType {
@@ -14,6 +14,8 @@ interface AuthContextType {
 	setSignedIn: React.Dispatch<React.SetStateAction<Boolean>>;
 	checkSignedIn: () => Promise<Boolean>;
 	isLoading: Boolean;
+	userData: UserData | null;
+	setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +26,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [user, setUser] = useState<User | null>(null);
+	const [userData, setUserData] = useState<UserData | null>(null);
 	const [signedIn, setSignedIn] = useState<Boolean>(false);
 	const [isLoading, setIsLoading] = useState<Boolean>(true);
 
@@ -68,6 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 	const checkSignedIn = async () => {
 		try {
+			console.log("\n\nChecking signed in");
 			const user = await AsyncStorage.getItem("user");
 			const accessToken = await AsyncStorage.getItem("accessToken");
 			const refreshToken = await AsyncStorage.getItem("refreshToken");
@@ -78,11 +82,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				"User, accessToken, refreshToken"
 			);
 			if (user && accessToken && refreshToken) {
-				const userData: User = JSON.parse(user);
-				console.log(userData, "User data");
+				const userdata: User = JSON.parse(user);
+				console.log(userdata, "User data");
 				setSignedIn(true);
 				setUser(() => {
-					return userData;
+					return userdata;
+				});
+				setUserData({
+					user: userdata,
+					accessToken: accessToken,
+					refreshToken: refreshToken,
 				});
 				return true;
 			}
@@ -106,6 +115,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 				setSignedIn,
 				checkSignedIn,
 				isLoading,
+				userData,
+				setUserData,
 			}}
 		>
 			{children}

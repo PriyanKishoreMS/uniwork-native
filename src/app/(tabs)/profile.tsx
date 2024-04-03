@@ -28,7 +28,7 @@ const ProfileScreen = () => {
 	const imageWidthHeight = 110;
 	const imageBorderRadius = imageWidthHeight / 2;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
-	const { signOut, isLoading, signedIn, user } = useAuth();
+	const { signOut, isLoading, signedIn, userData } = useAuth();
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -85,7 +85,10 @@ const ProfileScreen = () => {
 					<View style={styles.imageView}>
 						<FastImage
 							source={{
-								uri: user?.avatar === "default" ? uri : user?.avatar,
+								uri:
+									userData?.user?.avatar === "default"
+										? uri
+										: userData?.user?.avatar,
 							}}
 							style={{
 								width: imageWidthHeight,
@@ -105,7 +108,7 @@ const ProfileScreen = () => {
 							alignItems: "center",
 						}}
 					>
-						<Text style={styles.nameText}>{user?.name}</Text>
+						<Text style={styles.nameText}>{userData?.user.name}</Text>
 						<View
 							style={{
 								flexDirection: "row",
@@ -178,18 +181,16 @@ const ProfileScreen = () => {
 								</Text>
 							</View>
 						</View>
-						<Pressable
-							onPress={async () => {
-								await signOut();
-							}}
-							style={{
-								width: "100%",
-								backgroundColor: "red",
-								height: 50,
-							}}
-						>
-							<Text>Logout</Text>
-						</Pressable>
+						<View style={{ marginTop: 16 }}>
+							<Pressable
+								onPress={async () => {
+									await signOut();
+								}}
+								style={styles.logoutButton}
+							>
+								<Text style={styles.logoutFont}>Logout</Text>
+							</Pressable>
+						</View>
 					</View>
 				</View>
 			</ScrollView>
@@ -236,6 +237,17 @@ const styles = StyleSheet.create({
 		fontFamily: "Inter",
 		fontSize: 16,
 		textAlign: "right",
+	},
+	logoutButton: {
+		backgroundColor: palette.red,
+		padding: 16,
+		borderRadius: 12,
+		alignItems: "center",
+	},
+	logoutFont: {
+		fontFamily: "InterSemiBold",
+		fontSize: 16,
+		color: palette.white,
 	},
 });
 
