@@ -243,7 +243,6 @@ const CreateScreen = () => {
 							} catch (error) {
 								console.log(error);
 							}
-							// router.push("/(tabs)/");
 						}}
 						style={[
 							styles.postButton,

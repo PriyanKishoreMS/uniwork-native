@@ -23,54 +23,56 @@ import {
 	convertColorIntensity,
 	limitDescription,
 } from "@/utils";
-import { tasks } from "../../../temp/tasks";
+import LoadingScreen from "@/components/LoadingScreen";
 import { categoryColors } from "@/constants/Colors";
 import StarRating from "@/components/custom/StarRating";
 import { TaskCategory } from "@/types";
-
-// interface tasksProps {
-// 	id: number;
-// 	title: string;
-// 	description: string;
-// 	category: string;
-// 	price: number;
-// 	status: string;
-// 	created_at: string;
-// 	expiry: string;
-// 	images?: string[];
-// 	files?: string[];
-// 	name: string;
-// 	avatar: string;
-// 	rating: number;
-// }
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { ipAddrPort } from "@/../temp/config";
 
 const task = () => {
 	const { itemId } = useLocalSearchParams();
+	const itemIdNumber = Array.isArray(itemId)
+		? parseInt(itemId.toString())
+		: parseInt(itemId);
 	const { height } = useWindowDimensions();
 	const colorScheme = useColorScheme();
-	const data = tasks.find(task => task.id === Number(itemId));
-	const files = [
-		{
-			name: "file1namebigfilename.pdf",
-		},
-		{
-			name: "file2.jpg",
-		},
-		{
-			name: "file3.zip",
-		},
-		{
-			name: "file4.docx",
-		},
-	];
-	// const [loading, setLoading] = useState<loadingStates>({
-	// 	images: null,
-	// 	files: null,
-	// });
+	const { userData } = useAuth();
+
+	const fetchOneTask = async (itemId: number) => {
+		try {
+			const accessToken = userData?.accessToken;
+			const response = await fetch(`${ipAddrPort}/task/${itemId}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			const res = await response.json();
+			return res;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const { data: task, isLoading } = useQuery({
+		queryKey: ["task", itemId],
+		queryFn: () => fetchOneTask(itemIdNumber),
+		enabled: !!userData,
+	});
+	const data = task?.data;
+	console.log(data, "this is the data");
 
 	const handleGoBack = () => {
 		router.back();
 	};
+
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
 	return (
 		<SafeAreaView
 			style={{
@@ -240,7 +242,12 @@ const task = () => {
 						>
 							<View style={styles.userDetails}>
 								<Image
-									source={{ uri: data?.avatar }}
+									source={{
+										uri:
+											data?.user_avatar == "default"
+												? "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"
+												: data?.avatar,
+									}}
 									style={{
 										width: 60,
 										height: 60,
@@ -256,7 +263,7 @@ const task = () => {
 									}}
 								>
 									<Text style={styles.name}>
-										{limitDescription(String(data?.name), 25)}
+										{limitDescription(String(data?.user_name), 25)}
 									</Text>
 									<Text
 										style={{
@@ -298,7 +305,7 @@ const task = () => {
 							</View>
 						</TouchableNativeFeedback>
 					</View>
-					{files && (
+					{data?.files && (
 						<View
 							style={{
 								margin: 16,
@@ -314,7 +321,7 @@ const task = () => {
 								File Attachments
 							</Text>
 							<View style={styles.filesContainer}>
-								{files.map((file, index) => (
+								{data?.files.map((file: string, index: number) => (
 									<View
 										key={index}
 										style={[
@@ -347,7 +354,7 @@ const task = () => {
 														: palette.black,
 											}}
 										>
-											{file.name}
+											{file}
 										</Text>
 									</View>
 								))}

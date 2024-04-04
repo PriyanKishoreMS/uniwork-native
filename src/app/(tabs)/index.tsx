@@ -28,11 +28,7 @@ import { Redirect, router } from "expo-router";
 import { TaskCategory } from "@/types";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
-import {
-	useQuery,
-	keepPreviousData,
-	useInfiniteQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { ipAddrPort } from "../../../temp/config";
 
 const TasksScreen = () => {
@@ -46,7 +42,7 @@ const TasksScreen = () => {
 			console.log(userData, "\n\nuserData");
 			const accessToken = userData?.accessToken;
 			const response = await fetch(
-				`${ipAddrPort}/task?page_size=10&page=${pageParam}`,
+				`${ipAddrPort}/task?page_size=10&page=${pageParam}&sort=-created_at`,
 				{
 					method: "GET",
 					headers: {
