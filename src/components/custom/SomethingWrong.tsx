@@ -1,23 +1,10 @@
 import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
-import { useAuth } from "@/components/contexts/AuthContext";
-import { Redirect } from "expo-router";
-import LoadingScreen from "@/components/LoadingScreen";
 
-const NotificationScreen = () => {
-	const { signedIn, isLoading } = useAuth();
-
-	if (isLoading) {
-		return <LoadingScreen />;
-	}
-
-	if (!signedIn) {
-		console.log(signedIn, "signedIn status");
-		return <Redirect href={"/(public)/signin"} />;
-	}
+const SomethingWrong = () => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Notification Screen</Text>
+			<Text style={styles.title}>Something Wrong</Text>
 			<View
 				style={styles.separator}
 				lightColor='#eee'
@@ -44,4 +31,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default NotificationScreen;
+export default SomethingWrong;

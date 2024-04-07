@@ -39,6 +39,25 @@ export enum TaskCategory {
 	CateringCooking = "Catering/Cooking",
 }
 
+export const TaskCategories = [
+	"All",
+	"Academic Assistance",
+	"Tutor Home/Virtual",
+	"Books Rent/Buy",
+	"Vehicle Rent",
+	"Document Printing",
+	"Resume Creation",
+	"Job Search Support",
+	"Grocery Shopping",
+	"Fashion",
+	"Social Media",
+	"IT Support",
+	"Graphic Design",
+	"Delivery",
+	"Ride sharing",
+	"Catering/Cooking",
+];
+
 export type tasksProps = {
 	id: number;
 	title: string;

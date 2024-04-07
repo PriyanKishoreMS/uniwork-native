@@ -1,22 +1,3 @@
-export const TaskCategories = [
-	"All",
-	"Academic Assistance",
-	"Tutor Home/Virtual",
-	"Books Rent/Buy",
-	"Vehicle Rent",
-	"Document Printing",
-	"Resume Creation",
-	"Job Search support",
-	"Grocery Shopping",
-	"Fashion",
-	"Social Media",
-	"IT Support",
-	"Graphic Design",
-	"Delivery",
-	"Ride sharing",
-	"Catering/Cooking",
-];
-
 export const tasks = [
 	{
 		id: 1,

@@ -9,7 +9,7 @@ import {
 	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TaskCategories } from "../../../temp/tasks";
+import { TaskCategories } from "@/types";
 import Colors, { palette } from "@/constants/Colors";
 import { Pressable, Text, View } from "@/components/Themed";
 import { useEffect, useState } from "react";
@@ -30,37 +30,18 @@ import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ipAddrPort } from "../../../temp/config";
+import SomethingWrong from "@/components/custom/SomethingWrong";
+import { fetchTasks } from "@/utils/api";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
-	const [category, setCategory] = useState("All");
 	const [scope, setScope] = useState<"college" | "Public">("college");
-	const { signedIn, isLoading, userData } = useAuth();
-
-	const fetchTasks = async ({ pageParam = 1 }) => {
-		try {
-			console.log(userData, "\n\nuserData");
-			const accessToken = userData?.accessToken;
-			const response = await fetch(
-				`${ipAddrPort}/task?page_size=10&page=${pageParam}&sort=-created_at`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${accessToken}`,
-					},
-				}
-			);
-			const res = await response.json();
-			return res;
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	const { signedIn, signOut, isLoading, userData } = useAuth();
+	const [category, setCategory] = useState("");
 
 	const {
 		data: task,
-		error,
+		error: taskError,
 		fetchNextPage,
 		hasNextPage,
 		isFetching,
@@ -68,8 +49,10 @@ const TasksScreen = () => {
 		status,
 		isLoading: isLoadingTasks,
 	} = useInfiniteQuery({
-		queryKey: ["tasks"],
-		queryFn: fetchTasks,
+		queryKey: ["tasks", category],
+		queryFn: async ({ pageParam = 1 }) => {
+			return await fetchTasks(pageParam, userData, signOut, category);
+		},
 		initialPageParam: 1,
 		enabled: !!userData,
 		getNextPageParam: (lastPage, pages) => {
@@ -178,8 +161,12 @@ const TasksScreen = () => {
 		};
 	}, []);
 
-	if (isLoading || isLoadingTasks) {
+	if (isLoading) {
 		return <LoadingScreen />;
+	}
+
+	if (taskError) {
+		return <SomethingWrong />;
 	}
 
 	if (!signedIn) {
@@ -378,6 +365,11 @@ const TasksScreen = () => {
 							>
 								<TouchableOpacity
 									onPress={() => {
+										if (item === "All") {
+											setCategory("");
+											closeCategory();
+											return;
+										}
 										setCategory(item);
 										closeCategory();
 									}}
