@@ -2,42 +2,31 @@ import {
 	StyleSheet,
 	FlatList,
 	useColorScheme,
-	Image,
 	View as DefaultView,
 	TouchableOpacity,
-	TouchableNativeFeedback,
-	Animated,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TaskCategories } from "@/types";
 import Colors, { palette } from "@/constants/Colors";
 import { Pressable, Text, View } from "@/components/Themed";
-import { useEffect, useState } from "react";
-import ImageSlider from "@/components/custom/ImageSlider";
-import {
-	convertColorIntensity,
-	formatPastTime,
-	limitDescription,
-	changeOpacity,
-} from "@/utils";
+import { useState } from "react";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { categoryColors } from "@/constants/Colors";
 import FastImage from "react-native-fast-image";
-import { TaskPopupMenu } from "@/components/custom/DropDowns";
-import { Redirect, router } from "expo-router";
-import { TaskCategory } from "@/types";
+import { Redirect } from "expo-router";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { ipAddrPort } from "../../../temp/config";
-import SomethingWrong from "@/components/custom/SomethingWrong";
+import SomethingWrong from "@/components/SomethingWrong";
+import NothingToSee from "@/components/NothingToSee";
 import { fetchTasks } from "@/utils/api";
+import Task from "@/components/Task";
+import Collapsible from "react-native-collapsible";
 
 const TasksScreen = () => {
 	const colorScheme = useColorScheme();
 	const [scope, setScope] = useState<"college" | "Public">("college");
 	const { signedIn, signOut, isLoading, userData } = useAuth();
-	const [category, setCategory] = useState("");
+	const [category, setCategory] = useState("All");
 
 	const {
 		data: task,
@@ -70,96 +59,6 @@ const TasksScreen = () => {
 	const flatData = task?.pages.flatMap(page => page.data);
 	const [isDisplayCategory, setIsDisplayCategory] = useState(false);
 	const [isDisplayScope, setIsDisplayScope] = useState(false);
-	const [animatedViewCategory] = useState(new Animated.Value(0));
-	const [animatedViewScope] = useState(new Animated.Value(0));
-	const [animatedViewInterpolateCategory] = useState(
-		animatedViewCategory.interpolate({
-			inputRange: [0, 180],
-			outputRange: [0, 100],
-		})
-	);
-
-	const [animatedViewInterpolateScope] = useState(
-		animatedViewScope.interpolate({
-			inputRange: [0, 180],
-			outputRange: [0, 100],
-		})
-	);
-	const animateDuration = 300;
-
-	const closeCategory = () => {
-		Animated.timing(animatedViewCategory, {
-			toValue: 0,
-			duration: animateDuration,
-			useNativeDriver: false,
-		}).start(() => {
-			setIsDisplayCategory(false);
-		});
-	};
-
-	const closeScope = () => {
-		Animated.timing(animatedViewScope, {
-			toValue: 0,
-			duration: animateDuration,
-			useNativeDriver: false,
-		}).start(() => {
-			setIsDisplayScope(false);
-		});
-	};
-
-	const handleShowCategories = () => {
-		if (isDisplayCategory) {
-			Animated.timing(animatedViewCategory, {
-				toValue: 0,
-				duration: animateDuration,
-				useNativeDriver: false,
-			}).start(() => {
-				setIsDisplayCategory(false);
-			});
-		} else {
-			if (isDisplayScope) {
-				closeScope(); // Close the scope view first
-			}
-			Animated.timing(animatedViewCategory, {
-				toValue: 100,
-				duration: animateDuration,
-				useNativeDriver: false,
-			}).start(() => {
-				setIsDisplayCategory(true);
-			});
-		}
-	};
-
-	const handleShowScope = () => {
-		if (isDisplayScope) {
-			Animated.timing(animatedViewScope, {
-				toValue: 0,
-				duration: animateDuration,
-				useNativeDriver: false,
-			}).start(() => {
-				setIsDisplayScope(false);
-			});
-		} else {
-			if (isDisplayCategory) {
-				closeCategory(); // Close the category view first
-			}
-
-			Animated.timing(animatedViewScope, {
-				toValue: 175,
-				duration: animateDuration,
-				useNativeDriver: false,
-			}).start(() => {
-				setIsDisplayScope(true);
-			});
-		}
-	};
-
-	useEffect(() => {
-		return () => {
-			animatedViewCategory.stopAnimation();
-			animatedViewScope.stopAnimation();
-		};
-	}, []);
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -216,7 +115,9 @@ const TasksScreen = () => {
 								flexDirection: "row",
 								alignItems: "center",
 							}}
-							onPress={handleShowScope}
+							onPress={() => {
+								setIsDisplayScope(!isDisplayScope);
+							}}
 						>
 							{scope === "Public" ? (
 								<MaterialCommunityIcons
@@ -271,7 +172,9 @@ const TasksScreen = () => {
 								flexDirection: "row",
 								alignItems: "center",
 							}}
-							onPress={handleShowCategories}
+							onPress={() => {
+								setIsDisplayCategory(!isDisplayCategory);
+							}}
 						>
 							<Text
 								style={{
@@ -313,9 +216,9 @@ const TasksScreen = () => {
 						</TouchableOpacity>
 					</View>
 				</DefaultView>
-				<Animated.View
+				<Collapsible
+					collapsed={!isDisplayScope}
 					style={{
-						height: animatedViewInterpolateScope,
 						marginHorizontal: 16,
 						gap: 2,
 					}}
@@ -323,7 +226,7 @@ const TasksScreen = () => {
 					<TouchableOpacity
 						onPress={() => {
 							setScope("Public");
-							closeScope();
+							setIsDisplayScope(false);
 						}}
 						style={styles.scopeTOContainer}
 					>
@@ -338,7 +241,7 @@ const TasksScreen = () => {
 					<TouchableOpacity
 						onPress={() => {
 							setScope("college");
-							closeScope();
+							setIsDisplayScope(false);
 						}}
 						style={styles.scopeTOContainer}
 					>
@@ -350,8 +253,8 @@ const TasksScreen = () => {
 						/>
 						<Text style={styles.scopeText}>College</Text>
 					</TouchableOpacity>
-				</Animated.View>
-				<Animated.View style={{ height: animatedViewInterpolateCategory }}>
+				</Collapsible>
+				<Collapsible collapsed={!isDisplayCategory}>
 					<FlatList
 						horizontal
 						showsHorizontalScrollIndicator={false}
@@ -365,13 +268,8 @@ const TasksScreen = () => {
 							>
 								<TouchableOpacity
 									onPress={() => {
-										if (item === "All") {
-											setCategory("");
-											closeCategory();
-											return;
-										}
 										setCategory(item);
-										closeCategory();
+										setIsDisplayCategory(false);
 									}}
 									style={{
 										borderWidth: 1,
@@ -397,8 +295,10 @@ const TasksScreen = () => {
 							</View>
 						)}
 					/>
-				</Animated.View>
+				</Collapsible>
 			</View>
+			{isLoadingTasks && <LoadingScreen />}
+			{task?.pages[0].data.length === 0 && <NothingToSee />}
 			<View style={styles.container}>
 				<FlatList
 					data={flatData}
@@ -406,131 +306,7 @@ const TasksScreen = () => {
 					keyExtractor={item => item?.id.toString()}
 					onEndReached={onEndReachedFunc}
 					onEndReachedThreshold={0.5}
-					renderItem={({ item }) => (
-						<View
-							style={{
-								borderBottomWidth: 0.7,
-								borderColor: palette.grayLight,
-							}}
-						>
-							<TouchableNativeFeedback
-								onPress={() => {
-									router.push({
-										pathname: "/pages/taskDetails",
-										params: {
-											itemId: item?.id,
-										},
-									});
-								}}
-								background={TouchableNativeFeedback.Ripple(
-									changeOpacity(palette.primary, 0.2),
-									false
-								)}
-								useForeground={true}
-							>
-								<View>
-									<View
-										style={{
-											margin: 16,
-										}}
-									>
-										<View style={styles.userContainer}>
-											<View style={styles.userDetails}>
-												<Image
-													source={{
-														uri:
-															item?.user_avatar && "default"
-																? "https://via.placeholder.com/150"
-																: item?.user_,
-													}}
-													style={{
-														width: 32,
-														height: 32,
-														borderRadius: 20,
-													}}
-												/>
-												<View
-													style={{
-														alignItems: "flex-start",
-														justifyContent: "flex-start",
-													}}
-												>
-													<Text style={styles.name}>
-														{limitDescription(item?.user_name, 25)}
-														{/* {item?.user_name} */}
-													</Text>
-													{/* <StarRating rating={item?.rating} /> */}
-												</View>
-											</View>
-											<View style={styles.moneyContainer}>
-												<Text style={styles.currencyText}>₹</Text>
-												<Text style={styles.para}>{item.price}</Text>
-												<View
-													style={{
-														marginLeft: 12,
-														marginRight: -8,
-													}}
-												>
-													<Pressable>
-														<TaskPopupMenu
-															taskId={item?.id}
-															colorScheme={colorScheme}
-														/>
-													</Pressable>
-												</View>
-											</View>
-										</View>
-										<Text style={styles.heading}>{item?.title}</Text>
-										<View
-											style={[
-												styles.category,
-												{
-													borderColor: convertColorIntensity(
-														categoryColors[item.category as TaskCategory],
-														-40
-													),
-													backgroundColor:
-														categoryColors[item.category as TaskCategory],
-												},
-											]}
-										>
-											<Text
-												style={[
-													styles.categoryText,
-													{
-														color: convertColorIntensity(
-															categoryColors[item.category as TaskCategory],
-															-60
-														),
-													},
-												]}
-											>
-												{item?.category}
-											</Text>
-										</View>
-										{item?.description && (
-											<Text style={styles.desc}>
-												{limitDescription(item.description, 200)}
-												{/* {item?.description} */}
-											</Text>
-										)}
-									</View>
-									{item?.images && item.images.length > 0 && (
-										<View>
-											<ImageSlider images={item.images} />
-										</View>
-									)}
-									<View style={styles.footer}>
-										<View>
-											<Text style={styles.time}>
-												{formatPastTime(item.time)}
-											</Text>
-										</View>
-									</View>
-								</View>
-							</TouchableNativeFeedback>
-						</View>
-					)}
+					renderItem={({ item }) => <Task item={item} />}
 				/>
 			</View>
 		</SafeAreaView>
@@ -541,72 +317,9 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	title: {
-		fontSize: 24,
-		paddingLeft: 16,
-		fontFamily: "InterBold",
-	},
 	para: {
 		fontSize: 15,
 		fontFamily: "Inter",
-	},
-	time: {
-		fontSize: 12,
-		fontFamily: "Inter",
-	},
-	userDetails: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "flex-start",
-	},
-	userContainer: {
-		marginBottom: 4,
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-	},
-	name: {
-		fontSize: 16,
-		fontFamily: "InterSemiBold",
-		marginLeft: 8,
-	},
-	heading: {
-		fontSize: 24,
-		fontFamily: "InterBold",
-	},
-	desc: {
-		fontSize: 15,
-		fontFamily: "Inter",
-		marginTop: 4,
-	},
-	categoryText: {
-		fontSize: 12,
-		fontFamily: "Inter",
-	},
-	category: {
-		borderWidth: 2,
-		padding: 2,
-		paddingHorizontal: 8,
-		borderRadius: 18,
-		alignSelf: "flex-start",
-		marginVertical: 8,
-	},
-	moneyContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	currencyText: {
-		fontSize: 20,
-		color: palette.green,
-		marginRight: 5,
-	},
-	footer: {
-		margin: 12,
-		marginRight: 16,
-		flexDirection: "row",
-		justifyContent: "flex-end",
-		// alignItems: "center",
 	},
 	scopeText: {
 		fontSize: 18,
@@ -618,11 +331,9 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		gap: 8,
 		marginTop: 4,
-		// backgroundColor: palette.grayDark,
 		borderRadius: 12,
 		paddingLeft: 8,
 		padding: 2,
-		// justifyContent: "center",
 	},
 });
 

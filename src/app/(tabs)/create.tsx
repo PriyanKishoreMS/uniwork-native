@@ -68,6 +68,7 @@ const CreateScreen = () => {
 		onSuccess: () => {
 			console.log("Task added");
 			queryClient.invalidateQueries({ queryKey: ["tasks"] });
+			router.push("/");
 		},
 	});
 

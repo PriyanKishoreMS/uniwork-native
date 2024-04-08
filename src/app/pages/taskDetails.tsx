@@ -5,11 +5,11 @@ import {
 	TouchableNativeFeedback,
 } from "react-native";
 import { View, Text } from "@/components/Themed";
-import React, { useState } from "react";
+import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
-import { Pressable, ScrollView, TextInput } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 import {
 	MaterialIcons,
 	MaterialCommunityIcons,

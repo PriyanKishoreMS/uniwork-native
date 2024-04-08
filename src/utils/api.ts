@@ -56,6 +56,7 @@ export const fetchTasks = async (
 			}
 		}
 		const res = await response.json();
+		console.log(res, "res");
 		return res;
 	} catch (err) {
 		console.log(err, "\n\n\nerror status");

@@ -1,16 +1,16 @@
 import {
-	Image,
 	ScrollView,
+	Pressable,
 	StyleSheet,
 	TouchableWithoutFeedback,
 	useColorScheme,
 	useWindowDimensions,
 } from "react-native";
 
-import { Text, View, Pressable } from "@/components/Themed";
+import { Text, View } from "@/components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors, { palette } from "@/constants/Colors";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { convertColorIntensity, getRandomColor } from "@/utils";
 import FastImage from "react-native-fast-image";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,11 +18,13 @@ import StarRating from "@/components/custom/StarRating";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Redirect } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
+import Collapsible from "react-native-collapsible";
 
 const ProfileScreen = () => {
 	const colorScheme = useColorScheme();
 	const { height } = useWindowDimensions();
 	const [bannerColor, setBannerColor] = useState(getRandomColor());
+	const [collapseDetails, setCollapseDetails] = useState(true);
 
 	const bannerHeight = height / 8;
 	const imageWidthHeight = 110;
@@ -68,6 +70,20 @@ const ProfileScreen = () => {
 						>
 							<MaterialIcons
 								name='edit'
+								size={24}
+								color={Colors.dark.background}
+								style={{
+									margin: 16,
+									padding: 8,
+									backgroundColor: convertColorIntensity(bannerColor, -20),
+									borderRadius: 12,
+								}}
+								onPress={() => {
+									console.log("Settings icon pressed");
+								}}
+							/>
+							<MaterialIcons
+								name='settings'
 								size={24}
 								color={Colors.dark.background}
 								style={{
@@ -140,7 +156,30 @@ const ProfileScreen = () => {
 							marginVertical: 16,
 						}}
 					/>
-					<View style={styles.details}>
+					<Pressable
+						onPress={() => {
+							setCollapseDetails(!collapseDetails);
+						}}
+						style={{
+							marginHorizontal: 16,
+							marginBottom: 16,
+						}}
+					>
+						<View
+							style={{
+								justifyContent: "space-between",
+								flexDirection: "row",
+							}}
+						>
+							<Text style={styles.openTaskHeading}>View Details</Text>
+							<MaterialIcons
+								name={collapseDetails ? "arrow-drop-down" : "arrow-drop-up"}
+								size={24}
+								color={palette.white}
+							/>
+						</View>
+					</Pressable>
+					<Collapsible collapsed={collapseDetails} style={styles.details}>
 						<View style={styles.detailRow}>
 							<Text
 								style={[
@@ -155,7 +194,7 @@ const ProfileScreen = () => {
 							>
 								Department
 							</Text>
-							<Text style={styles.detailText}>CSE</Text>
+							<Text style={styles.detailText}>{userData?.user?.dept}</Text>
 						</View>
 						<View style={styles.detailRow}>
 							<Text
@@ -176,21 +215,29 @@ const ProfileScreen = () => {
 									width: "70%",
 								}}
 							>
-								<Text style={styles.detailText}>
-									20113022@student.hindustanuniv.ac.in
-								</Text>
+								<Text style={styles.detailText}>{userData?.user.email}</Text>
 							</View>
 						</View>
-						<View style={{ marginTop: 16 }}>
-							<Pressable
-								onPress={async () => {
-									await signOut();
-								}}
-								style={styles.logoutButton}
+						<View style={styles.detailRow}>
+							<Text
+								style={[
+									styles.detailText,
+									{
+										color:
+											colorScheme === "dark"
+												? palette.grayLight2
+												: palette.gray,
+									},
+								]}
 							>
-								<Text style={styles.logoutFont}>Logout</Text>
-							</Pressable>
+								Total Tasks
+							</Text>
+							<Text style={styles.detailText}>100</Text>
 						</View>
+					</Collapsible>
+
+					<View style={styles.openTaskView}>
+						<Text style={styles.openTaskHeading}>Open Tasks</Text>
 					</View>
 				</View>
 			</ScrollView>
@@ -199,6 +246,14 @@ const ProfileScreen = () => {
 };
 
 const styles = StyleSheet.create({
+	openTaskHeading: {
+		fontSize: 20,
+		fontFamily: "InterSemiBold",
+	},
+	openTaskView: {
+		marginTop: 16,
+		marginHorizontal: 24,
+	},
 	container: {
 		flex: 1,
 		justifyContent: "center",
@@ -206,7 +261,9 @@ const styles = StyleSheet.create({
 	bannerContainer: {
 		position: "relative",
 		textAlign: "center",
-		alignItems: "flex-end",
+		alignItems: "center",
+		flexDirection: "row",
+		justifyContent: "space-between",
 	},
 	imageView: {
 		zIndex: 1,
