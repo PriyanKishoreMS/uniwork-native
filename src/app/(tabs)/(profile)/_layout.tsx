@@ -1,3 +1,11 @@
+import React from "react";
+import {
+	createMaterialTopTabNavigator,
+	MaterialTopTabNavigationOptions,
+	MaterialTopTabNavigationEventMap,
+} from "@react-navigation/material-top-tabs";
+import { ParamListBase, TabNavigationState } from "@react-navigation/native";
+import { withLayoutContext } from "expo-router";
 import {
 	ScrollView,
 	Pressable,
@@ -20,14 +28,23 @@ import { Redirect } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
 import Collapsible from "react-native-collapsible";
 
-const ProfileScreen = () => {
+const { Navigator } = createMaterialTopTabNavigator();
+
+export const MaterialTopTabs = withLayoutContext<
+	MaterialTopTabNavigationOptions,
+	typeof Navigator,
+	TabNavigationState<ParamListBase>,
+	MaterialTopTabNavigationEventMap
+>(Navigator);
+
+const ProfileLayout = () => {
 	const colorScheme = useColorScheme();
 	const { height } = useWindowDimensions();
 	const [bannerColor, setBannerColor] = useState(getRandomColor());
 	const [collapseDetails, setCollapseDetails] = useState(true);
 
-	const bannerHeight = height / 8;
-	const imageWidthHeight = 110;
+	const bannerHeight = height / 10;
+	const imageWidthHeight = 100;
 	const imageBorderRadius = imageWidthHeight / 2;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
 	const { signOut, isLoading, signedIn, userData } = useAuth();
@@ -160,10 +177,7 @@ const ProfileScreen = () => {
 						onPress={() => {
 							setCollapseDetails(!collapseDetails);
 						}}
-						style={{
-							marginHorizontal: 16,
-							marginBottom: 16,
-						}}
+						style={styles.closedTaskView}
 					>
 						<View
 							style={{
@@ -235,15 +249,38 @@ const ProfileScreen = () => {
 							<Text style={styles.detailText}>100</Text>
 						</View>
 					</Collapsible>
-
-					<View style={styles.openTaskView}>
-						<Text style={styles.openTaskHeading}>Open Tasks</Text>
-					</View>
 				</View>
 			</ScrollView>
+			<MaterialTopTabs>
+				<MaterialTopTabs.Screen
+					name='tasktodo'
+					options={{
+						title: "To Do",
+						tabBarLabelStyle: {
+							fontFamily: "InterSemiBold",
+							textTransform: "none",
+							fontSize: 16,
+						},
+						tabBarStyle: {},
+					}}
+				/>
+				<MaterialTopTabs.Screen
+					name='taskassigned'
+					options={{
+						title: "Task Assigned",
+						tabBarLabelStyle: {
+							fontFamily: "InterSemiBold",
+							textTransform: "none",
+							fontSize: 16,
+						},
+					}}
+				/>
+			</MaterialTopTabs>
 		</Fragment>
 	);
 };
+
+export default ProfileLayout;
 
 const styles = StyleSheet.create({
 	openTaskHeading: {
@@ -253,6 +290,10 @@ const styles = StyleSheet.create({
 	openTaskView: {
 		marginTop: 16,
 		marginHorizontal: 24,
+	},
+	closedTaskView: {
+		marginHorizontal: 16,
+		marginBottom: 24,
 	},
 	container: {
 		flex: 1,
@@ -307,5 +348,3 @@ const styles = StyleSheet.create({
 		color: palette.white,
 	},
 });
-
-export default ProfileScreen;

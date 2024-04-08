@@ -220,7 +220,6 @@ const TasksScreen = () => {
 					collapsed={!isDisplayScope}
 					style={{
 						marginHorizontal: 16,
-						gap: 2,
 					}}
 				>
 					<TouchableOpacity
@@ -330,7 +329,7 @@ const styles = StyleSheet.create({
 	scopeTOContainer: {
 		flexDirection: "row",
 		gap: 8,
-		marginTop: 4,
+		marginBottom: 4,
 		borderRadius: 12,
 		paddingLeft: 8,
 		padding: 2,
