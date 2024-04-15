@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "./Themed";
+import { View, Text, Pressable } from "@/components/Themed";
 import {
 	TouchableNativeFeedback,
 	StyleSheet,

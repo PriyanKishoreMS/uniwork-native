@@ -27,7 +27,10 @@ export const convertColorIntensity = (
 	var GG = G.toString(16).length == 1 ? "0" + G.toString(16) : G.toString(16);
 	var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
 
-	return "#" + RR + GG + BB;
+	const colorString = "#" + RR + GG + BB;
+	console.log(colorString, "colorString");
+
+	return colorString;
 };
 
 export function changeOpacity(color: string, opacity: number): string {

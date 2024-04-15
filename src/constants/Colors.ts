@@ -13,7 +13,9 @@ export const palette = {
 	//#94D6F2
 	primary: "#94D6F2",
 	//pastel orange hex code for secondary
-	secondary: "#FF7F50",
+	gold: "#FFAF45",
+	secondary: "#a2cb98",
+	tertiary: "#a2a6b2",
 	success: "#A5D6A7",
 	primaryDark: "#66AED6",
 	text: "#0D171C",

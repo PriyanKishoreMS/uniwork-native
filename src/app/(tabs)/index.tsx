@@ -19,7 +19,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import SomethingWrong from "@/components/SomethingWrong";
 import NothingToSee from "@/components/NothingToSee";
 import { fetchTasks } from "@/utils/api";
-import Task from "@/components/Task";
+import Task from "@/app/pages/Task";
 import Collapsible from "react-native-collapsible";
 
 const TasksScreen = () => {
