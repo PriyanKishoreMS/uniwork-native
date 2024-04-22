@@ -31,7 +31,7 @@ const ProfileLayout = () => {
 					tabBarActiveTintColor: palette.primary,
 					tabBarInactiveTintColor: palette.grayLight2,
 					tabBarAndroidRipple: {
-						color: palette.primary,
+						color: "#94D6F233",
 					},
 					tabBarStyle: {
 						backgroundColor:
@@ -45,6 +45,20 @@ const ProfileLayout = () => {
 					},
 				}}
 			>
+				<MaterialTopTabs.Screen
+					name='taskassigned'
+					options={{
+						title: "Assigned",
+						tabBarLabelStyle: {
+							fontFamily: "InterSemiBold",
+							textTransform: "none",
+							fontSize: 16,
+						},
+						tabBarIcon: ({ color }) => (
+							<MaterialIcons name='assignment-add' size={24} color={color} />
+						),
+					}}
+				/>
 				<MaterialTopTabs.Screen
 					name='tasktodo'
 					options={{
@@ -60,20 +74,6 @@ const ProfileLayout = () => {
 								size={24}
 								color={color}
 							/>
-						),
-					}}
-				/>
-				<MaterialTopTabs.Screen
-					name='taskassigned'
-					options={{
-						title: "Task Assigned",
-						tabBarLabelStyle: {
-							fontFamily: "InterSemiBold",
-							textTransform: "none",
-							fontSize: 16,
-						},
-						tabBarIcon: ({ color }) => (
-							<MaterialIcons name='assignment-add' size={24} color={color} />
 						),
 					}}
 				/>

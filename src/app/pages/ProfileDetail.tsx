@@ -2,14 +2,13 @@ import React from "react";
 import { Text, View, Pressable } from "@/components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors, { palette } from "@/constants/Colors";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import FastImage from "react-native-fast-image";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Redirect } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
 import {
-	ScrollView,
 	StyleSheet,
 	useColorScheme,
 	useWindowDimensions,
@@ -55,7 +54,7 @@ const ProfileDetail = () => {
 							borderRadius: 12,
 						}}
 						onPress={() => {
-							console.log("Settings icon pressed");
+							signOut();
 						}}
 					/>
 					<Pressable style={styles.editButton}>

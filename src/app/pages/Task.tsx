@@ -12,7 +12,6 @@ import {
 	convertColorIntensity,
 	formatPastTime,
 	limitDescription,
-	changeOpacity,
 } from "@/utils";
 import { categoryColors } from "@/constants/Colors";
 import { TaskPopupMenu } from "@/components/custom/DropDowns";
@@ -37,10 +36,7 @@ const Task = ({ item }: any) => {
 						},
 					});
 				}}
-				background={TouchableNativeFeedback.Ripple(
-					changeOpacity(palette.primary, 0.2),
-					false
-				)}
+				background={TouchableNativeFeedback.Ripple("#94D6F233", false)}
 				useForeground={true}
 			>
 				<View>

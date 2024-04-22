@@ -64,6 +64,32 @@ export const fetchTasks = async (
 	}
 };
 
+export const fetchUserTasks = async (
+	pageParam = 1,
+	userData: UserDataType | null,
+	signOut: () => Promise<void>,
+	uid: number | undefined
+) => {
+	try {
+		const accessToken = userData?.accessToken;
+		const response = await fetch(
+			`${ipAddrPort}/task/user/${uid}?page_size=10&page=${pageParam}&sort=-created_at`,
+			options("GET", String(accessToken))
+		);
+		if (!response.ok) {
+			if (response.status === 401) {
+				await refreshToken(String(userData?.refreshToken), signOut);
+			}
+		}
+		const res = await response.json();
+		console.log(res, "userTasks");
+		return res;
+	} catch (err) {
+		console.log(err, "\n\n\nerror status");
+		console.log(err);
+	}
+};
+
 export const postTask = async (data: FormDataType) => {
 	try {
 		const formdata = new FormData();

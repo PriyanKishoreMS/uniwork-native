@@ -28,13 +28,14 @@ export const convertColorIntensity = (
 	var BB = B.toString(16).length == 1 ? "0" + B.toString(16) : B.toString(16);
 
 	const colorString = "#" + RR + GG + BB;
-	console.log(colorString, "colorString");
+	// console.log(colorString, "colorString");
 
 	return colorString;
 };
 
 export function changeOpacity(color: string, opacity: number): string {
 	var alpha = Math.round(opacity * 255);
+	console.log(color + alpha.toString(16), "color + alpha.toString(16)");
 	return color + alpha.toString(16);
 }
 

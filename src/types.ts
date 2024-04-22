@@ -75,6 +75,7 @@ export type tasksProps = {
 };
 
 export type User = {
+	id: number;
 	name: string;
 	email: string;
 	mobile: string;
