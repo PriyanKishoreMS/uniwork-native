@@ -6,10 +6,17 @@ import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
 import SomethingWrong from "@/components/SomethingWrong";
 import Task from "@/app/pages/Task";
+import { usePathname } from "expo-router";
 
-const TaskAssigned = () => {
+const TaskAssigned: React.FC<{
+	userId: number;
+}> = ({ userId }) => {
 	const { signOut, isLoading, userData } = useAuth();
-	const uid = userData?.user?.id;
+	const pathname = usePathname();
+	let uid = userData?.user?.id;
+	if (pathname == "/pages/otherProfile") {
+		uid = userId;
+	}
 	const {
 		data: task,
 		error: taskError,
@@ -64,7 +71,6 @@ const TaskAssigned = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
 		justifyContent: "center",
 	},
 	title: {

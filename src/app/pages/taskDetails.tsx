@@ -239,6 +239,14 @@ const task = () => {
 								false
 							)}
 							useForeground={true}
+							onPress={() => {
+								router.push({
+									pathname: "/pages/otherProfile",
+									params: {
+										UserId: data?.user_id,
+									},
+								});
+							}}
 						>
 							<View style={styles.userDetails}>
 								<Image

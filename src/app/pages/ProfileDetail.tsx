@@ -15,10 +15,12 @@ import {
 	TouchableOpacity,
 } from "react-native";
 
-const ProfileDetail = () => {
+const ProfileDetail: React.FC<{
+	userId?: number;
+}> = ({ userId }) => {
 	const colorScheme = useColorScheme();
 	const { width } = useWindowDimensions();
-
+	console.log(userId, "userIdNumber in profileDetail");
 	const imageWidthHeight = 50;
 	const imageBorderRadius = imageWidthHeight / 3;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
