@@ -7,16 +7,24 @@ import LoadingScreen from "@/components/LoadingScreen";
 import SomethingWrong from "@/components/SomethingWrong";
 import Task from "@/app/pages/Task";
 import { usePathname } from "expo-router";
+import { useEffect, useState } from "react";
 
 const TaskAssigned: React.FC<{
 	userId: number;
 }> = ({ userId }) => {
 	const { signOut, isLoading, userData } = useAuth();
 	const pathname = usePathname();
-	let uid = userData?.user?.id;
-	if (pathname == "/pages/otherProfile") {
-		uid = userId;
-	}
+	const [uid, setUid] = useState<number | undefined>(undefined);
+
+	useEffect(() => {
+		if (pathname === "/pages/otherProfile") {
+			setUid(userId);
+		} else {
+			setUid(userData?.user?.id);
+		}
+		console.log("check check check");
+	}, [userData, userId]);
+	
 	const {
 		data: task,
 		error: taskError,
@@ -27,12 +35,12 @@ const TaskAssigned: React.FC<{
 		status,
 		isLoading: isLoadingTasks,
 	} = useInfiniteQuery({
-		queryKey: ["userTask"],
+		queryKey: ["userTask", uid],
 		queryFn: async ({ pageParam = 1 }) => {
 			return await fetchUserTasks(pageParam, userData, signOut, uid);
 		},
 		initialPageParam: 1,
-		enabled: !!userData,
+		enabled: !!userData && uid !== undefined,
 		getNextPageParam: (lastPage, pages) => {
 			if (lastPage.length === 0) return undefined;
 			return pages.length + 1;

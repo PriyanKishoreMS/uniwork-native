@@ -78,10 +78,12 @@ export type User = {
 	id: number;
 	name: string;
 	email: string;
-	mobile: string;
-	college: string;
+	college_name: string;
 	dept: string;
 	avatar?: string;
+	earned: number;
+	rating: number;
+	tasks_completed: number;
 };
 
 export type UserData = {

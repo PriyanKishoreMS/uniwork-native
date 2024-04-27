@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View, Pressable } from "@/components/Themed";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Colors, { palette } from "@/constants/Colors";
@@ -6,25 +6,54 @@ import { Fragment } from "react";
 import FastImage from "react-native-fast-image";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { Redirect } from "expo-router";
+import { Redirect, usePathname } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
+import { User } from "@/types";
+import { fetchUser } from "@/utils/api";
+
 import {
 	StyleSheet,
 	useColorScheme,
 	useWindowDimensions,
 	TouchableOpacity,
 } from "react-native";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfileDetail: React.FC<{
 	userId?: number;
 }> = ({ userId }) => {
 	const colorScheme = useColorScheme();
 	const { width } = useWindowDimensions();
+	const pathname = usePathname();
 	console.log(userId, "userIdNumber in profileDetail");
 	const imageWidthHeight = 50;
 	const imageBorderRadius = imageWidthHeight / 3;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
 	const { signOut, isLoading, signedIn, userData } = useAuth();
+	const [thisUser, setThisUser] = React.useState<User | undefined>();
+	``;
+
+	const {
+		data,
+		error,
+		isLoading: isLoadingData,
+	} = useQuery({
+		queryKey: ["user", userId],
+		queryFn: async () => {
+			return await fetchUser(userData, signOut, userId);
+		},
+		enabled: !!userData && userId !== undefined,
+	});
+
+	console.log(data);
+
+	useEffect(() => {
+		if (pathname === "/pages/otherProfile") {
+			setThisUser(data?.data);
+		} else {
+			setThisUser(userData?.user);
+		}
+	}, [userData, data]);
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -78,7 +107,7 @@ const ProfileDetail: React.FC<{
 			<View style={styles.container}>
 				<View style={styles.detailContainer}>
 					<View>
-						<Text style={styles.headerHeading}>{userData?.user?.name}</Text>
+						<Text style={styles.headerHeading}>{thisUser?.name}</Text>
 						<Text
 							style={[
 								styles.college,
@@ -87,7 +116,7 @@ const ProfileDetail: React.FC<{
 								},
 							]}
 						>
-							Hindustan Institute of Technology and Science
+							{thisUser?.college_name}
 						</Text>
 					</View>
 					<FastImage
@@ -97,10 +126,7 @@ const ProfileDetail: React.FC<{
 							borderRadius: imageBorderRadius,
 						}}
 						source={{
-							uri:
-								userData?.user?.avatar === "default"
-									? uri
-									: userData?.user?.avatar,
+							uri: thisUser?.avatar === "default" ? uri : thisUser?.avatar,
 						}}
 					/>
 				</View>
@@ -121,7 +147,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>4.5</Text>
+						<Text style={styles.para}>{thisUser?.rating}</Text>
 						<MaterialIcons name='star' size={24} color={palette.white} />
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -132,7 +158,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>95</Text>
+						<Text style={styles.para}>{thisUser?.tasks_completed}</Text>
 						<MaterialIcons name='done-all' size={24} color={palette.white} />
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -143,7 +169,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>4457</Text>
+						<Text style={styles.para}>{thisUser?.earned}</Text>
 						<MaterialIcons
 							name='currency-rupee'
 							size={24}

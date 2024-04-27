@@ -90,6 +90,31 @@ export const fetchUserTasks = async (
 	}
 };
 
+export const fetchUser = async (
+	userData: UserDataType | null,
+	signOut: () => Promise<void>,
+	uid: number | undefined
+) => {
+	try {
+		const accessToken = userData?.accessToken;
+		const response = await fetch(
+			`${ipAddrPort}/user/${uid}`,
+			options("GET", String(accessToken))
+		);
+		if (!response.ok) {
+			if (response.status === 401) {
+				await refreshToken(String(userData?.refreshToken), signOut);
+			}
+		}
+		const res = await response.json();
+		console.log(res, "userTasks");
+		return res;
+	} catch (err) {
+		console.log(err, "\n\n\nerror status");
+		console.log(err);
+	}
+};
+
 export const postTask = async (data: FormDataType) => {
 	try {
 		const formdata = new FormData();
