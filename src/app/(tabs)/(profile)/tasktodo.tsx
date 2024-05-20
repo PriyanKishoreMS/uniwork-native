@@ -1,64 +1,67 @@
 import { StyleSheet, FlatList } from "react-native";
-import { Text, View } from "@/components/Themed";
-// import { useInfiniteQuery } from "@tanstack/react-query";
-// import { fetchUserTasks } from "@/utils/api";
-// import { useAuth } from "@/components/contexts/AuthContext";
-// import LoadingScreen from "@/components/LoadingScreen";
-// import SomethingWrong from "@/components/SomethingWrong";
-// import Task from "@/app/pages/Task";
+import { View } from "@/components/Themed";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchTaskTodo } from "@/utils/api";
+import { useAuth } from "@/components/contexts/AuthContext";
+import LoadingScreen from "@/components/LoadingScreen";
+import SomethingWrong from "@/components/SomethingWrong";
+import Task from "@/app/pages/Task";
+import { usePathname } from "expo-router";
 
-const MyTaskTodo = () => {
-	// ? To work after implementing task requests logic in the backend
-	// const { signOut, isLoading, userData } = useAuth();
-	// const uid = userData?.user?.id;
-	// const {
-	// 	data: task,
-	// 	error: taskError,
-	// 	fetchNextPage,
-	// 	hasNextPage,
-	// 	isFetching,
-	// 	isFetchingNextPage,
-	// 	status,
-	// 	isLoading: isLoadingTasks,
-	// } = useInfiniteQuery({
-	// 	queryKey: ["workerTask"],
-	// 	queryFn: async ({ pageParam = 1 }) => {
-	// 		return await fetchUserTasks(pageParam, userData, signOut, uid);
-	// 	},
-	// 	initialPageParam: 1,
-	// 	enabled: !!userData,
-	// 	getNextPageParam: (lastPage, pages) => {
-	// 		if (lastPage.length === 0) return undefined;
-	// 		return pages.length + 1;
-	// 	},
-	// });
+const MyTaskTodo: React.FC<{
+	userId: number;
+}> = ({ userId }) => {
+	const { signOut, isLoading, userData } = useAuth();
+	const pathname = usePathname();
+	const uid = pathname === "/pages/otherProfile" ? userId : userData?.user?.id;
 
-	// const onEndReachedFunc = () => {
-	// 	if (hasNextPage && !isLoadingTasks) {
-	// 		fetchNextPage();
-	// 	}
-	// };
+	const {
+		data: task,
+		error: taskError,
+		fetchNextPage,
+		hasNextPage,
+		isFetching,
+		isFetchingNextPage,
+		status,
+		isLoading: isLoadingTasks,
+	} = useInfiniteQuery({
+		queryKey: ["userTodo", uid],
+		queryFn: async ({ pageParam = 1 }) => {
+			return await fetchTaskTodo(pageParam, userData, signOut, uid);
+		},
+		initialPageParam: 1,
+		enabled: !!userData && uid !== undefined,
+		getNextPageParam: (lastPage, pages) => {
+			if (lastPage.length === 0) return undefined;
+			return pages.length + 1;
+		},
+	});
 
-	// const flatData = task?.pages.flatMap(page => page.data);
+	const onEndReachedFunc = () => {
+		if (hasNextPage && !isLoadingTasks) {
+			fetchNextPage();
+		}
+	};
 
-	// if (isLoading) {
-	// 	return <LoadingScreen />;
-	// }
+	const flatData = task?.pages.flatMap(page => page.data);
 
-	// if (taskError) {
-	// 	return <SomethingWrong />;
-	// }
+	if (isLoading) {
+		return <LoadingScreen />;
+	}
+
+	if (taskError) {
+		return <SomethingWrong />;
+	}
 	return (
 		<View style={styles.container}>
-			{/* <FlatList
+			<FlatList
 				data={flatData}
 				showsVerticalScrollIndicator={false}
 				keyExtractor={item => item?.id.toString()}
-				// onEndReached={onEndReachedFunc}
+				onEndReached={onEndReachedFunc}
 				onEndReachedThreshold={0.5}
 				renderItem={({ item }) => <Task item={item} />}
-			/> */}
-			<Text style={styles.title}>My Task todo</Text>
+			/>
 		</View>
 	);
 };
@@ -66,7 +69,6 @@ const MyTaskTodo = () => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		alignItems: "center",
 		justifyContent: "center",
 	},
 	title: {

@@ -4,9 +4,9 @@ import {
 	useWindowDimensions,
 	ScrollView,
 	ActivityIndicator,
+	useColorScheme,
 } from "react-native";
 import { Pressable, Text, View } from "@/components/Themed";
-import { useColorScheme } from "react-native";
 import Colors, { palette } from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";

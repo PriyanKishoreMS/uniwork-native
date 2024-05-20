@@ -30,8 +30,6 @@ const ProfileDetail: React.FC<{
 	const imageBorderRadius = imageWidthHeight / 3;
 	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
 	const { signOut, isLoading, signedIn, userData } = useAuth();
-	const [thisUser, setThisUser] = React.useState<User | undefined>();
-	``;
 
 	const {
 		data,
@@ -45,15 +43,9 @@ const ProfileDetail: React.FC<{
 		enabled: !!userData && userId !== undefined,
 	});
 
+	const thisUser =
+		pathname === "/pages/otherProfile" ? data?.data : userData?.user;
 	console.log(data);
-
-	useEffect(() => {
-		if (pathname === "/pages/otherProfile") {
-			setThisUser(data?.data);
-		} else {
-			setThisUser(userData?.user);
-		}
-	}, [userData, data]);
 
 	if (isLoading) {
 		return <LoadingScreen />;

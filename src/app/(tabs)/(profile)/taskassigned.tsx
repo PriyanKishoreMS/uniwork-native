@@ -7,24 +7,14 @@ import LoadingScreen from "@/components/LoadingScreen";
 import SomethingWrong from "@/components/SomethingWrong";
 import Task from "@/app/pages/Task";
 import { usePathname } from "expo-router";
-import { useEffect, useState } from "react";
 
 const TaskAssigned: React.FC<{
 	userId: number;
 }> = ({ userId }) => {
 	const { signOut, isLoading, userData } = useAuth();
 	const pathname = usePathname();
-	const [uid, setUid] = useState<number | undefined>(undefined);
+	const uid = pathname === "/pages/otherProfile" ? userId : userData?.user?.id;
 
-	useEffect(() => {
-		if (pathname === "/pages/otherProfile") {
-			setUid(userId);
-		} else {
-			setUid(userData?.user?.id);
-		}
-		console.log("check check check");
-	}, [userData, userId]);
-	
 	const {
 		data: task,
 		error: taskError,
@@ -68,7 +58,7 @@ const TaskAssigned: React.FC<{
 				data={flatData}
 				showsVerticalScrollIndicator={false}
 				keyExtractor={item => item?.id.toString()}
-				// onEndReached={onEndReachedFunc}
+				onEndReached={onEndReachedFunc}
 				onEndReachedThreshold={0.5}
 				renderItem={({ item }) => <Task item={item} />}
 			/>

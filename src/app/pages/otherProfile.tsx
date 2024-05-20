@@ -8,6 +8,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import TaskAssigned from "../(tabs)/(profile)/taskassigned";
 import TaskTodo from "../(tabs)/(profile)/tasktodo";
+import MyTaskTodo from "../(tabs)/(profile)/tasktodo";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -57,7 +58,7 @@ const OtherProfile = () => {
 				/>
 				<Tab.Screen
 					name='todo'
-					component={TaskTodo}
+					children={() => <MyTaskTodo userId={userIdNumber} />}
 					options={{
 						title: "To Do",
 						tabBarLabelStyle: {

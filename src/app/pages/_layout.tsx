@@ -24,6 +24,13 @@ const DetailsLayout = () => {
 				}}
 			/>
 			<Stack.Screen
+				name='ProfileDetail'
+				options={{
+					headerShown: false,
+					presentation: "modal",
+				}}
+			/>
+			<Stack.Screen
 				name='otherProfile'
 				options={{
 					headerShown: false,
