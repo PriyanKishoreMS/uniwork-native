@@ -27,9 +27,9 @@ import LoadingScreen from "@/components/LoadingScreen";
 import { categoryColors } from "@/constants/Colors";
 import StarRating from "@/components/custom/StarRating";
 import { TaskCategory } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { ipAddrPort } from "@/../temp/config";
+import { fetchOneTask, postTaskRequest } from "@/utils/api";
 
 const task = () => {
 	const { itemId } = useLocalSearchParams();
@@ -39,31 +39,40 @@ const task = () => {
 	const { height } = useWindowDimensions();
 	const colorScheme = useColorScheme();
 	const { userData } = useAuth();
+	const queryClient = useQueryClient();
 
-	const fetchOneTask = async (itemId: number) => {
-		try {
-			const accessToken = userData?.accessToken;
-			const response = await fetch(`${ipAddrPort}/task/${itemId}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
-			const res = await response.json();
-			return res;
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	const defaultAvatar =
+		"https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png";
 
 	const { data: task, isLoading } = useQuery({
 		queryKey: ["task", itemId],
-		queryFn: () => fetchOneTask(itemIdNumber),
+		queryFn: () => fetchOneTask(itemIdNumber, userData?.accessToken as string),
 		enabled: !!userData,
 	});
 	const data = task?.data;
+	const taskOwner = data?.user_id;
+	const currentUser = userData?.user?.id;
+	const requested: boolean = data?.requesters?.some(
+		(el: { userid: number | undefined }) => {
+			return el.userid === currentUser;
+		}
+	);
+
 	console.log(data, "this is the data");
+
+	const { mutateAsync: addTaskRequest } = useMutation({
+		mutationFn: async () => {
+			return await postTaskRequest(
+				data?.id,
+				userData?.user?.id as number,
+				userData?.accessToken as string
+			);
+		},
+		onSuccess: () => {
+			console.log("Request Sent");
+			queryClient.invalidateQueries({ queryKey: ["task", itemId] });
+		},
+	});
 
 	const handleGoBack = () => {
 		router.back();
@@ -253,7 +262,7 @@ const task = () => {
 									source={{
 										uri:
 											data?.user_avatar == "default"
-												? "https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png"
+												? defaultAvatar
 												: data?.avatar,
 									}}
 									style={{
@@ -369,6 +378,180 @@ const task = () => {
 							</View>
 						</View>
 					)}
+					{data?.requesters?.length === 0 ? (
+						<View
+							style={{
+								// backgroundColor: palette.gray,
+								alignItems: "center",
+								justifyContent: "center",
+								padding: 8,
+								marginVertical: 16,
+							}}
+						>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 20,
+								}}
+							>
+								No Requests Yet
+							</Text>
+						</View>
+					) : taskOwner !== currentUser ? (
+						<View style={styles.requesterView}>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 20,
+									color: colorScheme === "dark" ? palette.white : palette.black,
+								}}
+							>
+								Task Requests
+							</Text>
+							{data?.requesters?.map(
+								(requester: { avatar: string; id: number; name: string }) => (
+									<View
+										key={requester.id}
+										style={{
+											flexDirection: "row",
+											alignItems: "center",
+											justifyContent: "space-between",
+											marginVertical: 8,
+										}}
+									>
+										<View
+											style={{
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "flex-start",
+											}}
+										>
+											<Image
+												source={{
+													uri:
+														requester?.avatar == "default"
+															? defaultAvatar
+															: data?.avatar,
+												}}
+												style={{
+													width: 30,
+													height: 30,
+													borderRadius: 15,
+													marginLeft: 4,
+												}}
+											/>
+											<Text
+												style={{
+													fontFamily: "Inter",
+													fontSize: 16,
+													marginLeft: 12,
+												}}
+											>
+												{requester?.name}
+											</Text>
+										</View>
+										<View
+											style={{
+												borderWidth: 1,
+												borderColor: palette.yellow,
+												backgroundColor: palette.yellow,
+												borderRadius: 18,
+												padding: 4,
+											}}
+										>
+											<Text
+												style={{
+													fontFamily: "Inter",
+													fontSize: 12,
+													color: palette.black,
+													letterSpacing: 0.5,
+												}}
+											>
+												Requested
+											</Text>
+										</View>
+									</View>
+								)
+							)}
+						</View>
+					) : (
+						<View style={styles.requesterView}>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 20,
+									color: colorScheme === "dark" ? palette.white : palette.black,
+								}}
+							>
+								Task Requests
+							</Text>
+							{data?.requesters?.map(
+								(requester: { avatar: string; id: number; name: string }) => (
+									<View
+										key={requester.id}
+										style={{
+											flexDirection: "row",
+											alignItems: "center",
+											justifyContent: "space-between",
+											marginVertical: 8,
+										}}
+									>
+										<View
+											style={{
+												flexDirection: "row",
+												alignItems: "center",
+												justifyContent: "flex-start",
+											}}
+										>
+											<Image
+												source={{
+													uri:
+														requester?.avatar == "default"
+															? defaultAvatar
+															: data?.avatar,
+												}}
+												style={{
+													width: 30,
+													height: 30,
+													borderRadius: 15,
+													marginLeft: 4,
+												}}
+											/>
+											<Text
+												style={{
+													fontFamily: "Inter",
+													fontSize: 16,
+													marginLeft: 12,
+												}}
+											>
+												{requester?.name}
+											</Text>
+										</View>
+										<View
+											style={{
+												borderWidth: 1,
+												borderColor: palette.yellow,
+												backgroundColor: palette.yellow,
+												borderRadius: 18,
+												padding: 4,
+											}}
+										>
+											<Text
+												style={{
+													fontFamily: "Inter",
+													fontSize: 12,
+													color: palette.black,
+													letterSpacing: 0.5,
+												}}
+											>
+												Requested
+											</Text>
+										</View>
+									</View>
+								)
+							)}
+						</View>
+					)}
 				</ScrollView>
 			</View>
 			<View
@@ -378,37 +561,49 @@ const task = () => {
 					backgroundColor: "transparent",
 				}}
 			>
-				<Pressable
-					android_ripple={{
-						color: convertColorIntensity(palette.green, -40),
-						borderless: false,
-					}}
-					style={{
-						flexDirection: "row",
-						backgroundColor: palette.green,
-						padding: 8,
-						alignItems: "center",
-						justifyContent: "center",
-					}}
-				>
-					<MaterialIcons name='task-alt' size={30} color={palette.white} />
-					<Text
+				{taskOwner !== currentUser && !requested && (
+					<Pressable
+						onPress={async () => {
+							try {
+								await addTaskRequest();
+							} catch (err) {
+								console.error(err);
+							}
+						}}
+						android_ripple={{
+							color: convertColorIntensity(palette.green, -40),
+							borderless: false,
+						}}
 						style={{
-							fontFamily: "InterSemiBold",
-							fontSize: 20,
-							color: palette.white,
-							marginLeft: 8,
+							flexDirection: "row",
+							backgroundColor: palette.green,
+							padding: 8,
+							alignItems: "center",
+							justifyContent: "center",
 						}}
 					>
-						Take up task
-					</Text>
-				</Pressable>
+						<MaterialIcons name='task-alt' size={30} color={palette.white} />
+						<Text
+							style={{
+								fontFamily: "InterSemiBold",
+								fontSize: 20,
+								color: palette.white,
+								marginLeft: 8,
+							}}
+						>
+							Bro, I want to do it
+						</Text>
+					</Pressable>
+				)}
 			</View>
 		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
+	requesterView: {
+		margin: 16,
+	},
 	container: {
 		flex: 1,
 		marginHorizontal: 16,

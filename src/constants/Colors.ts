@@ -21,6 +21,7 @@ export const palette = {
 	text: "#0D171C",
 	transparent: "rgba(0,0,0,0)",
 	red: "#FF0000",
+	yellow: "#FFFAA0",
 	green: "#008000",
 };
 

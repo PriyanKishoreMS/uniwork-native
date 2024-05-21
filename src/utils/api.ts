@@ -141,6 +141,22 @@ export const fetchUser = async (
 	}
 };
 
+export const fetchOneTask = async (itemId: number, accessToken: string) => {
+	try {
+		const response = await fetch(`${ipAddrPort}/task/${itemId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${accessToken}`,
+			},
+		});
+		const res = await response.json();
+		return res;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const postTask = async (data: FormDataType) => {
 	try {
 		const formdata = new FormData();
@@ -184,6 +200,31 @@ export const postTask = async (data: FormDataType) => {
 
 		const res = await response.json();
 		console.log(res, "response");
+		return res;
+	} catch (error) {
+		console.error(error, "error here");
+	}
+};
+
+export const postTaskRequest = async (
+	taskId: number,
+	uid: number,
+	accessToken: string
+) => {
+	try {
+		console.log(taskId, uid, "task req data");
+		const response = await fetch(
+			`${ipAddrPort}/task/request?taskid=${taskId}&userid=${uid}`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			}
+		);
+		const res = await response.json();
+		console.log(res, "response to task req");
 		return res;
 	} catch (error) {
 		console.error(error, "error here");
