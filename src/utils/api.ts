@@ -230,3 +230,29 @@ export const postTaskRequest = async (
 		console.error(error, "error here");
 	}
 };
+
+export const RespondTaskRequest = async (
+	taskId: number,
+	uid: number,
+	status: string,
+	accessToken: string,
+) => {
+	try {
+		console.log(taskId, uid, "task req data", status, accessToken);
+		const response = await fetch(
+			`${ipAddrPort}/task/request/${status}?taskid=${taskId}&userid=${uid}`,
+			{
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			}
+		);
+		const res = await response.json();
+		console.log(res, "response to task req");
+		return res;
+	} catch (error) {
+		console.error(error, "error in respond task req");
+	}
+};

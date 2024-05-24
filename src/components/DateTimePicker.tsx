@@ -51,7 +51,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
 			>
 				<Text style={styles.dateTimeText}>
 					{dateTime === ""
-						? "Set Expiry"
+						? "Set Deadline"
 						: "Expires on " + formatDateTime(dateTime)}
 				</Text>
 				<DateTimePickerModal

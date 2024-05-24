@@ -3,9 +3,10 @@ import {
 	useColorScheme,
 	Image,
 	TouchableNativeFeedback,
+	TouchableOpacity,
 } from "react-native";
-import { View, Text } from "@/components/Themed";
-import React from "react";
+import { View, Text, Pressable as RPressable } from "@/components/Themed";
+import React, { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
@@ -29,7 +30,7 @@ import StarRating from "@/components/custom/StarRating";
 import { TaskCategory } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { fetchOneTask, postTaskRequest } from "@/utils/api";
+import { fetchOneTask, postTaskRequest, RespondTaskRequest } from "@/utils/api";
 
 const task = () => {
 	const { itemId } = useLocalSearchParams();
@@ -57,6 +58,7 @@ const task = () => {
 			return el.userid === currentUser;
 		}
 	);
+	const approved: boolean = data?.requesters[0]?.status === "approved";
 
 	console.log(data, "this is the data");
 
@@ -65,6 +67,25 @@ const task = () => {
 			return await postTaskRequest(
 				data?.id,
 				userData?.user?.id as number,
+				userData?.accessToken as string
+			);
+		},
+		onSuccess: () => {
+			console.log("Request Sent");
+			queryClient.invalidateQueries({ queryKey: ["task", itemId] });
+		},
+	});
+
+	const { mutateAsync: respondTaskRequest } = useMutation<
+		unknown,
+		unknown,
+		{ requesterId: number; taskResponse: "approve" | "reject" }
+	>({
+		mutationFn: async ({ requesterId, taskResponse }) => {
+			return await RespondTaskRequest(
+				data?.id,
+				requesterId as number,
+				taskResponse,
 				userData?.accessToken as string
 			);
 		},
@@ -114,6 +135,20 @@ const task = () => {
 						size={25}
 						color={colorScheme === "dark" ? palette.white : palette.black}
 					/>
+					{taskOwner === currentUser && (
+						<RPressable style={styles.btnDelete}>
+							<Text
+								style={{
+									fontFamily: "Inter",
+									fontSize: 16,
+									padding: 4,
+									paddingHorizontal: 8,
+								}}
+							>
+								Delete Task
+							</Text>
+						</RPressable>
+					)}
 				</View>
 				<ScrollView>
 					<View style={styles.container}>
@@ -289,7 +324,7 @@ const task = () => {
 											marginLeft: 12,
 										}}
 									>
-										Hindustan Institute of Technology and Science
+										{data?.college_name}
 									</Text>
 									<View
 										style={{
@@ -409,8 +444,22 @@ const task = () => {
 								Task Requests
 							</Text>
 							{data?.requesters?.map(
-								(requester: { avatar: string; id: number; name: string }) => (
-									<View
+								(requester: {
+									avatar: string;
+									id: number;
+									userid: number;
+									name: string;
+									status: string;
+								}) => (
+									<TouchableOpacity
+										onPress={() => {
+											router.push({
+												pathname: "/pages/otherProfile",
+												params: {
+													UserId: requester?.userid,
+												},
+											});
+										}}
 										key={requester.id}
 										style={{
 											flexDirection: "row",
@@ -453,8 +502,14 @@ const task = () => {
 										<View
 											style={{
 												borderWidth: 1,
-												borderColor: palette.yellow,
-												backgroundColor: palette.yellow,
+												borderColor:
+													requester?.status == "pending"
+														? palette.yellow
+														: palette.success,
+												backgroundColor:
+													requester?.status == "pending"
+														? palette.yellow
+														: palette.success,
 												borderRadius: 18,
 												padding: 4,
 											}}
@@ -467,10 +522,12 @@ const task = () => {
 													letterSpacing: 0.5,
 												}}
 											>
-												Requested
+												{requester?.status == "pending"
+													? "Requested"
+													: "Accepted"}
 											</Text>
 										</View>
-									</View>
+									</TouchableOpacity>
 								)
 							)}
 						</View>
@@ -486,8 +543,22 @@ const task = () => {
 								Task Requests
 							</Text>
 							{data?.requesters?.map(
-								(requester: { avatar: string; id: number; name: string }) => (
-									<View
+								(requester: {
+									avatar: string;
+									id: number;
+									name: string;
+									userid: number;
+									status: string;
+								}) => (
+									<TouchableOpacity
+										onPress={() => {
+											router.push({
+												pathname: "/pages/otherProfile",
+												params: {
+													UserId: requester?.userid,
+												},
+											});
+										}}
 										key={requester.id}
 										style={{
 											flexDirection: "row",
@@ -527,27 +598,119 @@ const task = () => {
 												{requester?.name}
 											</Text>
 										</View>
-										<View
-											style={{
-												borderWidth: 1,
-												borderColor: palette.yellow,
-												backgroundColor: palette.yellow,
-												borderRadius: 18,
-												padding: 4,
-											}}
-										>
-											<Text
+										{requester?.status === "pending" ? (
+											<View
 												style={{
-													fontFamily: "Inter",
-													fontSize: 12,
-													color: palette.black,
-													letterSpacing: 0.5,
+													flexDirection: "row",
+													gap: 6,
 												}}
 											>
-												Requested
-											</Text>
-										</View>
-									</View>
+												<RPressable
+													onPress={async () => {
+														try {
+															await respondTaskRequest({
+																requesterId: requester.userid,
+																taskResponse: "reject",
+															});
+														} catch (err) {
+															console.error(err);
+														}
+													}}
+													style={{
+														borderWidth: 1,
+														borderColor: palette.red,
+														borderRadius: 18,
+														padding: 4,
+														paddingHorizontal: 8,
+													}}
+												>
+													<Text
+														style={{
+															fontFamily: "InterSemiBold",
+															fontSize: 12,
+															color: palette.red,
+															letterSpacing: 0.5,
+														}}
+													>
+														Reject
+													</Text>
+												</RPressable>
+												<RPressable
+													onPress={async () => {
+														try {
+															await respondTaskRequest({
+																requesterId: requester.userid,
+																taskResponse: "approve",
+															});
+														} catch (err) {
+															console.error(err);
+														}
+													}}
+													style={{
+														borderWidth: 1,
+														borderColor: palette.success,
+														backgroundColor: palette.success,
+														borderRadius: 18,
+														padding: 4,
+														paddingHorizontal: 8,
+													}}
+												>
+													<Text
+														style={{
+															fontFamily: "Inter",
+															fontSize: 12,
+															color: palette.black,
+															letterSpacing: 0.5,
+														}}
+													>
+														Accept
+													</Text>
+												</RPressable>
+											</View>
+										) : requester?.status === "approved" ? (
+											<View
+												style={{
+													borderWidth: 1,
+													borderColor: palette.success,
+													backgroundColor: palette.success,
+													borderRadius: 18,
+													padding: 4,
+												}}
+											>
+												<Text
+													style={{
+														fontFamily: "Inter",
+														fontSize: 12,
+														color: palette.black,
+														letterSpacing: 0.5,
+													}}
+												>
+													Accepted
+												</Text>
+											</View>
+										) : (
+											<View
+												style={{
+													borderWidth: 1,
+													borderColor: palette.red,
+													backgroundColor: palette.red,
+													borderRadius: 18,
+													padding: 4,
+												}}
+											>
+												<Text
+													style={{
+														fontFamily: "Inter",
+														fontSize: 12,
+														color: palette.black,
+														letterSpacing: 0.5,
+													}}
+												>
+													Rejected
+												</Text>
+											</View>
+										)}
+									</TouchableOpacity>
 								)
 							)}
 						</View>
@@ -561,7 +724,7 @@ const task = () => {
 					backgroundColor: "transparent",
 				}}
 			>
-				{taskOwner !== currentUser && !requested && (
+				{taskOwner !== currentUser && !requested && !approved && (
 					<Pressable
 						onPress={async () => {
 							try {
@@ -680,6 +843,12 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontFamily: "InterSemiBold",
 		marginLeft: 12,
+	},
+	btnDelete: {
+		backgroundColor: palette.red,
+		borderRadius: 16,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 });
 

@@ -8,7 +8,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
 import { Redirect, usePathname } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
-import { User } from "@/types";
 import { fetchUser } from "@/utils/api";
 
 import {
