@@ -63,7 +63,12 @@ export const formatFutureTime = (timestamp: string): string => {
 	}
 };
 
-export const formatDateTime = (timestamp: string): string => {
+type dateAndTime = {
+	date: string;
+	time: string;
+};
+
+export const formatDateTime = (timestamp: string): dateAndTime => {
 	const date = new Date(timestamp);
 	const day = date.getDate();
 	const month = date.toLocaleString("default", { month: "short" });
@@ -74,6 +79,6 @@ export const formatDateTime = (timestamp: string): string => {
 	const formattedHours = hours % 12;
 	const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 	const formattedTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
-	const formattedDate = `${day} ${month} ${year}, ${formattedTime}`;
-	return formattedDate;
+	const formattedDate = `${day} ${month} ${year}`;
+	return { date: formattedDate, time: formattedTime };
 };

@@ -1,37 +1,36 @@
-import {
-	StyleSheet,
-	TextInput,
-	useWindowDimensions,
-	ScrollView,
-	ActivityIndicator,
-	useColorScheme,
-} from "react-native";
+import DateTimePicker from "@/components/DateTimePicker";
+import LoadingScreen from "@/components/LoadingScreen";
 import { Pressable, Text, View } from "@/components/Themed";
-import Colors, { palette } from "@/constants/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useState, useEffect } from "react";
-import { router } from "expo-router";
+import { useAuth } from "@/components/contexts/AuthContext";
 import { CategoryMenu } from "@/components/custom/DropDowns";
 import ImageSlider from "@/components/custom/ImageSlider";
+import Colors, { palette } from "@/constants/Colors";
 import {
-	pickMultipleImages,
-	pickMultipleFiles,
-	convertColorIntensity,
-} from "@/utils";
-import { DocumentPickerResult } from "expo-document-picker";
-import { Dropdown } from "react-native-element-dropdown";
-import {
+	FormData as FormDataType,
 	ScopeOption,
 	PostPageLoadingStates as loadingStates,
-	FormData as FormDataType,
 } from "@/types";
-import DateTimePicker from "@/components/DateTimePicker";
-import { useAuth } from "@/components/contexts/AuthContext";
-import { Redirect } from "expo-router";
-import LoadingScreen from "@/components/LoadingScreen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+	convertColorIntensity,
+	pickMultipleFiles,
+	pickMultipleImages,
+} from "@/utils";
 import { postTask as postData } from "@/utils/api";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DocumentPickerResult } from "expo-document-picker";
+import { Redirect, router } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+	ActivityIndicator,
+	ScrollView,
+	StyleSheet,
+	TextInput,
+	useColorScheme,
+	useWindowDimensions,
+} from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CreateScreen = () => {
 	const colorScheme = useColorScheme();

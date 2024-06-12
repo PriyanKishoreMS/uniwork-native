@@ -1,14 +1,14 @@
-import { ScrollView, StyleSheet, useColorScheme } from "react-native";
-import { Text, View, Pressable } from "@/components/Themed";
-import Colors, { palette } from "@/constants/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
-import { leaderBoard } from "../../../temp/users";
-import { Fragment } from "react";
-import FastImage from "react-native-fast-image";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { Redirect } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
+import { Text, View } from "@/components/Themed";
+import Colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Redirect } from "expo-router";
+import { Fragment } from "react";
+import { ScrollView, StyleSheet, useColorScheme } from "react-native";
+import FastImage from "react-native-fast-image";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { leaderBoard } from "../../../temp/users";
 
 const PeopleScreen = () => {
 	const { signedIn, isLoading } = useAuth();
@@ -35,13 +35,25 @@ const PeopleScreen = () => {
 							: Colors.light.background,
 				}}
 			>
-				<View style={styles.headerContainer}>
+				<View
+					style={[
+						styles.headerContainer,
+						{
+							backgroundColor:
+								colorScheme === "dark"
+									? Colors.dark.background
+									: Colors.light.background,
+						},
+					]}
+				>
 					<Text style={styles.headerText}>Leaderboard</Text>
 					<View>
 						<MaterialIcons
 							name='search'
 							size={32}
-							color={palette.white}
+							color={
+								colorScheme === "dark" ? Colors.dark.text : Colors.light.text
+							}
 							style={{
 								marginRight: 16,
 							}}
@@ -111,7 +123,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		backgroundColor: Colors.dark.background,
 	},
 	headerText: {
 		fontSize: 20,

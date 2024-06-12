@@ -1,36 +1,35 @@
-import {
-	StyleSheet,
-	useColorScheme,
-	Image,
-	TouchableNativeFeedback,
-	TouchableOpacity,
-} from "react-native";
-import { View, Text, Pressable as RPressable } from "@/components/Themed";
-import React, { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useWindowDimensions } from "react-native";
-import { Pressable, ScrollView } from "react-native";
-import {
-	MaterialIcons,
-	MaterialCommunityIcons,
-	Entypo,
-} from "@expo/vector-icons";
-import Colors, { palette } from "@/constants/Colors";
+import { useAuth } from "@/components/contexts/AuthContext";
 import ImageSlider from "@/components/custom/ImageSlider";
-import { router } from "expo-router";
+import StarRating from "@/components/custom/StarRating";
+import LoadingScreen from "@/components/LoadingScreen";
+import { Pressable as RPressable, Text, View } from "@/components/Themed";
+import Colors, { categoryColors, palette } from "@/constants/Colors";
+import { TaskCategory } from "@/types";
 import {
 	changeOpacity,
 	convertColorIntensity,
 	limitDescription,
 } from "@/utils";
-import LoadingScreen from "@/components/LoadingScreen";
-import { categoryColors } from "@/constants/Colors";
-import StarRating from "@/components/custom/StarRating";
-import { TaskCategory } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/components/contexts/AuthContext";
 import { fetchOneTask, postTaskRequest, RespondTaskRequest } from "@/utils/api";
+import {
+	Entypo,
+	MaterialCommunityIcons,
+	MaterialIcons,
+} from "@expo/vector-icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { router, useLocalSearchParams } from "expo-router";
+import React from "react";
+import {
+	Image,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	TouchableNativeFeedback,
+	TouchableOpacity,
+	useColorScheme,
+	useWindowDimensions,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const task = () => {
 	const { itemId } = useLocalSearchParams();
@@ -139,7 +138,8 @@ const task = () => {
 						<RPressable style={styles.btnDelete}>
 							<Text
 								style={{
-									fontFamily: "Inter",
+									fontFamily: "InterSemiBold",
+									color: palette.red,
 									fontSize: 16,
 									padding: 4,
 									paddingHorizontal: 8,
@@ -626,21 +626,29 @@ const task = () => {
 												>
 													<Text
 														style={{
-															fontFamily: "InterSemiBold",
+															fontFamily: "Inter",
 															fontSize: 12,
 															color: palette.red,
 															letterSpacing: 0.5,
 														}}
 													>
-														Reject
+														Decline
 													</Text>
 												</RPressable>
 												<RPressable
 													onPress={async () => {
 														try {
-															await respondTaskRequest({
-																requesterId: requester.userid,
-																taskResponse: "approve",
+															// await respondTaskRequest({
+															// 	requesterId: requester.userid,
+															// 	taskResponse: "approve",
+															// });
+
+															router.push({
+																pathname: "/pages/CheckOut",
+																params: {
+																	itemId: data?.id,
+																	requesterId: requester.userid,
+																},
 															});
 														} catch (err) {
 															console.error(err);
@@ -845,7 +853,6 @@ const styles = StyleSheet.create({
 		marginLeft: 12,
 	},
 	btnDelete: {
-		backgroundColor: palette.red,
 		borderRadius: 16,
 		alignItems: "center",
 		justifyContent: "center",
