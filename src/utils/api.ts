@@ -214,7 +214,7 @@ export const postTaskRequest = async (
 	try {
 		console.log(taskId, uid, "task req data");
 		const response = await fetch(
-			`${ipAddrPort}/task/request?taskid=${taskId}&userid=${uid}`,
+			`${ipAddrPort}/task/request/${taskId}/${uid}`,
 			{
 				method: "POST",
 				headers: {
@@ -235,12 +235,12 @@ export const RespondTaskRequest = async (
 	taskId: number,
 	uid: number,
 	status: string,
-	accessToken: string,
+	accessToken: string
 ) => {
 	try {
 		console.log(taskId, uid, "task req data", status, accessToken);
 		const response = await fetch(
-			`${ipAddrPort}/task/request/${status}?taskid=${taskId}&userid=${uid}`,
+			`${ipAddrPort}/task/request/${status}/${taskId}/${uid}`,
 			{
 				method: "PATCH",
 				headers: {

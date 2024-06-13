@@ -1,14 +1,14 @@
-import { StyleSheet, ColorSchemeName } from "react-native";
-import React, { useState } from "react";
-import { FormData } from "@/types";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { Pressable, View, Text } from "./Themed";
-import {
-	formatFutureTime,
-	formatDateTime,
-	convertColorIntensity,
-} from "@/utils";
 import { palette } from "@/constants/Colors";
+import { FormData } from "@/types";
+import {
+	convertColorIntensity,
+	formatDateTime,
+	formatFutureTime,
+} from "@/utils";
+import React, { useState } from "react";
+import { ColorSchemeName, StyleSheet } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Pressable, Text, View } from "./Themed";
 
 type DateTimePickerProps = {
 	colorScheme: ColorSchemeName;
@@ -52,7 +52,10 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
 				<Text style={styles.dateTimeText}>
 					{dateTime === ""
 						? "Set Deadline"
-						: "Expires on " + formatDateTime(dateTime)}
+						: "Expires on " +
+						  formatDateTime(dateTime).date +
+						  " at " +
+						  formatDateTime(dateTime).time}
 				</Text>
 				<DateTimePickerModal
 					isVisible={isDatePickerVisible}
