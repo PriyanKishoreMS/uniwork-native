@@ -1,22 +1,21 @@
-import React, { useEffect } from "react";
-import { Text, View, Pressable } from "@/components/Themed";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Colors, { palette } from "@/constants/Colors";
-import { Fragment } from "react";
-import FastImage from "react-native-fast-image";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useAuth } from "@/components/contexts/AuthContext";
-import { Redirect, usePathname } from "expo-router";
 import LoadingScreen from "@/components/LoadingScreen";
+import { Pressable, Text, View } from "@/components/Themed";
+import Colors, { palette } from "@/constants/Colors";
 import { fetchUser } from "@/utils/api";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Redirect, usePathname } from "expo-router";
+import React, { Fragment } from "react";
+import FastImage from "react-native-fast-image";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useQuery } from "@tanstack/react-query";
 import {
 	StyleSheet,
+	TouchableOpacity,
 	useColorScheme,
 	useWindowDimensions,
-	TouchableOpacity,
 } from "react-native";
-import { useQuery } from "@tanstack/react-query";
 
 const ProfileDetail: React.FC<{
 	userId?: number;

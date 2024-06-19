@@ -1,19 +1,19 @@
-import { StyleSheet, FlatList } from "react-native";
-import { View } from "@/components/Themed";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { fetchUserTasks } from "@/utils/api";
+import Task from "@/app/pages/Task";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
 import SomethingWrong from "@/components/SomethingWrong";
-import Task from "@/app/pages/Task";
-import { usePathname } from "expo-router";
+import { View } from "@/components/Themed";
+import { fetchUserTasks } from "@/utils/api";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { FlatList, StyleSheet } from "react-native";
 
 const TaskAssigned: React.FC<{
-	userId: number;
+	userId?: number;
 }> = ({ userId }) => {
+	// userId prop is passed from otherProfile.tsx
 	const { signOut, isLoading, userData } = useAuth();
-	const pathname = usePathname();
-	const uid = pathname === "/pages/otherProfile" ? userId : userData?.user?.id;
+	// const uid = pathname === "/pages/otherProfile" ? userId : userData?.user?.id;
+	const uid = userId || userData?.user?.id;
 
 	const {
 		data: task,

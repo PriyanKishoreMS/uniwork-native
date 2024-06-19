@@ -1,15 +1,15 @@
-import { StyleSheet, FlatList } from "react-native";
-import { View } from "@/components/Themed";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { fetchTaskTodo } from "@/utils/api";
+import Task from "@/app/pages/Task";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
 import SomethingWrong from "@/components/SomethingWrong";
-import Task from "@/app/pages/Task";
+import { View } from "@/components/Themed";
+import { fetchTaskTodo } from "@/utils/api";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { usePathname } from "expo-router";
+import { FlatList, StyleSheet } from "react-native";
 
 const MyTaskTodo: React.FC<{
-	userId: number;
+	userId?: number;
 }> = ({ userId }) => {
 	const { signOut, isLoading, userData } = useAuth();
 	const pathname = usePathname();

@@ -1,32 +1,23 @@
-import React from "react";
-import {
-	createMaterialTopTabNavigator,
-	MaterialTopTabNavigationOptions,
-	MaterialTopTabNavigationEventMap,
-} from "@react-navigation/material-top-tabs";
-import { ParamListBase, TabNavigationState } from "@react-navigation/native";
-import { withLayoutContext } from "expo-router";
-import { Fragment } from "react";
+import TaskAssigned from "@/app/(tabs)/(profile)/taskassigned";
+import MyTaskTodo from "@/app/(tabs)/(profile)/tasktodo";
 import ProfileDetail from "@/app/pages/ProfileDetail";
 import { palette } from "@/constants/Colors";
-import { useColorScheme } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import React, { Fragment } from "react";
+import { useColorScheme } from "react-native";
 
-const { Navigator } = createMaterialTopTabNavigator();
+const Tab = createMaterialTopTabNavigator();
 
-export const MaterialTopTabs = withLayoutContext<
-	MaterialTopTabNavigationOptions,
-	typeof Navigator,
-	TabNavigationState<ParamListBase>,
-	MaterialTopTabNavigationEventMap
->(Navigator);
+// 2 diff versions of this exists (this _layout.tsx and otherProfile.tsx) because can't use this file for other profile since it is a tab layout. If this was used for other profile, it swaps the profile tab with the other user details.
 
 const ProfileLayout = () => {
 	const colorScheme = useColorScheme();
+
 	return (
 		<Fragment>
 			<ProfileDetail />
-			<MaterialTopTabs
+			<Tab.Navigator
 				screenOptions={{
 					tabBarActiveTintColor: palette.primary,
 					tabBarInactiveTintColor: palette.grayLight2,
@@ -45,7 +36,7 @@ const ProfileLayout = () => {
 					},
 				}}
 			>
-				<MaterialTopTabs.Screen
+				<Tab.Screen
 					name='taskassigned'
 					options={{
 						title: "Assigned",
@@ -58,9 +49,11 @@ const ProfileLayout = () => {
 							<MaterialIcons name='assignment-add' size={24} color={color} />
 						),
 					}}
+					children={() => <TaskAssigned />}
 				/>
-				<MaterialTopTabs.Screen
-					name='tasktodo'
+				<Tab.Screen
+					name='todo'
+					children={() => <MyTaskTodo />}
 					options={{
 						title: "To Do",
 						tabBarLabelStyle: {
@@ -77,7 +70,7 @@ const ProfileLayout = () => {
 						),
 					}}
 				/>
-			</MaterialTopTabs>
+			</Tab.Navigator>
 		</Fragment>
 	);
 };
