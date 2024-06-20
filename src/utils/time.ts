@@ -1,4 +1,8 @@
-export const formatPastTime = (timestamp: string): string => {
+type pastTime = {
+	value: number | "many";
+	unit: string;
+};
+export const formatPastTime = (timestamp: string): pastTime => {
 	const currentDate = new Date();
 	const providedDate = new Date(timestamp);
 
@@ -11,17 +15,17 @@ export const formatPastTime = (timestamp: string): string => {
 	const months = Math.floor(days / 30);
 
 	if (seconds < 60) {
-		return `${seconds} second${seconds !== 1 ? "s" : ""} ago`;
+		return { value: seconds, unit: "s" };
 	} else if (minutes < 60) {
-		return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`;
+		return { value: minutes, unit: "m" };
 	} else if (hours < 24) {
-		return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+		return { value: hours, unit: "h" };
 	} else if (days < 30) {
-		return `${days} day${days !== 1 ? "s" : ""} ago`;
+		return { value: days, unit: "d" };
 	} else if (months < 12) {
-		return `${months} month${months !== 1 ? "s" : ""} ago`;
+		return { value: months, unit: "mo" };
 	} else {
-		return "More than a year ago";
+		return { value: "many", unit: "years" };
 	}
 };
 
@@ -75,8 +79,8 @@ export const formatDateTime = (timestamp: string): dateAndTime => {
 	const year = date.getFullYear().toString().slice(-2);
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
-	const ampm = hours >= 12 ? "PM" : "AM";
-	const formattedHours = hours % 12;
+	const ampm = hours >= 12 ? "pm" : "am";
+	const formattedHours = hours == 0 ? 12 : hours % 12;
 	const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 	const formattedTime = `${formattedHours}:${formattedMinutes} ${ampm}`;
 	const formattedDate = `${day} ${month} ${year}`;

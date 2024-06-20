@@ -1,10 +1,6 @@
 import { palette } from "@/constants/Colors";
 import { FormData } from "@/types";
-import {
-	convertColorIntensity,
-	formatDateTime,
-	formatFutureTime,
-} from "@/utils";
+import { convertColorIntensity, formatDateTime } from "@/utils";
 import React, { useState } from "react";
 import { ColorSchemeName, StyleSheet } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -26,16 +22,16 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
 	const showDatePicker = () => {
 		setDatePickerVisibility(true);
 	};
+	const displayTime = dateTime;
 
 	const hideDatePicker = () => {
 		setDatePickerVisibility(false);
 	};
 
 	const handleConfirm = (date: Date) => {
-		setData({ ...data, expiry: String(date) });
-		console.log(date, "date here");
-		console.log("A date has been picked: ", formatFutureTime(String(date)));
-		setDateTime(String(date));
+		const isoString = date.toISOString();
+		setDateTime(isoString);
+		setData({ ...data, expiry: isoString });
 		hideDatePicker();
 	};
 	return (
@@ -53,13 +49,15 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
 					{dateTime === ""
 						? "Set Deadline"
 						: "Expires on " +
-						  formatDateTime(dateTime).date +
+						  formatDateTime(displayTime).date +
 						  " at " +
-						  formatDateTime(dateTime).time}
+						  formatDateTime(displayTime).time}
 				</Text>
 				<DateTimePickerModal
 					isVisible={isDatePickerVisible}
 					mode='datetime'
+					minimumDate={new Date()}
+					timeZoneName='Asia/Kolkata'
 					isDarkModeEnabled={colorScheme === "dark" ? true : false}
 					onConfirm={handleConfirm}
 					onCancel={hideDatePicker}

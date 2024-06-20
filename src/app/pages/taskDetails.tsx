@@ -8,6 +8,9 @@ import { TaskCategory } from "@/types";
 import {
 	changeOpacity,
 	convertColorIntensity,
+	formatDateTime,
+	formatFutureTime,
+	formatPastTime,
 	limitDescription,
 } from "@/utils";
 import { fetchOneTask, postTaskRequest, RespondTaskRequest } from "@/utils/api";
@@ -50,6 +53,9 @@ const task = () => {
 		enabled: !!userData,
 	});
 	const data = task?.data;
+	const createdAt = formatPastTime(data?.time);
+	const deadline = formatDateTime(data?.expiry);
+	const tillDeadline = formatFutureTime(data?.expiry);
 	const taskOwner = data?.user_id;
 	const currentUser = userData?.user?.id;
 	const requested: boolean = data?.requesters?.some(
@@ -128,12 +134,24 @@ const task = () => {
 						marginVertical: 8,
 					}}
 				>
-					<MaterialIcons
-						onPress={handleGoBack}
-						name='arrow-back-ios-new'
-						size={25}
-						color={colorScheme === "dark" ? palette.white : palette.black}
-					/>
+					<View style={{ flexDirection: "row", alignItems: "center" }}>
+						<MaterialIcons
+							onPress={handleGoBack}
+							name='arrow-back-ios-new'
+							size={25}
+							color={colorScheme === "dark" ? palette.white : palette.black}
+						/>
+						<Text
+							style={{
+								fontFamily: "InterSemiBold",
+								fontSize: 16,
+								marginLeft: 8,
+							}}
+						>
+							{createdAt.value}
+							{createdAt.unit}
+						</Text>
+					</View>
 					{taskOwner === currentUser && (
 						<RPressable style={styles.btnDelete}>
 							<Text
@@ -266,6 +284,43 @@ const task = () => {
 							<Text style={styles.loadingText}>Loading Files</Text>
 						</View>
 					) : ( */}
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							justifyContent: "flex-start",
+							marginHorizontal: 8,
+							marginVertical: 8,
+						}}
+					>
+						<MaterialCommunityIcons
+							name='calendar-check-outline'
+							size={24}
+							color={palette.red}
+							style={{
+								marginHorizontal: 8,
+							}}
+						/>
+						<View style={{ marginLeft: 4 }}>
+							<Text
+								style={{
+									fontFamily: "InterSemiBold",
+									fontSize: 16,
+								}}
+							>
+								Deadline: {deadline.date}, {deadline.time}
+							</Text>
+							<Text
+								style={{
+									fontFamily: "Inter",
+									fontSize: 12,
+									color: palette.grayLight2,
+								}}
+							>
+								{tillDeadline} left
+							</Text>
+						</View>
+					</View>
 
 					<View
 						style={{

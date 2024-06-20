@@ -1,25 +1,27 @@
-import { View, Text, Pressable } from "@/components/Themed";
-import {
-	TouchableNativeFeedback,
-	StyleSheet,
-	Image,
-	useColorScheme,
-} from "react-native";
-import React, { memo } from "react";
-import { palette } from "@/constants/Colors";
+import { TaskPopupMenu } from "@/components/custom/DropDowns";
 import ImageSlider from "@/components/custom/ImageSlider";
+import { Pressable, Text, View } from "@/components/Themed";
+import { categoryColors, palette } from "@/constants/Colors";
+import { TaskCategory } from "@/types";
 import {
 	convertColorIntensity,
+	formatDateTime,
 	formatPastTime,
 	limitDescription,
 } from "@/utils";
-import { categoryColors } from "@/constants/Colors";
-import { TaskPopupMenu } from "@/components/custom/DropDowns";
 import { router } from "expo-router";
-import { TaskCategory } from "@/types";
+import React, { memo } from "react";
+import {
+	Image,
+	StyleSheet,
+	TouchableNativeFeedback,
+	useColorScheme,
+} from "react-native";
 
 const Task = ({ item }: any) => {
 	const colorScheme = useColorScheme();
+	const createdAt = formatPastTime(item?.time);
+	const deadlilne = formatDateTime(item?.expiry);
 	return (
 		<View
 			style={{
@@ -52,7 +54,7 @@ const Task = ({ item }: any) => {
 										uri:
 											item?.user_avatar && "default"
 												? "https://via.placeholder.com/150"
-												: item?.user_,
+												: item?.user_avatar,
 									}}
 									style={{
 										width: 32,
@@ -62,13 +64,25 @@ const Task = ({ item }: any) => {
 								/>
 								<View
 									style={{
-										alignItems: "flex-start",
+										alignItems: "baseline",
 										justifyContent: "flex-start",
 									}}
 								>
 									<Text style={styles.name}>
 										{limitDescription(item?.user_name, 25)}
 										{/* {item?.user_name} */}
+									</Text>
+									<Text
+										style={[
+											styles.time,
+											{
+												color: palette.grayLight2,
+												marginLeft: 8,
+											},
+										]}
+									>
+										{createdAt.value}
+										{createdAt.unit}
 									</Text>
 									{/* <StarRating rating={item?.rating} /> */}
 								</View>
@@ -133,7 +147,17 @@ const Task = ({ item }: any) => {
 					)}
 					<View style={styles.footer}>
 						<View>
-							<Text style={styles.time}>{formatPastTime(item.time)}</Text>
+							<Text
+								style={[
+									styles.time,
+									{
+										fontFamily: "InterSemiBold",
+										color: palette.grayLight2,
+									},
+								]}
+							>
+								{deadlilne.date}
+							</Text>
 						</View>
 					</View>
 				</View>

@@ -165,7 +165,6 @@ export const postTask = async (data: FormDataType) => {
 		formdata.append("price", data.price.toString());
 		formdata.append("category", data.category);
 		formdata.append("expiry", data.expiry);
-		console.log(data.expiry, "expiry data\n");
 		formdata.append("status", "open");
 
 		if (data.images) {

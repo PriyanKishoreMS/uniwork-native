@@ -62,6 +62,7 @@ const CreateScreen = () => {
 	const queryClient = useQueryClient();
 	const { mutateAsync: addTaskMutation } = useMutation({
 		mutationFn: async () => {
+			console.log(data.expiry, "\n\n\nthis is the expiry data here");
 			return await postData(data);
 		},
 		onSuccess: () => {
