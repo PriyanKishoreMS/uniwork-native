@@ -43,6 +43,7 @@ const task = () => {
 	const colorScheme = useColorScheme();
 	const { userData } = useAuth();
 	const queryClient = useQueryClient();
+	const { setCheckout } = useAuth();
 
 	const defaultAvatar =
 		"https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png";
@@ -602,6 +603,7 @@ const task = () => {
 									avatar: string;
 									id: number;
 									name: string;
+									college_name: string;
 									userid: number;
 									status: string;
 								}) => (
@@ -697,13 +699,24 @@ const task = () => {
 															// 	requesterId: requester.userid,
 															// 	taskResponse: "approve",
 															// });
-
+															setCheckout({
+																taskId: data?.id,
+																workerId: requester.userid,
+																title: data?.title,
+																price: data?.price,
+																category: data?.category,
+																created_at: data?.time,
+																expiry: data?.expiry,
+																worker_name: requester.name,
+																worker_avatar: requester.avatar,
+																worker_college: requester.college_name,
+															});
 															router.push({
 																pathname: "/pages/CheckOut",
-																params: {
-																	itemId: data?.id,
-																	requesterId: requester.userid,
-																},
+																// params: {
+																// 	taskId: data?.id,
+																// 	requesterId: requester.userid,
+																// },
 															});
 														} catch (err) {
 															console.error(err);

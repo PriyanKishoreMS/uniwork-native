@@ -108,6 +108,18 @@ const ProfileDetail: React.FC<{
 						>
 							{thisUser?.college_name}
 						</Text>
+						<Text
+							style={[
+								styles.college,
+								{
+									fontFamily: "InterLight",
+									color: palette.grayLight2,
+									width: width * 0.8,
+								},
+							]}
+						>
+							{thisUser?.dept}
+						</Text>
 					</View>
 					<FastImage
 						style={{
@@ -198,7 +210,7 @@ const styles = StyleSheet.create({
 	},
 	college: {
 		fontSize: 15,
-		fontFamily: "InterLight",
+		fontFamily: "Inter",
 	},
 	editButton: {
 		flexDirection: "row",

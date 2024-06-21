@@ -91,3 +91,16 @@ export type UserData = {
 	accessToken: string;
 	refreshToken: string;
 };
+
+export type Checkout = {
+	taskId: number;
+	workerId: number;
+	title: string;
+	category: string;
+	price: number;
+	created_at: string;
+	expiry: string;
+	worker_name: string;
+	worker_avatar: string;
+	worker_college: string;
+};

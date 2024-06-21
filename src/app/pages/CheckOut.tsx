@@ -1,3 +1,5 @@
+import { razorpayKey } from "@/../.config/razorpay.config";
+import { useAuth } from "@/components/contexts/AuthContext";
 import { Pressable, Text, View } from "@/components/Themed";
 import Colors, { palette } from "@/constants/Colors";
 import {
@@ -9,6 +11,7 @@ import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Fragment } from "react";
 import {
+	Pressable as DPressable,
 	View as DView,
 	Image,
 	ScrollView,
@@ -17,35 +20,64 @@ import {
 	useColorScheme,
 	useWindowDimensions,
 } from "react-native";
+import RazorpayCheckout from "react-native-razorpay";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-//testing bro
-const checkOutData = {
-	taskId: 12,
-	userid: 5,
-	task_title: "This is the title of the task, that i want to check out",
-	task_price: 100,
-	username: "Priyan Kishore M S",
-	user_avatar: "default",
-	user_college: "Hindustan University",
-	category: "Document Printing",
-	created_at: "2024-05-24T17:20:06Z",
-	expiry: "2024-06-25T22:50:05.79169Z",
-};
-
 const CheckOutPage = () => {
-	const { itemId, requesterId } = useLocalSearchParams();
+	const { taskId, requesterId } = useLocalSearchParams();
 	const colorScheme = useColorScheme();
 	const { height } = useWindowDimensions();
 	const router = useRouter();
+	const { checkout } = useAuth();
 	const defaultAvatar =
 		"https://www.pngkey.com/png/full/114-1149878_setting-user-avatar-in-specific-size-without-breaking.png";
 
 	const handleGoBack = () => {
 		router.back();
 	};
+	console.log(taskId, requesterId, "params");
 
-	console.log("itemId", itemId, requesterId);
+	// console.log("\n\n\ncheckout", checkout);
+
+	// const {
+	// 	data: checkOutData,
+	// 	error,
+	// 	isLoading: isLoadingData,
+	// } = useQuery({
+	// 	queryKey: ["checkout", taskId],
+	// 	queryFn: async () => {
+	// 		return await FetchCheckoutTaskRequest(
+	// 			taskId as string,
+	// 			requesterId as string,
+	// 			userData?.accessToken as string
+	// 		);
+	// 	},
+	// });
+
+	const startPayment = async () => {
+		var options = {
+			description: "Create order",
+			image: "https://i.imgur.com/3g7nmJC.jpg",
+			currency: "INR",
+			key: razorpayKey,
+			amount: 50000,
+			name: "uniwork",
+			order_id: "",
+			prefill: {
+				email: "postcardbox20@gmail.com",
+				name: "Priyan Kishore",
+			},
+			theme: { color: palette.primary },
+		};
+		RazorpayCheckout.open(options)
+			.then(data => {
+				alert(`Success: ${data.razorpay_payment_id}`);
+			})
+			.catch(error => {
+				alert(`Error: ${error.code} | ${error.description}`);
+			});
+	};
+
 	return (
 		<Fragment>
 			<SafeAreaView
@@ -86,59 +118,123 @@ const CheckOutPage = () => {
 						</Text>
 					</Pressable>
 				</View>
-				<ScrollView style={styles.container}>
-					<Pressable style={styles.taskCard}>
-						<Text style={styles.cardTitle}>{checkOutData.task_title}</Text>
-						<DView
-							style={[
-								styles.toSide,
-								{
-									marginTop: 8,
-								},
-							]}
-						>
-							<Text
+				{checkout && (
+					<ScrollView style={styles.container}>
+						<Pressable style={styles.taskCard}>
+							<Text style={styles.cardTitle}>{checkout?.title}</Text>
+							<DView
 								style={[
-									styles.subtitle,
+									styles.toSide,
 									{
-										color:
-											colorScheme === "dark"
-												? palette.grayLight2
-												: palette.gray,
+										marginTop: 8,
 									},
 								]}
 							>
-								{checkOutData.category}
-							</Text>
+								<Text
+									style={[
+										styles.subtitle,
+										{
+											color:
+												colorScheme === "dark"
+													? palette.grayLight2
+													: palette.gray,
+										},
+									]}
+								>
+									{checkout?.category}
+								</Text>
 
-							<DView
-								style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
-							>
-								<MaterialIcons
-									name='currency-rupee'
-									size={21}
-									color={convertColorIntensity(palette.green, 20)}
-								/>
-								<Text style={styles.priceText}>{checkOutData.task_price}</Text>
+								<DView
+									style={{ flexDirection: "row", alignItems: "center", gap: 3 }}
+								>
+									<MaterialIcons
+										name='currency-rupee'
+										size={21}
+										color={convertColorIntensity(palette.green, 20)}
+									/>
+									<Text style={styles.priceText}>{checkout?.price}</Text>
+								</DView>
 							</DView>
-						</DView>
-						<TouchableOpacity>
-							<Text
+							<TouchableOpacity>
+								<Text
+									style={{
+										color: palette.blue,
+										fontSize: 16,
+										fontFamily: "Inter",
+									}}
+								>
+									Change
+								</Text>
+							</TouchableOpacity>
+						</Pressable>
+						<View style={styles.detailView}>
+							<View style={{ marginVertical: 8 }}>
+								<View style={styles.toSide}>
+									<View>
+										<Text style={styles.headTitle}>
+											{checkout?.worker_name}
+										</Text>
+										<Text
+											style={[
+												styles.subtitle,
+												{
+													color:
+														colorScheme === "dark"
+															? palette.grayLight2
+															: palette.gray,
+												},
+											]}
+										>
+											Worker Name
+										</Text>
+									</View>
+									<Image
+										source={{
+											uri:
+												checkout?.worker_avatar == "default"
+													? defaultAvatar
+													: checkout?.worker_avatar,
+										}}
+										style={{
+											width: 60,
+											height: 60,
+											borderRadius: 30,
+											marginLeft: 4,
+										}}
+									/>
+								</View>
+							</View>
+							<View style={{ marginVertical: 8 }}>
+								<Text style={styles.headTitle}>{checkout?.worker_college}</Text>
+								<Text
+									style={[
+										styles.subtitle,
+										{
+											color:
+												colorScheme === "dark"
+													? palette.grayLight2
+													: palette.gray,
+										},
+									]}
+								>
+									Institute
+								</Text>
+							</View>
+							<View
 								style={{
-									color: palette.blue,
-									fontSize: 16,
-									fontFamily: "Inter",
+									marginVertical: 8,
+									flexDirection: "row",
+									justifyContent: "space-between",
+									alignItems: "center",
 								}}
 							>
-								Change
-							</Text>
-						</TouchableOpacity>
-					</Pressable>
-					<View style={styles.detailView}>
-						<View style={{ marginVertical: 8 }}>
-							<View style={styles.toSide}>
 								<View>
-									<Text style={styles.headTitle}>{checkOutData.username}</Text>
+									<Text style={styles.dateText}>
+										{formatDateTime(checkout?.created_at).date}
+									</Text>
+									<Text style={styles.dateText}>
+										{formatDateTime(checkout?.created_at).time}
+									</Text>
 									<Text
 										style={[
 											styles.subtitle,
@@ -150,127 +246,81 @@ const CheckOutPage = () => {
 											},
 										]}
 									>
-										Worker Name
+										Created At
 									</Text>
 								</View>
-								<Image
-									source={{
-										uri:
-											checkOutData.user_avatar == "default"
-												? defaultAvatar
-												: checkOutData.user_avatar,
-									}}
-									style={{
-										width: 60,
-										height: 60,
-										borderRadius: 30,
-										marginLeft: 4,
-									}}
+								<Octicons
+									name='dash'
+									size={24}
+									color={palette.white}
+									style={{ marginVertical: 8 }}
 								/>
+								<View style={{ alignItems: "flex-end" }}>
+									<Text style={styles.dateText}>
+										{formatDateTime(checkout?.expiry).date}
+									</Text>
+									<Text style={styles.dateText}>
+										{formatDateTime(checkout?.expiry).time}
+									</Text>
+									<Text
+										style={[
+											styles.subtitle,
+											{
+												color:
+													colorScheme === "dark"
+														? palette.grayLight2
+														: palette.gray,
+											},
+										]}
+									>
+										Deadline
+									</Text>
+								</View>
 							</View>
-						</View>
-						<View style={{ marginVertical: 8 }}>
-							<Text style={styles.headTitle}>{checkOutData.user_college}</Text>
-							<Text
-								style={[
-									styles.subtitle,
-									{
-										color:
-											colorScheme === "dark"
-												? palette.grayLight2
-												: palette.gray,
-									},
-								]}
+							<View
+								style={{
+									marginVertical: 8,
+									alignItems: "center",
+									flexDirection: "row",
+									justifyContent: "center",
+								}}
 							>
-								Institute
-							</Text>
-						</View>
-						<View
-							style={{
-								marginVertical: 8,
-								flexDirection: "row",
-								justifyContent: "space-between",
-								alignItems: "center",
-							}}
-						>
-							<View>
-								<Text style={styles.dateText}>
-									{formatDateTime(checkOutData.created_at).date}
-								</Text>
-								<Text style={styles.dateText}>
-									{formatDateTime(checkOutData.created_at).time}
-								</Text>
 								<Text
 									style={[
 										styles.subtitle,
 										{
-											color:
-												colorScheme === "dark"
-													? palette.grayLight2
-													: palette.gray,
+											color: palette.red,
+											fontFamily: "InterBold",
 										},
 									]}
 								>
-									Created At
+									{formatFutureTime(checkout?.expiry)}
 								</Text>
-							</View>
-							<Octicons
-								name='dash'
-								size={24}
-								color={palette.white}
-								style={{ marginVertical: 8 }}
-							/>
-							<View style={{ alignItems: "flex-end" }}>
-								<Text style={styles.dateText}>
-									{formatDateTime(checkOutData.expiry).date}
-								</Text>
-								<Text style={styles.dateText}>
-									{formatDateTime(checkOutData.expiry).time}
-								</Text>
-								<Text
-									style={[
-										styles.subtitle,
-										{
-											color:
-												colorScheme === "dark"
-													? palette.grayLight2
-													: palette.gray,
-										},
-									]}
-								>
-									Deadline
-								</Text>
+								<Text style={styles.subtitle}> till deadline</Text>
 							</View>
 						</View>
-						<View
-							style={{
-								marginVertical: 8,
-								alignItems: "center",
-								flexDirection: "row",
-								justifyContent: "center",
-							}}
-						>
-							<Text
-								style={[
-									styles.subtitle,
-									{
-										color: palette.red,
-										fontFamily: "InterBold",
-									},
-								]}
-							>
-								{formatFutureTime(checkOutData.expiry)}
-							</Text>
-							<Text style={styles.subtitle}> till deadline</Text>
-						</View>
-					</View>
-				</ScrollView>
+					</ScrollView>
+				)}
+				<DPressable
+					onPress={startPayment}
+					android_ripple={{
+						color: "rgba(0, 0, 0, 0.32)",
+					}}
+					style={styles.payBtn}
+				>
+					<Text style={styles.cardTitle}>Pay</Text>
+				</DPressable>
 			</SafeAreaView>
 		</Fragment>
 	);
 };
 
 const styles = StyleSheet.create({
+	payBtn: {
+		backgroundColor: palette.blue,
+		padding: 12,
+		alignItems: "center",
+	},
 	toSide: {
 		flexDirection: "row",
 		alignItems: "center",

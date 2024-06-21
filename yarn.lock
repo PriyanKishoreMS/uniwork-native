@@ -2989,6 +2989,11 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.11.tgz#2596fb352ee96a1379c657734d4b913a613ad563"
   integrity sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==
 
+"@types/react-native-razorpay@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@types/react-native-razorpay/-/react-native-razorpay-2.2.5.tgz#539ca5b2656f87c4bfc25d332b2ebfcbdd9bf5ad"
+  integrity sha512-nXLwqoE48RiAhNmhuMu6KU5i/roPKt7jt0R0Yp1SxmASWwAPPnmPPu+ANfCzVSro5W5y7jof82KS1QyB/M1zkQ==
+
 "@types/react@~18.2.45":
   version "18.2.57"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.57.tgz#147b516d8bdb2900219acbfc6f939bdeecca7691"

@@ -1,13 +1,15 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import auth from "@react-native-firebase/auth";
-import { router } from "expo-router";
-import { User, UserData } from "@/types";
+import { Checkout, User, UserData } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { router } from "expo-router";
+import React, { createContext, ReactNode, useContext, useState } from "react";
 
 interface AuthContextType {
 	user: User | null;
 	setUser: React.Dispatch<React.SetStateAction<User | null>>;
+	checkout: Checkout | null;
+	setCheckout: React.Dispatch<React.SetStateAction<Checkout | null>>;
 	signIn: (route: "/getprofile" | "/") => Promise<void>;
 	signOut: () => Promise<void>;
 	signedIn: Boolean;
@@ -29,6 +31,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 	const [userData, setUserData] = useState<UserData | null>(null);
 	const [signedIn, setSignedIn] = useState<Boolean>(false);
 	const [isLoading, setIsLoading] = useState<Boolean>(true);
+	const [checkout, setCheckout] = useState<Checkout | null>(null);
 
 	const signIn = async (route: "/getprofile" | "/") => {
 		try {
@@ -109,6 +112,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 			value={{
 				user,
 				setUser,
+				checkout,
+				setCheckout,
 				signIn,
 				signOut,
 				signedIn,

@@ -255,3 +255,27 @@ export const RespondTaskRequest = async (
 		console.error(error, "error in respond task req");
 	}
 };
+
+export const FetchCheckoutTaskRequest = async (
+	taskId: string,
+	uid: string,
+	accessToken: string
+) => {
+	try {
+		console.log(taskId, uid, "task req data");
+		const response = await fetch(
+			`${ipAddrPort}/task/request/checkout/${taskId}/${uid}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${accessToken}`,
+				},
+			}
+		);
+		const res = await response.json();
+		return res;
+	} catch (error) {
+		console.error(error, "error here");
+	}
+};

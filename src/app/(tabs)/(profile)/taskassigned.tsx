@@ -1,6 +1,7 @@
 import Task from "@/app/pages/Task";
 import { useAuth } from "@/components/contexts/AuthContext";
 import LoadingScreen from "@/components/LoadingScreen";
+import NothingToSee from "@/components/NothingToSee";
 import SomethingWrong from "@/components/SomethingWrong";
 import { View } from "@/components/Themed";
 import { fetchUserTasks } from "@/utils/api";
@@ -44,6 +45,11 @@ const TaskAssigned: React.FC<{
 	};
 
 	const flatData = task?.pages.flatMap(page => page.data);
+	const isEmpty = flatData?.length === 0;
+
+	if (isEmpty) {
+		return <NothingToSee />;
+	}
 
 	if (isLoading) {
 		return <LoadingScreen />;
@@ -52,6 +58,7 @@ const TaskAssigned: React.FC<{
 	if (taskError) {
 		return <SomethingWrong />;
 	}
+
 	return (
 		<View style={styles.container}>
 			<FlatList
