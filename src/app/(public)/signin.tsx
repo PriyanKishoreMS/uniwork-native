@@ -1,25 +1,25 @@
+import { webClientId } from "@/../.config/firebase.config";
+import { colleges } from "@/../temp/colleges";
+import { ipAddrPort } from "@/../temp/config";
+import { useAuth } from "@/components/contexts/AuthContext";
+import RadioButton from "@/components/custom/RadioButton";
+import { Pressable, Text, View } from "@/components/Themed";
+import { palette } from "@/constants/Colors";
+import { User } from "@/types";
+import { AntDesign } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import auth from "@react-native-firebase/auth";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { useMutation } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import {
-	StyleSheet,
-	ScrollView,
 	Image,
 	ImageSourcePropType,
+	ScrollView,
+	StyleSheet,
 	useColorScheme,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Text, View, Pressable } from "@/components/Themed";
 import { SelectCountry } from "react-native-element-dropdown";
-import { colleges } from "@/../temp/colleges";
-import { palette } from "@/constants/Colors";
-import { AntDesign } from "@expo/vector-icons";
-import { useAuth } from "@/components/contexts/AuthContext";
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
-import { webClientId } from "@/../.config/firebase.config";
-import RadioButton from "@/components/custom/RadioButton";
-import { User } from "@/types";
-import { useMutation } from "@tanstack/react-query";
-import auth from "@react-native-firebase/auth";
-import { ipAddrPort } from "@/../temp/config";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const signinBg: ImageSourcePropType = require("../../../assets/images/signIn/signin.png");
 const SignInScreen = () => {
@@ -163,7 +163,7 @@ const SignInScreen = () => {
 										fontFamily: "Inter",
 									}}
 								>
-									Sign in with Google
+									New user? Sign in
 								</Text>
 							</Pressable>
 
@@ -171,7 +171,7 @@ const SignInScreen = () => {
 								onPress={async () => {
 									await addUser();
 								}}
-								style={styles.googleButton}
+								style={styles.loginButton}
 							>
 								<AntDesign
 									name='google'
@@ -268,6 +268,16 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#4285F4",
+		padding: 12,
+		borderRadius: 12,
+	},
+	loginButton: {
+		marginBottom: 16,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderWidth: 2,
+		borderColor: "#4285F4",
 		padding: 12,
 		borderRadius: 12,
 	},

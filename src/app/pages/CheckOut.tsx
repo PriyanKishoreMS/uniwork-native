@@ -72,6 +72,7 @@ const CheckOutPage = () => {
 		RazorpayCheckout.open(options)
 			.then(data => {
 				alert(`Success: ${data.razorpay_payment_id}`);
+				console.log(data, "razorpay success data");
 			})
 			.catch(error => {
 				alert(`Error: ${error.code} | ${error.description}`);

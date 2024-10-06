@@ -26,7 +26,7 @@ const ProfileDetail: React.FC<{
 	console.log(userId, "userIdNumber in profileDetail");
 	const imageWidthHeight = 50;
 	const imageBorderRadius = imageWidthHeight / 3;
-	const uri = `https://xsgames.co/randomusers/assets/avatars/female/9.jpg`;
+	const uri = `https://avatars.githubusercontent.com/u/80768547?v=4`;
 	const { signOut, isLoading, signedIn, userData } = useAuth();
 
 	const {
@@ -66,12 +66,12 @@ const ProfileDetail: React.FC<{
 			>
 				<View style={styles.headerContainer}>
 					<MaterialIcons
-						name='settings'
+						name='logout'
 						size={24}
 						color={Colors.dark.background}
 						style={{
 							padding: 8,
-							backgroundColor: palette.tertiary,
+							backgroundColor: palette.yellow,
 							borderRadius: 12,
 						}}
 						onPress={() => {
@@ -149,7 +149,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>{thisUser?.rating}</Text>
+						<Text style={styles.para}>5</Text>
 						<MaterialIcons name='star' size={24} color={palette.white} />
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -160,7 +160,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>{thisUser?.tasks_completed}</Text>
+						<Text style={styles.para}>12</Text>
 						<MaterialIcons name='done-all' size={24} color={palette.white} />
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -171,7 +171,7 @@ const ProfileDetail: React.FC<{
 							},
 						]}
 					>
-						<Text style={styles.para}>{thisUser?.earned}</Text>
+						<Text style={styles.para}>1200</Text>
 						<MaterialIcons
 							name='currency-rupee'
 							size={24}
